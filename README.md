@@ -2,9 +2,9 @@
 
 ## Membri del Gruppo
 
-* Alessandro Rutigliano, 909971
-* Cristiano Rotunno, 914317
-* Davide Riccio, 917209
+* Alessandro Rutigliano, 909971, a.rutigliano8@campus.unimib.it
+* Cristiano Rotunno, 914317, c.rotunno@campus.unimib.it
+* Davide Riccio, 917209, d.riccio3@campus.unimib.it
 
 Un'applicazione per la gestione della Carta Cultura. La directory `client-web` contiene l'HTML, JavaScript, e CSS per il frontend dell'applicazione.
 
