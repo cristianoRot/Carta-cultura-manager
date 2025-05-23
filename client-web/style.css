@@ -1,0 +1,261 @@
+/* ======================
+   FONT E BODY GENERALE
+   ====================== */
+
+/* Importa un font moderno */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+/* ======================
+   TITOLI E SEZIONI
+   ====================== */
+
+/* Stile generale del body */
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+    color: #22223b;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Titoli principali e sottotitoli */
+h1, h2, h3, h4 {
+    color: #3a0ca3;
+    text-align: center;
+    margin-top: 0.5em;
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+h3 {
+    margin-bottom: 5px;
+}
+
+h4 {
+    margin-bottom: 5px;
+}
+
+/* Sezioni principali */
+section {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(58,12,163,0.08);
+    margin: 2em auto;
+    padding: 2em;
+    max-width: 500px;
+    animation: fadeIn 1s;
+    padding-right: 3em;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid #e0e7ff;
+    margin: 2em 0;
+}
+
+/* ======================
+   FORM E INPUT
+   ====================== */
+
+label {
+    display: block;
+    margin-bottom: 0.3em;
+    font-weight: 600;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.7em;
+    border: 1px solid #bdbdbd;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-size: 1em;
+}
+
+input:focus, select:focus {
+    border-color: #3a0ca3;
+    box-shadow: 0 0 0 2px #b6ccfe;
+    outline: none;
+}
+
+form div, #userLookup > div {
+    margin-bottom: 1em;
+}
+
+/* ======================
+   BOTTONI
+   ====================== */
+
+button {
+    background: linear-gradient(90deg, #3a0ca3 0%, #4361ee 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(67,97,238,0.12);
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #4361ee 0%, #3a0ca3 100%);
+    transform: translateY(-2px) scale(1.04);
+}
+
+/* ======================
+   STATUS E MESSAGGI
+   ====================== */
+
+#registrationStatus,
+#lookupStatus,
+#voucherStatus,
+#systemStatsStatus {
+    margin-top: 15px;
+    font-weight: bold;
+    min-height: 1.2em;
+    display: none;
+    transition: opacity 0.5s;
+    opacity: 1;
+}
+
+/* ======================
+   SEZIONE DATI UTENTE
+   ====================== */
+
+#userDataDisplay {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e0e7ff;
+    border-radius: 10px;
+}
+
+#userDataDisplay p {
+    margin-bottom: 8px;
+}
+
+#userDataDisplay span {
+    font-weight: normal;
+    color: #555;
+}
+
+/* ======================
+   SEZIONE BUONI (VOUCHER)
+   ====================== */
+
+#voucherManagement {
+    /* Styles for the voucher management section if needed */
+}
+
+#voucherList {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#voucherList > div {
+    background: #e0e7ff;
+    border-radius: 10px;
+    padding: 1em;
+    animation: fadeInUp 0.7s;
+}
+
+/* Stile singolo buono */
+.voucher-item {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.voucher-item p {
+    margin: 5px 0;
+}
+
+/* Bottoni azioni buono */
+.voucher-item .voucher-actions button {
+    padding: 5px 10px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.voucher-item .voucher-actions button.consumeVoucherBtn {
+    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+    color: #fff;
+}
+.voucher-item .voucher-actions button.consumeVoucherBtn:hover {
+    background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+}
+
+.voucher-item .voucher-actions button.deleteVoucherBtn {
+    background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+    color: #fff;
+}
+.voucher-item .voucher-actions button.deleteVoucherBtn:hover {
+    background: linear-gradient(90deg, #f09819 0%, #ff5858 100%);
+}
+
+.voucher-item .voucher-actions button.modifyVoucherBtn {
+    background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%);
+    color: #fff;
+}
+.voucher-item .voucher-actions button.modifyVoucherBtn:hover {
+    background: linear-gradient(90deg, #ee0979 0%, #ff6a00 100%);
+}
+
+/* ======================
+   SEZIONE STATISTICHE SISTEMA
+   ====================== */
+
+#systemStatusSection {
+    /* Styles for the system status section if needed */
+}
+
+#systemStatsDisplay p {
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+#systemStatsDisplay strong {
+    color: #3a0ca3;
+}
+
+#refreshStatsBtn {
+    margin-bottom: 15px;
+    background-color: #17a2b8;
+    /* Info Blue */
+}
+
+#refreshStatsBtn:hover {
+    background-color: #117a8b;
+}
+
+/* ======================
+   UTILITY E ANIMAZIONI
+   ====================== */
+
+/* Utility class for error messages - già definita in script.js per il colore */
+/* .error-message { color: red; font-weight: bold; } */
+
+/* Utility class for success messages - già definita in script.js per il colore */
+/* .success-message { color: green; font-weight: bold; } */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+

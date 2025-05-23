@@ -1,85 +1,97 @@
+
 # Progetto Sistemi Distribuiti 2024-2025 - TCP
-
-Documentare qui il protocollo su socket TCP che espone il database.
-
-Come scritto anche nel documento di consegna del progetto, si ha completa libertà su come implementare il protoccolo e i comandi del database. Alcuni suggerimenti sono:
-
-1. Progettare un protocollo testuale (tipo HTTP), è più semplice da implementare anche se meno efficiente.
-2. Dare un'occhiata al protocollo di [Redis](https://redis.io/docs/reference/protocol-spec/). Si può prendere ispirazione anche solo in alcuni punti.
-
-Di solito il protocollo e i comandi del database sono due cose diverse. Tuttavia per il progetto, per evitare troppa complessità, si può documentare insieme il protocollo e i comandi implementati nel database.
-
-La documentazione può variare molto in base al tipo di protocollo che si vuole costruire:
-
-* Se è un protocollo testuale simile a quello di Redis, è necessario indicare il formato delle richieste e delle risposte, sia dei comandi sia dei dati.
-
-* Se è un protocollo binario, è necessario specificare bene il formato di ogni pacchetto per le richieste e per le risposte, come vengono codificati i comandi e i dati.
-
-Di seguito il template di documentazione:
 
 ## 1. Panoramica
 
-- **Tipo:** (binario o testuale)  
-- **Porta Utilizzate:**  
+- **Tipo:** Testuale
+- **Porta Utilizzata:** 3030
+- **Modello:** Comando-risposta
+
+Il protocollo implementato nel database è un protocollo testuale ispirato a Redis. Il server accetta connessioni TCP su cui vengono inviate comandi e risposte in formato testo.
 
 ## 2. Struttura dei Messaggi
 
-### 2.1. Protocollo binario
+### 2.1. Protocollo testuale
 
-Descrivi la struttura dei messaggi binari scambiati.
+- **Encoding:** UTF-8
+- **Fine linea:** LF (`\n`) o CRLF (`\r\n`)
+- **Delimitatori Messaggio:** newline (`\n`)
 
-| Nome Campo    | Offset (byte) | Lunghezza (byte) | Tipo Dato | Descrizione                 | Esempio Valore |
-|---------------|---------------|------------------|-----------|-----------------------------|----------------|
-| Header        | 0             | 2                | uint16    | Conando     | 0x0102         |
-| Lung. Payload | 2             | 2                | uint16    | Lunghezza del messagio       | 0x0010         |
-| Payload       | 4             | variabile        | bytes     | Dati effettivi del messaggio| ...            |
-
-### 2.2. Protocollo testuale
-
-Descrivi la struttura dei messaggi testuali scambiati.
-
-- **Encoding:** (UTF-8/ASCII/Altro)
-- **Fine linea:** (LF/CRLF)
-- **Delimitatori Messaggio:** (es. newline, byte NULL)
+Ogni comando è inviato come una singola linea di testo. Ogni risposta è restituita come una singola linea di testo.
 
 **Esempio:**
 ```
-COMANDO arg1 arg2\r\n
+GET user:12345
 ```
 
-#### Comandi
+### 2.2. Comandi
+
+Il database supporta i seguenti comandi:
 
 | Comando | Parametri         | Descrizione                                | Esempio                |
 |---------|-------------------|--------------------------------------------|------------------------|
-| SET     | chiave, valore    | Imposta il valore alla chiave              | `LOGIN chiave1 42`   |
-| GET     | chiave            | Restituice il valore associato alla chiave | `GET chiave1`      |
-| QUIT    |                   | Chiude la connessione                      | `QUIT`                 |
+| GET     | chiave            | Restituice il valore associato alla chiave | `GET user:12345`      |
+| SET     | chiave, valore    | Imposta il valore alla chiave              | `SET user:12345 {"name":"Mario"}` |
+| DEL     | chiave            | Elimina una chiave dal database            | `DEL user:12345`      |
+| EXISTS  | chiave            | Verifica se una chiave esiste              | `EXISTS user:12345`   |
+| .       |                   | Chiude la connessione                      | `.`                   |
 
+### 2.3. Formato chiavi
+
+Le chiavi seguono la seguente convenzione:
+
+- `user:{fiscalCode}`: Memorizza i dati di un utente (serializzato come JSON)
+- `contribution:{userId}`: Memorizza i dati del contributo di un utente (serializzato come JSON)
+- `voucher:{voucherId}`: Memorizza i dati di un buono (serializzato come JSON)
+- `vouchersCount:{userId}`: Memorizza il numero di buoni di un utente
+- `voucherIdByIndex:{userId}:{index}`: Memorizza l'ID di un buono all'indice specificato per un utente
+- `stats:userCount`: Memorizza il numero totale di utenti
+- `stats:totalAvailable`: Memorizza la somma di tutti i contributi disponibili
+- `stats:totalAllocated`: Memorizza la somma di tutti i contributi allocati
+- `stats:totalSpent`: Memorizza la somma di tutti i contributi spesi
+- `stats:totalVouchers`: Memorizza il numero totale di buoni generati
+- `stats:vouchersConsumed`: Memorizza il numero totale di buoni consumati
 
 ## 3. Gestione degli Errori
 
-- **Protocollo binario:**  
-  - Codici errore e loro significato
-  - Formato messaggio di errore
+- **Risposte di successo:**  
+  - "OK": Operazione completata con successo
+  - "1": Operazione booleana completata con successo e risultato vero
+  - "0": Operazione booleana completata con successo e risultato falso
+  - "{valore}": Il valore associato alla chiave richiesta
 
-- **Protocollo testuale:**  
-  - Risposte di errore (es. `ERR <codice> <descrizione>`)
-  - Esempi di messaggi di errore
+- **Risposte di errore:**  
+  - "null": Chiave non trovata
+  - "ERR {messaggio}": Errore con messaggio esplicativo
 
-## 4. Scambio di Esempio
+**Esempi di messaggi di errore:**
+- "ERR missing key": Chiave non specificata
+- "ERR unknown command 'XYZ'": Comando non supportato
+- "ERR missing key or value": Parametri mancanti
 
-### 4.1. Protocollo binario
+## 4. Gestione della Concorrenza
+
+Il database implementa un meccanismo di lock basato sulla chiave per gestire la concorrenza. Quando più client tentano di modificare contemporaneamente la stessa chiave, le operazioni vengono serializzate per evitare race condition.
+
+## 5. Scambio di Esempio
 
 ```
-Client → Server: [Hex dump o dettaglio dei campi]
-Server → Client: [Esempio di risposta]
-```
-
-### 4.2. Protocollo testuale
-
-```
-Client: SET ciao mondo
+Client: SET user:12345 {"name":"Mario","surname":"Rossi","email":"mario@example.com","fiscalCode":"12345"}
 Server: OK
-Client: GET ciao
-Server: OK, mondo
+Client: GET user:12345
+Server: {"name":"Mario","surname":"Rossi","email":"mario@example.com","fiscalCode":"12345"}
+Client: EXISTS user:12345
+Server: 1
+Client: DEL user:12345
+Server: 1
+Client: EXISTS user:12345
+Server: 0
+Client: GET user:12345
+Server: null
+Client: .
+Server: bye
 ```
+
+## 6. Chiusura della Connessione
+
+Per chiudere correttamente la connessione con il database, il client deve inviare un singolo punto (`.`). Il server risponderà con `bye` e chiuderà la connessione.

@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>it.unimib.sd2025</groupId>
-    <artifactId>sd-project-web</artifactId>
-    <packaging>war</packaging>
+    <artifactId>sd-project-web</artifactId> <!-- Using 'sd-project-web' as per example -->
     <version>0.1</version>
+    <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
-        <jettyVersion>12.0.21</jettyVersion>
-        <jerseyVersion>3.1.10</jerseyVersion>
-        <servletVersion>6.0.0</servletVersion>
+        <java.version>21</java.version>
+        <jerseyVersion>3.1.7</jerseyVersion> <!-- Match version from initial context if possible, or use recent -->
+        <jettyVersion>12.0.7</jettyVersion> <!-- Use a recent EE10 compatible version -->
+        <servletVersion>6.0.0</servletVersion> <!-- Jakarta EE 10 -->
     </properties>
 
     <dependencies>
@@ -21,35 +24,61 @@
             <artifactId>jersey-container-servlet</artifactId>
             <version>${jerseyVersion}</version>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-binding</artifactId>
             <version>${jerseyVersion}</version>
         </dependency>
-
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${servletVersion}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
             <version>${jerseyVersion}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.eclipse/yasson -->
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>3.0.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.json</artifactId>
+            <version>2.0.1</version> <!-- Jakarta JSON Processing API -->
+        </dependency>
     </dependencies>
 
     <build>
+        <finalName>sd-project-web</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty.ee10</groupId>
                 <artifactId>jetty-ee10-maven-plugin</artifactId>
                 <version>${jettyVersion}</version>
                 <configuration>
-                    <scan>1</scan>
+                    <scan>1</scan> <!-- Auto-reload on change -->
+                    <webApp>
+                        <contextPath>/</contextPath> <!-- Deploy to root context -->
+                    </webApp>
                 </configuration>
             </plugin>
         </plugins>

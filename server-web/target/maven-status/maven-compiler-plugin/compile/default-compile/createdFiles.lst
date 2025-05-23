@@ -1,0 +1,11 @@
+it/unimib/sd2025/UserContribution.class
+it/unimib/sd2025/VoucherResource.class
+it/unimib/sd2025/UpdateVoucherRequest.class
+it/unimib/sd2025/DatabaseClient.class
+it/unimib/sd2025/SystemStats.class
+it/unimib/sd2025/UserResource.class
+it/unimib/sd2025/CORSFilter.class
+it/unimib/sd2025/CreateVoucherRequest.class
+it/unimib/sd2025/SystemResource.class
+it/unimib/sd2025/Voucher.class
+it/unimib/sd2025/User.class

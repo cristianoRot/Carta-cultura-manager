@@ -1,32 +1,102 @@
-# Progetto Sistemi Distribuiti 2024-2025 - NOME GRUPPO
+# Carta Cultura Manager
 
-Lo scheletro espone la struttura che il progetto deve seguire. Al posto di questo paragrafo è necessario scrivere il nome del progetto e una breve descrizione.
+## Membri del Gruppo
 
-## Componenti del gruppo
+* Alessandro Rutigliano, 909971
+* Cristiano Rotunno, 914317
+* Davide Riccio, 917209
 
-* Nome Cognome (Matricola) <email@campus.unimib.it>
-* ...
+Un'applicazione per la gestione della Carta Cultura. La directory `client-web` contiene l'HTML, JavaScript, e CSS per il frontend dell'applicazione.
 
-## Compilazione ed esecuzione
+## Compilazione ed Esecuzione
 
-Sia il server Web sia il database sono applicazioni Java gestire con Maven. All'interno delle rispettive cartelle si può trovare il file `pom.xml` in cui è presenta la configurazione di Maven per il progetto. Si presuppone l'utilizzo della macchina virtuale di laboratorio, per cui nel `pom.xml` è specificato l'uso di Java 21.
+### Database (`database` module)
 
-Il server Web e il database sono dei progetti Java che utilizano Maven per gestire le dipendenze, la compilazione e l'esecuzione.
+Il modulo `database` è un semplice server TCP key-value store in-memory.
 
-### Client Web
+1.  **Naviga nella directory:**
+    ```bash
+    cd database
+    ```
+2.  **Compila:**
+    ```bash
+    mvn clean package
+    ```
+    Questo creerà un file JAR eseguibile in `database/target/`, ad esempio `sd-project-database-0.1.jar` (il nome esatto può variare in base alla versione definita nel `pom.xml`).
+3.  **Esegui:**
+    ```bash
+    java -jar target/sd-project-database-0.1.jar
+    ```
+    *   Il database si metterà in ascolto sulla porta 3030 per default.
+    *   Il database può essere pre-popolato con dati da `initial_data.txt`. Vedere la sezione 'Pre-popolamento Dati Iniziali (`initial_data.txt`)' per dettagli.
 
-Per avviare il client Web è necessario utilizzare l'estensione "Live Preview" su Visual Studio Code, come mostrato durante il laboratorio. Tale estensione espone un server locale con i file contenuti nella cartella `client-web`.
+### Server Web (`server-web` module)
 
-**Attenzione**: è necessario configurare CORS in Google Chrome come mostrato nel laboratorio.
+Il modulo `server-web` espone le API REST per l'applicazione.
 
-### Server Web
+1.  **Naviga nella directory:**
+    ```bash
+    cd server-web
+    ```
+2.  **Compila:**
+    ```bash
+    mvn clean package
+    ```
+    (Nota: `mvn clean install` potrebbe essere necessario se ci fossero moduli dipendenti locali, ma per questo progetto `package` è solitamente sufficiente).
+3.  **Esegui (usando il plugin Jetty):**
+    ```bash
+    mvn jetty:run
+    ```
+    *   Il server web sarà accessibile su `http://localhost:8080` (porta di default di Jetty).
 
-Il server Web utilizza Jetty e Jersey. Si può avviare eseguendo `mvn jetty:run` all'interno della cartella `server-web`. Espone le API REST all'indirizzo `localhost` alla porta `8080`.
+### Client Web (`client-web` directory)
 
-### Database
+Il client web è un'applicazione statica HTML, JavaScript e CSS.
 
-Il database è una semplice applicazione Java. Si possono utilizzare i seguenti comandi Maven:
+1.  **Nessuna Compilazione Necessaria:**
+    Non è richiesta una fase di compilazione per il client web.
+2.  **Esegui:**
+    Apri il file `client-web/index.html` direttamente nel tuo browser web.
+3.  **Prerequisiti:**
+    Assicurati che il Server Web (`server-web` module) sia in esecuzione e accessibile (default: `http://localhost:8080`), poiché il client web effettua chiamate API a questo server.
 
-* `mvn clean`: per ripulire la cartella dai file temporanei,
-* `mvn compile`: per compilare l'applicazione,
-* `mvn exec:java`: per avviare l'applicazione (presuppone che la classe principale sia `Main.java`). Si pone in ascolto all'indirizzo `localhost` alla porta `3030`.
+## Pre-popolamento Dati Iniziali (`initial_data.txt`)
+
+(Questa sezione è stata aggiunta in uno step precedente e dovrebbe essere mantenuta)
+
+Il database può essere pre-popolato con dati da un file denominato `initial_data.txt`.
+
+*   **Ordine di Caricamento:**
+    1.  Il server cerca prima `initial_data.txt` nel **classpath**. Se stai eseguendo il JAR, puoi includere questo file in `src/main/resources` prima della compilazione, e verrà pacchettizzato nel JAR.
+    2.  Se non trovato nel classpath, il server cerca `initial_data.txt` nella **directory di lavoro corrente** da cui viene eseguito il JAR.
+    3.  Se il file non viene trovato in nessuna delle due posizioni, il database si avvierà con le statistiche globali inizializzate a zero e nessun altro dato.
+
+*   **Formato del File:**
+    Il file `initial_data.txt` deve contenere coppie chiave-valore, una per riga, nel formato:
+    ```
+    chiave=valore
+    ```
+
+*   **Esempi di Chiavi:**
+    *   **Utente:**
+        `user:RSSMRA80A01H501U={"id":"some-uuid","name":"Mario","surname":"Rossi","email":"mario.rossi@example.com","fiscalCode":"RSSMRA80A01H501U"}`
+    *   **Contributo Utente:**
+        `contribution:RSSMRA80A01H501U={"userId":"RSSMRA80A01H501U","available":500.0,"allocated":0.0,"spent":0.0,"total":500.0}`
+    *   **Voucher:** (Assicurati che `userId` nel JSON del voucher corrisponda a un utente esistente)
+        `voucher:voucher-uuid-123={"id":"voucher-uuid-123","amount":25.0,"category":"libri","status":"generated","creationDate":"2024-07-30T10:00:00","consumedAt":null,"userId":"RSSMRA80A01H501U"}`
+    *   **Indici Voucher Utente:** (Questi sono gestiti internamente per listare i voucher di un utente)
+        `vouchersCount:RSSMRA80A01H501U=1`
+        `voucherIdByIndex:RSSMRA80A01H501U:0=voucher-uuid-123`
+    *   **Statistiche Globali:**
+        `stats:userCount=1`
+        `stats:totalAvailable=500.0`
+        `stats:totalAllocated=0.0`
+        `stats:totalSpent=0.0`
+        `stats:totalVouchers=1`
+        `stats:vouchersConsumed=0`
+
+    **Nota:** I valori JSON devono essere su una singola linea senza interruzioni. Assicurati che i dati siano consistenti (es. `userId` in `contribution` e `voucher` deve esistere come chiave `user:`).
+
+## Licenza
+
+MIT
