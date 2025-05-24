@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>it.unimib.sd2025</groupId>
-    <artifactId>sd-project-web</artifactId> <!-- Using 'sd-project-web' as per example -->
+    <artifactId>sd-project-web</artifactId> 
     <version>0.1</version>
     <packaging>war</packaging>
 
@@ -13,9 +13,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <java.version>21</java.version>
-        <jerseyVersion>3.1.7</jerseyVersion> <!-- Match version from initial context if possible, or use recent -->
-        <jettyVersion>12.0.7</jettyVersion> <!-- Use a recent EE10 compatible version -->
-        <servletVersion>6.0.0</servletVersion> <!-- Jakarta EE 10 -->
+        <jerseyVersion>3.1.7</jerseyVersion> 
+        <jettyVersion>12.0.7</jettyVersion> 
+        <servletVersion>6.0.0</servletVersion> 
     </properties>
 
     <dependencies>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.json</artifactId>
-            <version>2.0.1</version> <!-- Jakarta JSON Processing API -->
+            <version>2.0.1</version> 
         </dependency>
     </dependencies>
 
@@ -75,9 +75,9 @@
                 <artifactId>jetty-ee10-maven-plugin</artifactId>
                 <version>${jettyVersion}</version>
                 <configuration>
-                    <scan>1</scan> <!-- Auto-reload on change -->
+                    <scan>1</scan> 
                     <webApp>
-                        <contextPath>/</contextPath> <!-- Deploy to root context -->
+                        <contextPath>/</contextPath> 
                     </webApp>
                 </configuration>
             </plugin>

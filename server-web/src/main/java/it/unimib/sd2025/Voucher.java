@@ -1,4 +1,3 @@
-
 package it.unimib.sd2025;
 
 /**
@@ -13,7 +12,6 @@ public class Voucher {
     private String consumedAt;
     private String userId;
 
-    // Costruttore vuoto richiesto per la deserializzazione JSON
     public Voucher() {}
 
     public Voucher(String id, double amount, String category, String status, String createdAt, String consumedAt, String userId) {
@@ -26,7 +24,6 @@ public class Voucher {
         this.userId = userId;
     }
 
-    // Getter e setter
     public String getId() {
         return id;
     }

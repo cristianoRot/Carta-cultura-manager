@@ -1,4 +1,3 @@
-
 package it.unimib.sd2025;
 
 import java.io.IOException;
@@ -24,39 +23,27 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerUser(User user) {
         try {
-            // Genera un ID se non è presente
             if (user.getId() == null || user.getId().isEmpty()) {
                 user.setId(UUID.randomUUID().toString());
             }
-            
-            // Verifica se l'utente esiste già
             if (DatabaseClient.exists("user:" + user.getFiscalCode())) {
                 return Response.status(Response.Status.CONFLICT)
                     .entity("User with fiscal code " + user.getFiscalCode() + " already exists.")
                     .build();
             }
-            
-            // Salva l'utente nel database
             DatabaseClient.set("user:" + user.getFiscalCode(), JsonbBuilder.create().toJson(user));
-            
-            // Inizializza il contributo dell'utente (500€)
             UserContribution contribution = new UserContribution(user.getFiscalCode(), 500.0, 0.0, 0.0, 500.0);
             DatabaseClient.set("contribution:" + user.getFiscalCode(), JsonbBuilder.create().toJson(contribution));
-            
-            // Aggiorna il conteggio degli utenti
             String userCountStr = DatabaseClient.get("stats:userCount");
             int userCount = userCountStr != null && !userCountStr.equals("null") ? Integer.parseInt(userCountStr) : 0;
             DatabaseClient.set("stats:userCount", String.valueOf(userCount + 1));
-            
-            // Aggiorna il totale contributi disponibili
             String totalAvailableStr = DatabaseClient.get("stats:totalAvailable");
             double totalAvailable = totalAvailableStr != null && !totalAvailableStr.equals("null") ? 
                 Double.parseDouble(totalAvailableStr) : 0.0;
             DatabaseClient.set("stats:totalAvailable", String.valueOf(totalAvailable + 500.0));
-            
             return Response.created(URI.create("/api/users/" + user.getFiscalCode())).entity(user).build();
         } catch (IOException e) {
-            return Response.serverError().entity("Error communicating with database: " + e.getMessage()).build();
+            return Response.serverError().entity("Errore di comunicazione col database: " + e.getMessage()).build();
         }
     }
 
@@ -69,15 +56,13 @@ public class UserResource {
     public Response getUser(@PathParam("fiscalCode") String fiscalCode) {
         try {
             String userJson = DatabaseClient.get("user:" + fiscalCode);
-            
             if (userJson == null || userJson.equals("null")) {
-                return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Utente non trovato").build();
             }
-            
             User user = JsonbBuilder.create().fromJson(userJson, User.class);
             return Response.ok(user).build();
         } catch (IOException e) {
-            return Response.serverError().entity("Error communicating with database: " + e.getMessage()).build();
+            return Response.serverError().entity("Errore di comunicazione col database: " + e.getMessage()).build();
         }
     }
 
@@ -90,15 +75,13 @@ public class UserResource {
     public Response getUserContribution(@PathParam("userId") String userId) {
         try {
             String contributionJson = DatabaseClient.get("contribution:" + userId);
-            
             if (contributionJson == null || contributionJson.equals("null")) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Contribution not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Contributo non trovato").build();
             }
-            
             UserContribution contribution = JsonbBuilder.create().fromJson(contributionJson, UserContribution.class);
             return Response.ok(contribution).build();
         } catch (IOException e) {
-            return Response.serverError().entity("Error communicating with database: " + e.getMessage()).build();
+            return Response.serverError().entity("Errore di comunicazione col database: " + e.getMessage()).build();
         }
     }
 
@@ -110,13 +93,10 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserVouchers(@PathParam("userId") String userId) {
         try {
-            // Recupera i buoni dell'utente dal database
             String vouchersCountStr = DatabaseClient.get("vouchersCount:" + userId);
             int vouchersCount = vouchersCountStr != null && !vouchersCountStr.equals("null") ? 
                 Integer.parseInt(vouchersCountStr) : 0;
-            
             Voucher[] vouchers = new Voucher[vouchersCount];
-            
             for (int i = 0; i < vouchersCount; i++) {
                 String voucherId = DatabaseClient.get("voucherIdByIndex:" + userId + ":" + i);
                 if (voucherId != null && !voucherId.equals("null")) {
@@ -126,10 +106,9 @@ public class UserResource {
                     }
                 }
             }
-            
             return Response.ok(vouchers).build();
         } catch (IOException e) {
-            return Response.serverError().entity("Error communicating with database: " + e.getMessage()).build();
+            return Response.serverError().entity("Errore di comunicazione col database: " + e.getMessage()).build();
         }
     }
 }

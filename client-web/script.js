@@ -1,26 +1,26 @@
-// Main JavaScript file for the client application
-console.log("Client-web script loaded.");
 
-const API_BASE_URL = 'http://localhost:8080'; // Assuming the backend runs on port 8080
+console.log("Script client-web caricato.");
+
+const API_BASE_URL = 'http://localhost:8080'; 
 let currentFiscalCode = null;
 
 /**
- * Displays a message in a specified element, optionally styling it as an error.
- * @param {string} elementId - The ID of the HTML element to display the message in.
- * @param {string} message - The message to display.
- * @param {boolean} isError - Whether the message represents an error.
+ * Mostra un messaggio in un elemento specificato, opzionalmente stilizzandolo come errore.
+ * @param {string} elementId - L'ID dell'elemento HTML in cui mostrare il messaggio.
+ * @param {string} message - Il messaggio da mostrare.
+ * @param {boolean} isError - Se il messaggio rappresenta un errore.
  */
 function displayMessage(elementId, message, isError = false) {
     const element = document.getElementById(elementId);
     if (element) {
         element.textContent = message;
         element.style.color = isError ? 'red' : 'green';
-        element.style.display = message ? 'block' : 'none'; // Show or hide based on message
+        element.style.display = message ? 'block' : 'none'; 
     }
 }
 
 /**
- * Handles the user registration process.
+ * Gestisce il processo di registrazione utente.
  */
 async function handleRegisterUser() {
     const name = document.getElementById('regName').value;
@@ -28,7 +28,7 @@ async function handleRegisterUser() {
     const email = document.getElementById('regEmail').value;
     const fiscalCode = document.getElementById('regFiscalCode').value;
 
-    displayMessage('registrationStatus', '', false); // Clear previous messages
+    displayMessage('registrationStatus', '', false); 
 
     if (!name || !surname || !email || !fiscalCode) {
         displayMessage('registrationStatus', 'Tutti i campi sono obbligatori.', true);
@@ -65,8 +65,8 @@ async function handleRegisterUser() {
 }
 
 /**
- * Loads and displays the contribution status for a given fiscal code.
- * @param {string} fiscalCode - The fiscal code of the user.
+ * Carica e mostra lo stato del contributo per un dato codice fiscale.
+ * @param {string} fiscalCode - Il codice fiscale dell'utente.
  */
 async function loadUserContribution(fiscalCode) {
     if (!fiscalCode) return;
@@ -93,9 +93,8 @@ async function loadUserContribution(fiscalCode) {
     }
 }
 
-
 /**
- * Handles the user lookup and contribution status retrieval.
+ * Gestisce la ricerca utente e il recupero dello stato del contributo.
  */
 async function handleLookupUser() {
     const fiscalCodeInput = document.getElementById('lookupFiscalCode').value;
@@ -145,7 +144,7 @@ async function handleLookupUser() {
 }
 
 /**
- * Loads and displays vouchers for the current user.
+ * Carica e mostra i buoni per l'utente corrente.
  */
 async function loadUserVouchers() {
     const voucherListDiv = document.getElementById('voucherList');
@@ -204,7 +203,7 @@ async function loadUserVouchers() {
 }
 
 /**
- * Handles the generation of a new voucher.
+ * Gestisce la generazione di un nuovo buono.
  */
 async function handleGenerateVoucher() {
     const amountInput = document.getElementById('voucherAmount');
@@ -255,8 +254,8 @@ async function handleGenerateVoucher() {
 }
 
 /**
- * Handles consuming a voucher.
- * @param {Event} event - The click event from the consume button.
+ * Gestisce il consumo di un buono.
+ * @param {Event} event - L'evento click dal pulsante "consuma".
  */
 async function handleConsumeVoucher(event) {
     const voucherId = event.target.dataset.voucherId;
@@ -293,8 +292,8 @@ async function handleConsumeVoucher(event) {
 }
 
 /**
- * Handles deleting a voucher.
- * @param {Event} event - The click event from the delete button.
+ * Gestisce l'eliminazione di un buono.
+ * @param {Event} event - L'evento click dal pulsante "cancella".
  */
 async function handleDeleteVoucher(event) {
     const voucherId = event.target.dataset.voucherId;
@@ -333,8 +332,8 @@ async function handleDeleteVoucher(event) {
 }
 
 /**
- * Handles modifying a voucher's category.
- * @param {Event} event - The click event from the modify button.
+ * Gestisce la modifica della categoria di un buono.
+ * @param {Event} event - L'evento click dal pulsante "modifica".
  */
 async function handleModifyVoucherCategory(event) {
     const voucherId = event.target.dataset.voucherId;
@@ -387,7 +386,7 @@ async function handleModifyVoucherCategory(event) {
 }
 
 /**
- * Fetches and displays global system statistics.
+ * Recupera e mostra le statistiche globali del sistema.
  */
 async function fetchAndDisplaySystemStats() {
     displayMessage('systemStatsStatus', 'Caricamento statistiche...', false);
@@ -403,7 +402,7 @@ async function fetchAndDisplaySystemStats() {
             document.getElementById('statsTotalVouchersGenerated').textContent = stats.totalVouchersGenerated;
             document.getElementById('statsTotalVouchersConsumed').textContent = stats.totalVouchersConsumed;
 
-            displayMessage('systemStatsStatus', '', false); // Clear loading/error message
+            displayMessage('systemStatsStatus', '', false); 
         } else {
             displayMessage('systemStatsStatus', `Errore nel caricamento delle statistiche: ${response.statusText} (Code: ${response.status})`, true);
         }
@@ -415,19 +414,19 @@ async function fetchAndDisplaySystemStats() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // User registration
+    // Registrazione utente
     const registerUserBtn = document.getElementById('registerUserBtn');
     if (registerUserBtn) {
         registerUserBtn.addEventListener('click', handleRegisterUser);
     }
 
-    // User lookup
+    // Ricerca utente
     const lookupUserBtn = document.getElementById('lookupUserBtn');
     if (lookupUserBtn) {
         lookupUserBtn.addEventListener('click', handleLookupUser);
     }
 
-    // Generate voucher
+    // Generazione buono
     const generateVoucherBtn = document.getElementById('generateVoucherBtn');
     if (generateVoucherBtn) {
         generateVoucherBtn.addEventListener('click', handleGenerateVoucher);
@@ -436,8 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const voucherManagementSection = document.getElementById('voucherManagement');
     if (voucherManagementSection) voucherManagementSection.style.display = 'none';
 
-
-    // Event delegation for voucher actions
+    // Delegazione eventi per le azioni sui buoni
     const voucherListDiv = document.getElementById('voucherList');
     if (voucherListDiv) {
         voucherListDiv.addEventListener('click', function (event) {
@@ -451,11 +449,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // System Statistics
+    // Statistiche di sistema
     const refreshStatsBtn = document.getElementById('refreshStatsBtn');
     if (refreshStatsBtn) {
         refreshStatsBtn.addEventListener('click', fetchAndDisplaySystemStats);
     }
-    // Initial load of system statistics
+    // Caricamento iniziale delle statistiche di sistema
     fetchAndDisplaySystemStats();
 });

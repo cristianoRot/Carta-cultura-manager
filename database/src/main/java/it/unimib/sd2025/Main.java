@@ -1,4 +1,3 @@
-
 package it.unimib.sd2025;
 
 import java.net.*;
@@ -72,10 +71,10 @@ public class Main {
         }
 
         if (loadedFromClasspath) {
-            return; // Data loaded from classpath, skip other methods
+            return; 
         }
 
-        // Fallback to file system loading
+        
         System.out.println("Attempting to load initial data from file system (initial_data.txt)...");
         try {
             File file = new File("initial_data.txt");
@@ -98,7 +97,7 @@ public class Main {
             System.err.println("Error loading initial data from file system: " + e.getMessage());
         }
         
-        // If neither classpath nor file system loading worked, initialize default stats
+        
         System.out.println("No initial data file found. Initializing default empty statistics.");
         store.put("stats:userCount", "0");
         store.put("stats:totalAvailable", "0.0");

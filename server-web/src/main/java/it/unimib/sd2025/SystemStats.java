@@ -1,4 +1,3 @@
-
 package it.unimib.sd2025;
 
 /**
@@ -12,7 +11,6 @@ public class SystemStats {
     private int totalVouchersGenerated;
     private int totalVouchersConsumed;
 
-    // Costruttore vuoto richiesto per la deserializzazione JSON
     public SystemStats() {}
 
     public SystemStats(int totalUsers, double totalContributionAvailable, 
@@ -26,7 +24,6 @@ public class SystemStats {
         this.totalVouchersConsumed = totalVouchersConsumed;
     }
 
-    // Getter e setter
     public int getTotalUsers() {
         return totalUsers;
     }

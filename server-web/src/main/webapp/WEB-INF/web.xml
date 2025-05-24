@@ -8,25 +8,15 @@
 
     <servlet>
         <servlet-name>jakarta.ws.rs.core.Application</servlet-name>
-        <!--
-            No <init-param> for Application class is needed if using automatic scanning
-            or if a custom Application class is annotated with @ApplicationPath.
-            The JAX-RS resources are in it.unimib.sd2025.
-            Jersey will scan for JAX-RS annotations.
-        -->
     </servlet>
 
     <servlet-mapping>
         <servlet-name>jakarta.ws.rs.core.Application</servlet-name>
         <url-pattern>/*</url-pattern>
-        <!-- All requests will be routed through Jersey.
-             The @Path annotations on resource classes (e.g., @Path("api/users"))
-             will then determine how requests are handled. -->
     </servlet-mapping>
 
-    <!-- Optional: Session configuration if needed, default is usually fine -->
     <session-config>
-        <session-timeout>30</session-timeout> <!-- minutes -->
+        <session-timeout>30</session-timeout> 
     </session-config>
 
 </web-app>

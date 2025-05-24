@@ -6,6 +6,9 @@ import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 
+/**
+ * Filtro per abilitare il CORS sulle risorse REST.
+ */
 @Provider
 public class CORSFilter implements ContainerResponseFilter {
     @Override

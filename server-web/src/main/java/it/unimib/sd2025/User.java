@@ -1,4 +1,3 @@
-
 package it.unimib.sd2025;
 
 /**
@@ -11,7 +10,6 @@ public class User {
     private String email;
     private String fiscalCode;
 
-    // Costruttore vuoto richiesto per la deserializzazione JSON
     public User() {}
 
     public User(String id, String name, String surname, String email, String fiscalCode) {
@@ -22,7 +20,6 @@ public class User {
         this.fiscalCode = fiscalCode;
     }
 
-    // Getter e setter
     public String getId() {
         return id;
     }

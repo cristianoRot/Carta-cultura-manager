@@ -1,0 +1,8 @@
+# Escludi tutte le cartelle di build Maven/Java
+**/target/
+
+# File di sistema
+.DS_Store
+
+# Altri file temporanei comuni
+*.log 

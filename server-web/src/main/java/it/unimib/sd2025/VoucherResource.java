@@ -117,10 +117,10 @@ public class VoucherResource {
                     .build();
         }
 
-        ReentrantLock userLock = getUserLock(initialVoucher.getUserId()); // Lock based on user who owns the voucher
+        ReentrantLock userLock = getUserLock(initialVoucher.getUserId()); 
         userLock.lock();
         try {
-            // Re-fetch voucher details inside the lock
+            
             String voucherJson = DatabaseClient.get("voucher:" + voucherId);
             if (voucherJson == null || voucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found").build();
@@ -160,7 +160,7 @@ public class VoucherResource {
         String initialVoucherJson;
         Voucher initialVoucher;
         try {
-            // Initial fetch to get userId
+           
             initialVoucherJson = DatabaseClient.get("voucher:" + voucherId);
             if (initialVoucherJson == null || initialVoucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found (initial fetch)").build();
@@ -174,7 +174,7 @@ public class VoucherResource {
         ReentrantLock userLock = getUserLock(initialVoucher.getUserId());
         userLock.lock();
         try {
-            // Re-fetch voucher details inside the lock
+            
             String voucherJson = DatabaseClient.get("voucher:" + voucherId);
             if (voucherJson == null || voucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found").build();
@@ -244,7 +244,7 @@ public class VoucherResource {
         String initialVoucherJson;
         Voucher initialVoucher;
         try {
-            // Initial fetch to get userId
+           
             initialVoucherJson = DatabaseClient.get("voucher:" + voucherId);
             if (initialVoucherJson == null || initialVoucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found (initial fetch)").build();
@@ -258,7 +258,7 @@ public class VoucherResource {
         ReentrantLock userLock = getUserLock(initialVoucher.getUserId());
         userLock.lock();
         try {
-            // Re-fetch voucher details inside the lock
+            
             String voucherJson = DatabaseClient.get("voucher:" + voucherId);
             if (voucherJson == null || voucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found").build();
@@ -282,7 +282,7 @@ public class VoucherResource {
 
             DatabaseClient.set("contribution:" + voucher.getUserId(), JsonbBuilder.create().toJson(contribution));
 
-            // Logic for updating voucher indices (shift-on-delete)
+            
             String userId = voucher.getUserId();
             String vouchersCountStr = DatabaseClient.get("vouchersCount:" + userId);
             int currentVoucherCount = 0;
@@ -290,8 +290,6 @@ public class VoucherResource {
                 try {
                     currentVoucherCount = Integer.parseInt(vouchersCountStr);
                 } catch (NumberFormatException e) {
-                    // Log error or handle inconsistency
-                    // For now, proceed, but this indicates a problem
                 }
             }
 
@@ -313,20 +311,19 @@ public class VoucherResource {
                         if (nextVoucherId != null && !nextVoucherId.equals("null")) {
                             DatabaseClient.set("voucherIdByIndex:" + userId + ":" + i, nextVoucherId);
                         } else {
-                            // Inconsistency: next voucher ID is null, delete current index
+                            
                             DatabaseClient.delete("voucherIdByIndex:" + userId + ":" + i);
                         }
                     }
-                    // Delete the last index entry
+                    
                     DatabaseClient.delete("voucherIdByIndex:" + userId + ":" + (currentVoucherCount - 1));
-                    // Decrement the total count
+                    
                     DatabaseClient.set("vouchersCount:" + userId, String.valueOf(currentVoucherCount - 1));
                 } else {
-                    // Voucher not found in index - inconsistency
-                    // Log error or handle as appropriate
+                   
                 }
             }
-            // End of index update logic
+            
 
             // Elimina il buono
             DatabaseClient.delete("voucher:" + voucherId);

@@ -13,7 +13,6 @@ public class DatabaseClient {
 
     /**
      * Esegue un comando sul database.
-     * 
      * @param command Stringa del comando da eseguire
      * @return Risposta dal database
      */
@@ -21,23 +20,16 @@ public class DatabaseClient {
         try (Socket socket = new Socket(DB_HOST, DB_PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
-            // Invia il comando
             out.println(command);
-            
-            // Leggi la risposta
             String response = in.readLine();
-            
-            // Chiudi la connessione
             out.println(".");
-            in.readLine(); // Leggi il "bye" di risposta
+            in.readLine();
             return response;
         }
     }
 
     /**
      * Recupera un valore dal database.
-     * 
      * @param key Chiave da recuperare
      * @return Valore associato alla chiave
      */
@@ -47,7 +39,6 @@ public class DatabaseClient {
 
     /**
      * Imposta un valore nel database.
-     * 
      * @param key   Chiave da impostare
      * @param value Valore da associare alla chiave
      * @return Risposta dal database
@@ -58,7 +49,6 @@ public class DatabaseClient {
 
     /**
      * Elimina una chiave dal database.
-     * 
      * @param key Chiave da eliminare
      * @return Risposta dal database
      */
@@ -68,7 +58,6 @@ public class DatabaseClient {
 
     /**
      * Verifica se una chiave esiste nel database.
-     * 
      * @param key Chiave da verificare
      * @return true se la chiave esiste, false altrimenti
      */

@@ -1,4 +1,3 @@
-
 package it.unimib.sd2025;
 
 /**
@@ -7,14 +6,12 @@ package it.unimib.sd2025;
 public class UpdateVoucherRequest {
     private String category;
 
-    // Costruttore vuoto richiesto per la deserializzazione JSON
     public UpdateVoucherRequest() {}
 
     public UpdateVoucherRequest(String category) {
         this.category = category;
     }
 
-    // Getter e setter
     public String getCategory() {
         return category;
     }

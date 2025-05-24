@@ -1,4 +1,3 @@
-
 package it.unimib.sd2025;
 
 /**
@@ -11,7 +10,6 @@ public class UserContribution {
     private double spent;
     private double total;
 
-    // Costruttore vuoto richiesto per la deserializzazione JSON
     public UserContribution() {}
 
     public UserContribution(String userId, double available, double allocated, double spent, double total) {
@@ -22,7 +20,6 @@ public class UserContribution {
         this.total = total;
     }
 
-    // Getter e setter
     public String getUserId() {
         return userId;
     }

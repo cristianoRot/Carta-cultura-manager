@@ -2,7 +2,7 @@
    FONT E BODY GENERALE
    ====================== */
 
-/* Importa un font moderno */
+/* Importa font  */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 /* ======================
@@ -152,7 +152,6 @@ button:hover {
    ====================== */
 
 #voucherManagement {
-    /* Styles for the voucher management section if needed */
 }
 
 #voucherList {
@@ -217,7 +216,6 @@ button:hover {
    ====================== */
 
 #systemStatusSection {
-    /* Styles for the system status section if needed */
 }
 
 #systemStatsDisplay p {
@@ -232,7 +230,6 @@ button:hover {
 #refreshStatsBtn {
     margin-bottom: 15px;
     background-color: #17a2b8;
-    /* Info Blue */
 }
 
 #refreshStatsBtn:hover {
@@ -242,12 +239,6 @@ button:hover {
 /* ======================
    UTILITY E ANIMAZIONI
    ====================== */
-
-/* Utility class for error messages - già definita in script.js per il colore */
-/* .error-message { color: red; font-weight: bold; } */
-
-/* Utility class for success messages - già definita in script.js per il colore */
-/* .success-message { color: green; font-weight: bold; } */
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(30px);}
