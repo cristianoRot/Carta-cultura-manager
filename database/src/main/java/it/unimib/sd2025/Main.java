@@ -3,53 +3,34 @@ package it.unimib.sd2025;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Database chiave-valore in-memory che comunica attraverso socket TCP.
- */
 public class Main {
-    /**
-     * Porta di ascolto.
-     */
     public static final int PORT = 3030;
-
-    /**
-     * Store chiave-valore in memoria
-     */
-    private static final Map<String, String> store = new ConcurrentHashMap<>();
-    
-    /**
-     * Lock per operazioni che richiedono atomicità
-     */
-    private static final Map<String, ReentrantLock> keyLocks = new ConcurrentHashMap<>();
-
-    /**
-     * Avvia il database e l'ascolto di nuove connessioni.
-     */
+    private static final Map<String, String> database = new HashMap<>();
     public static void startServer() throws IOException {
         var server = new ServerSocket(PORT);
         
-        // Carica alcuni dati di test
-        loadInitialData();
+        LoadData();
 
         System.out.println("Database listening at localhost:" + PORT);
 
-        try {
+        try 
+        {
             while (true)
+            {
                 new Handler(server.accept()).start();
-        } catch (IOException e) {
+            }
+        } 
+        catch (IOException e) 
+        {
             System.err.println(e);
-        } finally {
+        } 
+        finally {
             server.close();
         }
     }
 
-    /**
-     * Carica alcuni dati iniziali di test nel database.
-     */
-    private static void loadInitialData() {
+    private static void LoadData() {
         boolean loadedFromClasspath = false;
         try (InputStream is = Main.class.getClassLoader().getResourceAsStream("initial_data.txt")) {
             if (is != null) {
@@ -59,7 +40,7 @@ public class Main {
                     while ((line = reader.readLine()) != null) {
                         String[] parts = line.split("=", 2);
                         if (parts.length == 2) {
-                            store.put(parts[0].trim(), parts[1].trim());
+                            database.put(parts[0].trim(), parts[1].trim());
                         }
                     }
                     System.out.println("Initial data loaded successfully from classpath.");
@@ -84,7 +65,7 @@ public class Main {
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split("=", 2);
                     if (parts.length == 2) {
-                        store.put(parts[0].trim(), parts[1].trim());
+                        database.put(parts[0].trim(), parts[1].trim());
                     }
                 }
                 reader.close();
@@ -99,27 +80,16 @@ public class Main {
         
         
         System.out.println("No initial data file found. Initializing default empty statistics.");
-        store.put("stats:userCount", "0");
-        store.put("stats:totalAvailable", "0.0");
-        store.put("stats:totalAllocated", "0.0");
-        store.put("stats:totalSpent", "0.0");
-        store.put("stats:totalVouchers", "0");
-        store.put("stats:vouchersConsumed", "0");
+        database.put("stats:userCount", "0");
+        database.put("stats:totalAvailable", "0.0");
+        database.put("stats:totalAllocated", "0.0");
+        database.put("stats:totalSpent", "0.0");
+        database.put("stats:totalVouchers", "0");
+        database.put("stats:vouchersConsumed", "0");
         
         System.out.println("Default empty statistics initialized.");
     }
 
-    /**
-     * Ottiene un lock per una specifica chiave.
-     */
-    private static ReentrantLock getLockForKey(String key) {
-        keyLocks.putIfAbsent(key, new ReentrantLock());
-        return keyLocks.get(key);
-    }
-
-    /**
-     * Handler di una connessione del client.
-     */
     private static class Handler extends Thread {
         private Socket client;
 
@@ -140,7 +110,7 @@ public class Main {
                         break;
                     }
                     
-                    String response = processCommand(inputLine);
+                    String response = HandleRequest(inputLine);
                     out.println(response);
                 }
 
@@ -152,10 +122,7 @@ public class Main {
             }
         }
 
-        /**
-         * Processa un comando dal client.
-         */
-        private String processCommand(String command) {
+        private String HandleRequest(String command) {
             String[] parts = command.split(" ", 3);
             String cmd = parts[0].toUpperCase();
             
@@ -163,19 +130,19 @@ public class Main {
                 switch (cmd) {
                     case "GET":
                         if (parts.length < 2) return "ERR missing key";
-                        return get(parts[1]);
+                        return GetValue(parts[1]);
                         
                     case "SET":
                         if (parts.length < 3) return "ERR missing key or value";
-                        return set(parts[1], parts[2]);
+                        return SetValue(parts[1], parts[2]);
                         
                     case "DEL":
                         if (parts.length < 2) return "ERR missing key";
-                        return delete(parts[1]);
+                        return DeleteValue(parts[1]);
                         
                     case "EXISTS":
                         if (parts.length < 2) return "ERR missing key";
-                        return exists(parts[1]);
+                        return ValueExists(parts[1]);
                         
                     default:
                         return "ERR unknown command '" + cmd + "'";
@@ -185,50 +152,47 @@ public class Main {
             }
         }
 
-        /**
-         * Esegue il comando GET.
-         */
-        private String get(String key) {
-            return store.getOrDefault(key, "null");
-        }
-
-        /**
-         * Esegue il comando SET.
-         */
-        private String set(String key, String value) {
-            ReentrantLock lock = getLockForKey(key);
-            lock.lock();
-            try {
-                store.put(key, value);
-                return "OK";
-            } finally {
-                lock.unlock();
+        private String GetValue(String key) 
+        {
+            synchronized(database) {
+                return database.get(key);
             }
         }
 
-        /**
-         * Esegue il comando DEL.
-         */
-        private String delete(String key) {
-            ReentrantLock lock = getLockForKey(key);
-            lock.lock();
+        private String SetValue(String key, String value) 
+        {
             try {
-                if (store.containsKey(key)) {
-                    store.remove(key);
-                    return "1";
-                } else {
-                    return "0";
+                synchronized(database) {
+                     database.put(key, value);
                 }
-            } finally {
-                lock.unlock();
+                return "OK";
+            } catch (Exception e) {
+                System.err.println("Error setting value: " + e.getMessage());
+                return "ERR";
             }
         }
 
-        /**
-         * Esegue il comando EXISTS.
-         */
-        private String exists(String key) {
-            return store.containsKey(key) ? "1" : "0";
+        private String DeleteValue(String key) 
+        {
+            try {
+                synchronized (database) {
+                    if (database.containsKey(key)) {
+                        database.remove(key);
+                        return "1";
+                    } else {
+                        return "0";
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error deleting value: " + e.getMessage());
+                return "ERR";
+            }
+        }
+
+        private String ValueExists(String key) {
+            synchronized (database) {
+                return database.containsKey(key) ? "1" : "0";
+            }
         }
     }
 
