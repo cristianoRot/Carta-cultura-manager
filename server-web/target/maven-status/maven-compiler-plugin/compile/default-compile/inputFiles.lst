@@ -1,11 +1,14 @@
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/SystemResource.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/VoucherResource.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/Voucher.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/User.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/UserResource.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/SystemStats.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/CreateVoucherRequest.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/DatabaseClient.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/CORSFilter.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/UpdateVoucherRequest.java
-/Users/alessandrorutigliano/Desktop/Uni/2 anno/Sistemi Distribuiti/carta-cultura-manager/server-web/src/main/java/it/unimib/sd2025/UserContribution.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/DatabaseClient.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/ExampleResource.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/SystemResource.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/UserContribution.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/UpdateVoucherRequest.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/VoucherResource.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/CreateVoucherRequest.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/SystemStats.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/UserResource.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/CORSFilter.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/Voucher.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/JsonException.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/JsonParsingException.java
+/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/server-web/src/main/java/it/unimib/sd2025/User.java
