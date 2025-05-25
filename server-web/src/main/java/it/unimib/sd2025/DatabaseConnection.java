@@ -2,12 +2,11 @@ package it.unimib.sd2025;
 
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Client per comunicare con il database tramite socket TCP.
  */
-public class DatabaseClient {
+public class DatabaseConnection {
     private static final String DB_HOST = "localhost";
     private static final int DB_PORT = 3030;
 

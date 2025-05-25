@@ -30,24 +30,24 @@ public class UserResource {
 
             user.setId(UUID.randomUUID().toString());
 
-            if (DatabaseClient.exists("user:" + user.getFiscalCode())) 
+            if (DatabaseConnection.exists("user:" + user.getFiscalCode())) 
             {
                 return Response.status(Response.Status.CONFLICT)
                     .entity("User with fiscal code " + user.getFiscalCode() + " already exists.").build();
             }
 
-            DatabaseClient.set("user:" + user.getFiscalCode(), JsonbBuilder.create().toJson(user));
+            DatabaseConnection.set("user:" + user.getFiscalCode(), JsonbBuilder.create().toJson(user));
 
             UserContribution contribution = new UserContribution(user.getFiscalCode(), 500.0, 0.0, 0.0, 500.0);
-            DatabaseClient.set("contribution:" + user.getFiscalCode(), JsonbBuilder.create().toJson(contribution));
+            DatabaseConnection.set("contribution:" + user.getFiscalCode(), JsonbBuilder.create().toJson(contribution));
 
-            String userCountStr = DatabaseClient.get("stats:userCount");
+            String userCountStr = DatabaseConnection.get("stats:userCount");
             int userCount = userCountStr != null && !userCountStr.equals("null") ? Integer.parseInt(userCountStr) : 0;
-            DatabaseClient.set("stats:userCount", String.valueOf(userCount + 1));
+            DatabaseConnection.set("stats:userCount", String.valueOf(userCount + 1));
 
-            String totalAvailableStr = DatabaseClient.get("stats:totalAvailable");
+            String totalAvailableStr = DatabaseConnection.get("stats:totalAvailable");
             double totalAvailable = totalAvailableStr != null && !totalAvailableStr.equals("null") ? Double.parseDouble(totalAvailableStr) : 0.0;
-            DatabaseClient.set("stats:totalAvailable", String.valueOf(totalAvailable + 500.0));
+            DatabaseConnection.set("stats:totalAvailable", String.valueOf(totalAvailable + 500.0));
 
             try
             {
@@ -72,7 +72,7 @@ public class UserResource {
     {
         try 
         {
-            String userJson = DatabaseClient.get("user:" + fiscalCode);
+            String userJson = DatabaseConnection.get("user:" + fiscalCode);
 
             if (userJson == null || userJson.equals("null")) 
             {
@@ -96,7 +96,7 @@ public class UserResource {
     {
         try 
         {
-            String contributionJson = DatabaseClient.get("contribution:" + userId);
+            String contributionJson = DatabaseConnection.get("contribution:" + userId);
 
             if (contributionJson == null || contributionJson.equals("null")) 
             {
@@ -119,18 +119,18 @@ public class UserResource {
     {
         try 
         {
-            String vouchersCountStr = DatabaseClient.get("vouchersCount:" + userId);
+            String vouchersCountStr = DatabaseConnection.get("vouchersCount:" + userId);
             int vouchersCount = vouchersCountStr == null || vouchersCountStr.equals("null") ? 0 : Integer.parseInt(vouchersCountStr);
 
             Voucher[] vouchers = new Voucher[vouchersCount];
 
             for (int i = 0; i < vouchersCount; i++) 
             {
-                String voucherId = DatabaseClient.get("voucherIdByIndex:" + userId + ":" + i);
+                String voucherId = DatabaseConnection.get("voucherIdByIndex:" + userId + ":" + i);
 
                 if (voucherId != null && !voucherId.equals("null")) 
                 {
-                    String voucherJson = DatabaseClient.get("voucher:" + voucherId);
+                    String voucherJson = DatabaseConnection.get("voucher:" + voucherId);
 
                     if (voucherJson != null && !voucherJson.equals("null")) 
                     {
