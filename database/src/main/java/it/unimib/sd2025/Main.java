@@ -7,6 +7,7 @@ import java.util.*;
 public class Main {
     public static final int PORT = 3030;
     private static final Map<String, String> database = new HashMap<>();
+    
     public static void startServer() throws IOException {
         var server = new ServerSocket(PORT);
         
