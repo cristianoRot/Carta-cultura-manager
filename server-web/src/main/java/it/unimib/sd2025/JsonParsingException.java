@@ -6,9 +6,6 @@ import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-/**
- * Gestore di eccezioni per errori di parsing JSON (restituisce 400 invece di 500).
- */
 @Provider
 public class JsonParsingException implements ExceptionMapper<ProcessingException> {
   public Response toResponse(ProcessingException ex) {

@@ -14,7 +14,6 @@ import jakarta.ws.rs.core.Response;
  */
 @Path("api/users")
 public class UserResource {
-
     /**
      * Registra un nuovo utente.
      */
