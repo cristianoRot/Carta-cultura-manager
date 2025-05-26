@@ -37,7 +37,7 @@ public class VoucherResource {
         userLock.lock();
         try {
             // Recupera il contributo dell'utente
-            String contributionJson = DatabaseConnection.get("contribution:" + request.getUserId());
+            String contributionJson = DatabaseConnection.Get("contribution:" + request.getUserId());
             if (contributionJson == null || contributionJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("User contribution not found").build();
             }
@@ -70,19 +70,19 @@ public class VoucherResource {
             // Aggiorna il contributo dell'utente
             contribution.setAvailable(contribution.getAvailable() - request.getAmount());
             contribution.setAllocated(contribution.getAllocated() + request.getAmount());
-            DatabaseConnection.set("contribution:" + request.getUserId(), JsonbBuilder.create().toJson(contribution));
+            DatabaseConnection.Set("contribution:" + request.getUserId(), JsonbBuilder.create().toJson(contribution));
 
             // Salva il buono nel database
-            DatabaseConnection.set("voucher:" + voucherId, JsonbBuilder.create().toJson(voucher));
+            DatabaseConnection.Set("voucher:" + voucherId, JsonbBuilder.create().toJson(voucher));
 
             // Aggiorna l'indice dei buoni dell'utente
-            String vouchersCountStr = DatabaseConnection.get("vouchersCount:" + request.getUserId());
+            String vouchersCountStr = DatabaseConnection.Get("vouchersCount:" + request.getUserId());
             int vouchersCount = vouchersCountStr != null && !vouchersCountStr.equals("null")
                     ? Integer.parseInt(vouchersCountStr)
                     : 0;
 
-            DatabaseConnection.set("voucherIdByIndex:" + request.getUserId() + ":" + vouchersCount, voucherId);
-            DatabaseConnection.set("vouchersCount:" + request.getUserId(), String.valueOf(vouchersCount + 1));
+            DatabaseConnection.Set("voucherIdByIndex:" + request.getUserId() + ":" + vouchersCount, voucherId);
+            DatabaseConnection.Set("vouchersCount:" + request.getUserId(), String.valueOf(vouchersCount + 1));
 
             // Aggiorna le statistiche globali
             updateGlobalStats(false, request.getAmount());
@@ -107,7 +107,7 @@ public class VoucherResource {
         Voucher initialVoucher;
         try {
             // Initial fetch to get userId
-            initialVoucherJson = DatabaseConnection.get("voucher:" + voucherId);
+            initialVoucherJson = DatabaseConnection.Get("voucher:" + voucherId);
             if (initialVoucherJson == null || initialVoucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found (initial fetch)").build();
             }
@@ -121,7 +121,7 @@ public class VoucherResource {
         userLock.lock();
         try {
             
-            String voucherJson = DatabaseConnection.get("voucher:" + voucherId);
+            String voucherJson = DatabaseConnection.Get("voucher:" + voucherId);
             if (voucherJson == null || voucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found").build();
             }
@@ -139,7 +139,7 @@ public class VoucherResource {
             voucher.setCategory(request.getCategory());
 
             // Salva il buono aggiornato
-            DatabaseConnection.set("voucher:" + voucherId, JsonbBuilder.create().toJson(voucher));
+            DatabaseConnection.Set("voucher:" + voucherId, JsonbBuilder.create().toJson(voucher));
 
             return Response.ok(voucher).build();
         } catch (IOException e) {
@@ -161,7 +161,7 @@ public class VoucherResource {
         Voucher initialVoucher;
         try {
            
-            initialVoucherJson = DatabaseConnection.get("voucher:" + voucherId);
+            initialVoucherJson = DatabaseConnection.Get("voucher:" + voucherId);
             if (initialVoucherJson == null || initialVoucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found (initial fetch)").build();
             }
@@ -175,7 +175,7 @@ public class VoucherResource {
         userLock.lock();
         try {
             
-            String voucherJson = DatabaseConnection.get("voucher:" + voucherId);
+            String voucherJson = DatabaseConnection.Get("voucher:" + voucherId);
             if (voucherJson == null || voucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found").build();
             }
@@ -194,27 +194,27 @@ public class VoucherResource {
             voucher.setConsumedAt(LocalDateTime.now().format(formatter));
 
             // Salva il buono aggiornato
-            DatabaseConnection.set("voucher:" + voucherId, JsonbBuilder.create().toJson(voucher));
+            DatabaseConnection.Set("voucher:" + voucherId, JsonbBuilder.create().toJson(voucher));
 
             // Aggiorna il contributo dell'utente
-            String contributionJson = DatabaseConnection.get("contribution:" + voucher.getUserId());
+            String contributionJson = DatabaseConnection.Get("contribution:" + voucher.getUserId());
             UserContribution contribution = JsonbBuilder.create().fromJson(contributionJson, UserContribution.class);
 
             contribution.setAllocated(contribution.getAllocated() - voucher.getAmount());
             contribution.setSpent(contribution.getSpent() + voucher.getAmount());
 
-            DatabaseConnection.set("contribution:" + voucher.getUserId(), JsonbBuilder.create().toJson(contribution));
+            DatabaseConnection.Set("contribution:" + voucher.getUserId(), JsonbBuilder.create().toJson(contribution));
 
             // Aggiorna le statistiche globali dei buoni consumati
-            String vouchersConsumedStr = DatabaseConnection.get("stats:vouchersConsumed");
+            String vouchersConsumedStr = DatabaseConnection.Get("stats:vouchersConsumed");
             int vouchersConsumed = vouchersConsumedStr != null && !vouchersConsumedStr.equals("null")
                     ? Integer.parseInt(vouchersConsumedStr)
                     : 0;
-            DatabaseConnection.set("stats:vouchersConsumed", String.valueOf(vouchersConsumed + 1));
+            DatabaseConnection.Set("stats:vouchersConsumed", String.valueOf(vouchersConsumed + 1));
 
             // Aggiorna le statistiche globali dei contributi
-            String totalAllocatedStr = DatabaseConnection.get("stats:totalAllocated");
-            String totalSpentStr = DatabaseConnection.get("stats:totalSpent");
+            String totalAllocatedStr = DatabaseConnection.Get("stats:totalAllocated");
+            String totalSpentStr = DatabaseConnection.Get("stats:totalSpent");
 
             double totalAllocated = totalAllocatedStr != null && !totalAllocatedStr.equals("null")
                     ? Double.parseDouble(totalAllocatedStr)
@@ -223,8 +223,8 @@ public class VoucherResource {
                     ? Double.parseDouble(totalSpentStr)
                     : 0.0;
 
-            DatabaseConnection.set("stats:totalAllocated", String.valueOf(totalAllocated - voucher.getAmount()));
-            DatabaseConnection.set("stats:totalSpent", String.valueOf(totalSpent + voucher.getAmount()));
+            DatabaseConnection.Set("stats:totalAllocated", String.valueOf(totalAllocated - voucher.getAmount()));
+            DatabaseConnection.Set("stats:totalSpent", String.valueOf(totalSpent + voucher.getAmount()));
 
             return Response.ok(voucher).build();
         } catch (IOException e) {
@@ -245,7 +245,7 @@ public class VoucherResource {
         Voucher initialVoucher;
         try {
            
-            initialVoucherJson = DatabaseConnection.get("voucher:" + voucherId);
+            initialVoucherJson = DatabaseConnection.Get("voucher:" + voucherId);
             if (initialVoucherJson == null || initialVoucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found (initial fetch)").build();
             }
@@ -259,7 +259,7 @@ public class VoucherResource {
         userLock.lock();
         try {
             
-            String voucherJson = DatabaseConnection.get("voucher:" + voucherId);
+            String voucherJson = DatabaseConnection.Get("voucher:" + voucherId);
             if (voucherJson == null || voucherJson.equals("null")) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found").build();
             }
@@ -274,17 +274,17 @@ public class VoucherResource {
             }
 
             // Aggiorna il contributo dell'utente
-            String contributionJson = DatabaseConnection.get("contribution:" + voucher.getUserId());
+            String contributionJson = DatabaseConnection.Get("contribution:" + voucher.getUserId());
             UserContribution contribution = JsonbBuilder.create().fromJson(contributionJson, UserContribution.class);
 
             contribution.setAvailable(contribution.getAvailable() + voucher.getAmount());
             contribution.setAllocated(contribution.getAllocated() - voucher.getAmount());
 
-            DatabaseConnection.set("contribution:" + voucher.getUserId(), JsonbBuilder.create().toJson(contribution));
+            DatabaseConnection.Set("contribution:" + voucher.getUserId(), JsonbBuilder.create().toJson(contribution));
 
             
             String userId = voucher.getUserId();
-            String vouchersCountStr = DatabaseConnection.get("vouchersCount:" + userId);
+            String vouchersCountStr = DatabaseConnection.Get("vouchersCount:" + userId);
             int currentVoucherCount = 0;
             if (vouchersCountStr != null && !vouchersCountStr.equals("null")) {
                 try {
@@ -297,7 +297,7 @@ public class VoucherResource {
                 boolean found = false;
                 int deletedIndex = -1;
                 for (int i = 0; i < currentVoucherCount; i++) {
-                    String idAtIndex = DatabaseConnection.get("voucherIdByIndex:" + userId + ":" + i);
+                    String idAtIndex = DatabaseConnection.Get("voucherIdByIndex:" + userId + ":" + i);
                     if (voucherId.equals(idAtIndex)) {
                         found = true;
                         deletedIndex = i;
@@ -307,18 +307,18 @@ public class VoucherResource {
 
                 if (found && deletedIndex != -1) {
                     for (int i = deletedIndex; i < currentVoucherCount - 1; i++) {
-                        String nextVoucherId = DatabaseConnection.get("voucherIdByIndex:" + userId + ":" + (i + 1));
+                        String nextVoucherId = DatabaseConnection.Get("voucherIdByIndex:" + userId + ":" + (i + 1));
                         if (nextVoucherId != null && !nextVoucherId.equals("null")) {
-                            DatabaseConnection.set("voucherIdByIndex:" + userId + ":" + i, nextVoucherId);
+                            DatabaseConnection.Set("voucherIdByIndex:" + userId + ":" + i, nextVoucherId);
                         } else {
                             
-                            DatabaseConnection.delete("voucherIdByIndex:" + userId + ":" + i);
+                            DatabaseConnection.Delete("voucherIdByIndex:" + userId + ":" + i);
                         }
                     }
                     
-                    DatabaseConnection.delete("voucherIdByIndex:" + userId + ":" + (currentVoucherCount - 1));
+                    DatabaseConnection.Delete("voucherIdByIndex:" + userId + ":" + (currentVoucherCount - 1));
                     
-                    DatabaseConnection.set("vouchersCount:" + userId, String.valueOf(currentVoucherCount - 1));
+                    DatabaseConnection.Set("vouchersCount:" + userId, String.valueOf(currentVoucherCount - 1));
                 } else {
                    
                 }
@@ -326,11 +326,11 @@ public class VoucherResource {
             
 
             // Elimina il buono
-            DatabaseConnection.delete("voucher:" + voucherId);
+            DatabaseConnection.Delete("voucher:" + voucherId);
 
             // Aggiorna le statistiche globali
-            String totalAllocatedStr = DatabaseConnection.get("stats:totalAllocated");
-            String totalAvailableStr = DatabaseConnection.get("stats:totalAvailable");
+            String totalAllocatedStr = DatabaseConnection.Get("stats:totalAllocated");
+            String totalAvailableStr = DatabaseConnection.Get("stats:totalAvailable");
 
             double totalAllocated = totalAllocatedStr != null && !totalAllocatedStr.equals("null")
                     ? Double.parseDouble(totalAllocatedStr)
@@ -339,17 +339,17 @@ public class VoucherResource {
                     ? Double.parseDouble(totalAvailableStr)
                     : 0.0;
 
-            DatabaseConnection.set("stats:totalAllocated", String.valueOf(totalAllocated - voucher.getAmount()));
-            DatabaseConnection.set("stats:totalAvailable", String.valueOf(totalAvailable + voucher.getAmount()));
+            DatabaseConnection.Set("stats:totalAllocated", String.valueOf(totalAllocated - voucher.getAmount()));
+            DatabaseConnection.Set("stats:totalAvailable", String.valueOf(totalAvailable + voucher.getAmount()));
 
             // Aggiorna il conteggio dei buoni totali
-            String totalVouchersStr = DatabaseConnection.get("stats:totalVouchers");
+            String totalVouchersStr = DatabaseConnection.Get("stats:totalVouchers");
             int totalVouchers = totalVouchersStr != null && !totalVouchersStr.equals("null")
                     ? Integer.parseInt(totalVouchersStr)
                     : 0;
 
             if (totalVouchers > 0) {
-                DatabaseConnection.set("stats:totalVouchers", String.valueOf(totalVouchers - 1));
+                DatabaseConnection.Set("stats:totalVouchers", String.valueOf(totalVouchers - 1));
             }
 
             return Response.noContent().build();
@@ -366,15 +366,15 @@ public class VoucherResource {
      */
     private void updateGlobalStats(boolean isConsume, double amount) throws IOException {
         // Incrementa il numero totale di buoni
-        String totalVouchersStr = DatabaseConnection.get("stats:totalVouchers");
+        String totalVouchersStr = DatabaseConnection.Get("stats:totalVouchers");
         int totalVouchers = totalVouchersStr != null && !totalVouchersStr.equals("null")
                 ? Integer.parseInt(totalVouchersStr)
                 : 0;
-        DatabaseConnection.set("stats:totalVouchers", String.valueOf(totalVouchers + 1));
+        DatabaseConnection.Set("stats:totalVouchers", String.valueOf(totalVouchers + 1));
 
         // Aggiorna i contributi totali
-        String totalAvailableStr = DatabaseConnection.get("stats:totalAvailable");
-        String totalAllocatedStr = DatabaseConnection.get("stats:totalAllocated");
+        String totalAvailableStr = DatabaseConnection.Get("stats:totalAvailable");
+        String totalAllocatedStr = DatabaseConnection.Get("stats:totalAllocated");
 
         double totalAvailable = totalAvailableStr != null && !totalAvailableStr.equals("null")
                 ? Double.parseDouble(totalAvailableStr)
@@ -383,7 +383,7 @@ public class VoucherResource {
                 ? Double.parseDouble(totalAllocatedStr)
                 : 0.0;
 
-        DatabaseConnection.set("stats:totalAvailable", String.valueOf(totalAvailable - amount));
-        DatabaseConnection.set("stats:totalAllocated", String.valueOf(totalAllocated + amount));
+        DatabaseConnection.Set("stats:totalAvailable", String.valueOf(totalAvailable - amount));
+        DatabaseConnection.Set("stats:totalAllocated", String.valueOf(totalAllocated + amount));
     }
 }

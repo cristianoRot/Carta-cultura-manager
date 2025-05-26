@@ -22,12 +22,12 @@ public class SystemResource {
     public Response getSystemStats() {
         try {
             // Recupera i dati dal database
-            String userCountStr = DatabaseConnection.get("stats:userCount");
-            String totalAvailableStr = DatabaseConnection.get("stats:totalAvailable");
-            String totalAllocatedStr = DatabaseConnection.get("stats:totalAllocated");
-            String totalSpentStr = DatabaseConnection.get("stats:totalSpent");
-            String totalVouchersStr = DatabaseConnection.get("stats:totalVouchers");
-            String vouchersConsumedStr = DatabaseConnection.get("stats:vouchersConsumed");
+            String userCountStr = DatabaseConnection.Get("stats:userCount");
+            String totalAvailableStr = DatabaseConnection.Get("stats:totalAvailable");
+            String totalAllocatedStr = DatabaseConnection.Get("stats:totalAllocated");
+            String totalSpentStr = DatabaseConnection.Get("stats:totalSpent");
+            String totalVouchersStr = DatabaseConnection.Get("stats:totalVouchers");
+            String vouchersConsumedStr = DatabaseConnection.Get("stats:vouchersConsumed");
             
             // Converte i dati nei tipi corretti
             int userCount = userCountStr != null && !userCountStr.equals("null") ? 
