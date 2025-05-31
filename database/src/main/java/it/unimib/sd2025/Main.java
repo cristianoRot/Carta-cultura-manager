@@ -41,34 +41,24 @@ public class Main {
         }
 
         public void run() {
-            try {
-                var out = new PrintWriter(client.getOutputStream(), true);
-                var in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
+            try (var out = new PrintWriter(client.getOutputStream(), true);
+                 var in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
+                
                 String inputLine;
-
                 while ((inputLine = in.readLine()) != null) {
                     if (".".equals(inputLine)) {
                         out.println("bye");
                         break;
                     }
-                    
-                    String response = HandleRequest(inputLine);
-                    out.println(response);
+                    out.println(HandleRequest(inputLine));
                 }
-
-                in.close();
-                out.close();
-                client.close();
             } catch (IOException e) {
-                System.err.println(e);
+                System.err.println("Error handling client: " + e.getMessage());
             }
         }
 
-        private String HandleRequest(String command) 
-        {
+        private String HandleRequest(String command) {
             String[] parts = command.split(" ");
-
             if (parts.length < 2) return "ERR BAD REQUEST";
 
             String cmd = parts[0].toUpperCase();
@@ -80,102 +70,50 @@ public class Main {
 
             String collection = pathParts[0];
             String document = pathParts[1];
-            String parameter = pathParts[2];
-            
-            if (parameter == null)
-                return HandleDocumentRequest(command, document, parameter, value);
-            
-            return HandleParameterRequest(command, collection, document, parameter, value);
+            String parameter = pathParts.length > 2 ? pathParts[2] : null;
+
+            return parameter == null ? 
+                HandleDocumentRequest(cmd, collection, document, value) :
+                HandleParameterRequest(cmd, collection, document, parameter, value);
         }
 
-        private String HandleDocumentRequest(String command, String colKey, String docKey, String value)
-        {
-            Collection collection = null;
-
-            synchronized(database) {
-                collection = database.get(colKey);
-            }
+        private String HandleDocumentRequest(String command, String colKey, String docKey, String value) {
+            Collection collection = GetOrCreateCollection(colKey);
+            if (collection == null) return "ERR INTERNAL ERROR";
 
             switch (command) {
-                case "GET":
-                    if (collection == null) return "null";
-
-                    return collection.Get(docKey).toString();
-                case "SET":
-                    if (collection == null)
-                        collection = CreateNewCollection(colKey);
-
-                    return collection.Set(docKey, value);
-                case "DEL":
-                    if (collection == null) return "null";
-
-                    return collection.Delete(docKey);
-                case "EXISTS":
-                    if (collection == null) return "false";
-
-                    return collection.Exists(docKey);
-                default:
-                    return "ERR BAD REQUEST";
+                case "GET": return collection.Get(docKey).toString();
+                case "SET": return collection.Set(docKey, value);
+                case "DEL": return collection.Delete(docKey);
+                case "EXISTS": return collection.Exists(docKey);
+                default: return "ERR BAD REQUEST";
             }
         }
 
-        private String HandleParameterRequest(String command, String colKey, String docKey, String parmKey, String value)
-        {
-            Collection collection = null;
-            Document document = null;
+        private String HandleParameterRequest(String command, String colKey, String docKey, String parmKey, String value) {
+            Collection collection = GetOrCreateCollection(colKey);
+            if (collection == null) return "ERR INTERNAL ERROR";
 
-            synchronized(database) {
-                collection = database.get(colKey);
+            Document document = collection.Get(docKey);
+            if (document == null && command.equals("SET")) {
+                document = new Document();
+                collection.Set(docKey, document.toString());
             }
-
-            if (collection != null)
-                document = collection.Get(docKey);
+            if (document == null) return "null";
 
             switch (command) {
-                case "GET":
-                    if (collection == null) return "null";
-                    if (document == null) return "null";
-
-                    return document.Get(parmKey);
-                case "SET":
-                    if (collection == null)
-                        collection = CreateNewCollection(colKey);
-
-                    if (document == null)
-                    {
-                        document = new Document();
-                        String res = document.Set(parmKey, value);
-                        collection.Set(docKey, document.toString());
-
-                        return res;
-                    }
-
-                    return document.Set(parmKey, value);
-                case "DEL":
-                    if (collection == null) return "null";
-                    if (document == null) return "null";
-
-                    return document.Delete(parmKey);
-                case "EXISTS":
-                    if (collection == null) return "false";
-                    if (document == null) return "false";
-                    
-                    return document.Exists(parmKey);
-                default:
-                    return "ERR BAD REQUEST";
+                case "GET": return document.Get(parmKey);
+                case "SET": return document.Set(parmKey, value);
+                case "DEL": return document.Delete(parmKey);
+                case "EXISTS": return document.Exists(parmKey);
+                default: return "ERR BAD REQUEST";
             }
         }
 
-        private Collection CreateNewCollection(String key)
-        {
-            Collection collection = new Collection();
-
-            synchronized(database)
-            {
-                database.put(key, collection);
+        private Collection GetOrCreateCollection(String key) {
+            synchronized(database) {
+                return database.computeIfAbsent(key, k -> new Collection());
             }
-
-            return collection;
         }
     }
 

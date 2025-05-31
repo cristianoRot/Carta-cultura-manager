@@ -3,7 +3,7 @@ package it.unimib.sd2025;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Collection implements DbComponentInterface
+public class Collection
 {
     private static final Map<String, Document> collections = new HashMap<>();
 
