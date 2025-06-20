@@ -77,7 +77,7 @@ public class UserResource {
     {
         try 
         {
-            String userJson = DatabaseConnection.Get("users " + fiscalCode);
+            String userJson = DatabaseConnection.Get("users/" + fiscalCode);
 
             if (userJson == null || userJson.equals("null")) 
             {
