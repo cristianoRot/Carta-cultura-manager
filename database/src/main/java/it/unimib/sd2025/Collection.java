@@ -59,7 +59,7 @@ public class Collection
     public String Exists(String key) 
     {
         synchronized (collections) {
-            return collections.containsKey(key) ? "1" : "0";
+            return collections.containsKey(key) ? "true" : "false";
         }
     }
 }

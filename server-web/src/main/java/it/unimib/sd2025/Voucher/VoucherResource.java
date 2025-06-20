@@ -1,4 +1,4 @@
-package it.unimib.sd2025;
+package it.unimib.sd2025.Voucher;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,6 +8,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+import it.unimib.sd2025.System.DatabaseConnection;
+import it.unimib.sd2025.User.UserContribution;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -88,7 +90,7 @@ public class VoucherResource {
             updateGlobalStats(false, request.getAmount());
 
             return Response.created(URI.create("/api/vouchers/" + voucherId)).entity(voucher).build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.serverError().entity("Error communicating with database: " + e.getMessage()).build();
         } finally {
             userLock.unlock();
@@ -112,7 +114,7 @@ public class VoucherResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found (initial fetch)").build();
             }
             initialVoucher = JsonbBuilder.create().fromJson(initialVoucherJson, Voucher.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.serverError().entity("Error communicating with database (initial fetch): " + e.getMessage())
                     .build();
         }
@@ -142,7 +144,7 @@ public class VoucherResource {
             DatabaseConnection.Set("voucher:" + voucherId, JsonbBuilder.create().toJson(voucher));
 
             return Response.ok(voucher).build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.serverError().entity("Error communicating with database (inside lock): " + e.getMessage())
                     .build();
         } finally {
@@ -166,7 +168,7 @@ public class VoucherResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found (initial fetch)").build();
             }
             initialVoucher = JsonbBuilder.create().fromJson(initialVoucherJson, Voucher.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.serverError().entity("Error communicating with database (initial fetch): " + e.getMessage())
                     .build();
         }
@@ -227,7 +229,7 @@ public class VoucherResource {
             DatabaseConnection.Set("stats:totalSpent", String.valueOf(totalSpent + voucher.getAmount()));
 
             return Response.ok(voucher).build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.serverError().entity("Error communicating with database (inside lock): " + e.getMessage())
                     .build();
         } finally {
@@ -250,7 +252,7 @@ public class VoucherResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found (initial fetch)").build();
             }
             initialVoucher = JsonbBuilder.create().fromJson(initialVoucherJson, Voucher.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.serverError().entity("Error communicating with database (initial fetch): " + e.getMessage())
                     .build();
         }
@@ -353,7 +355,7 @@ public class VoucherResource {
             }
 
             return Response.noContent().build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.serverError().entity("Error communicating with database (inside lock): " + e.getMessage())
                     .build();
         } finally {
@@ -364,7 +366,7 @@ public class VoucherResource {
     /**
      * Aggiorna le statistiche globali quando viene creato un buono.
      */
-    private void updateGlobalStats(boolean isConsume, double amount) throws IOException {
+    private void updateGlobalStats(boolean isConsume, double amount) throws Exception {
         // Incrementa il numero totale di buoni
         String totalVouchersStr = DatabaseConnection.Get("stats:totalVouchers");
         int totalVouchers = totalVouchersStr != null && !totalVouchersStr.equals("null")

@@ -1,4 +1,4 @@
-package it.unimib.sd2025;
+package it.unimib.sd2025.Voucher;
 
 /**
  * Classe che rappresenta la richiesta di creazione di un buono.

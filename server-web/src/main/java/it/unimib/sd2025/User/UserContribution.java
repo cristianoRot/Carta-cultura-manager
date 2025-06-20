@@ -1,4 +1,4 @@
-package it.unimib.sd2025;
+package it.unimib.sd2025.User;
 
 /**
  * Classe che rappresenta il contributo di un utente.

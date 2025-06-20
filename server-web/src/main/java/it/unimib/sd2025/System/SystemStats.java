@@ -1,4 +1,4 @@
-package it.unimib.sd2025;
+package it.unimib.sd2025.System;
 
 /**
  * Classe che rappresenta le statistiche globali del sistema.

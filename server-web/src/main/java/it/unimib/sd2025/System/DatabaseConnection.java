@@ -1,9 +1,11 @@
-package it.unimib.sd2025;
+package it.unimib.sd2025.System;
 
-import java.io.*;
+import java.io.OutputStream;
+import java.util.*;
 import java.net.*;
 
-public class DatabaseConnection {
+public class DatabaseConnection 
+{
     private static final String DB_HOST = "localhost";
     private static final int DB_PORT = 3030;
 
@@ -12,15 +14,18 @@ public class DatabaseConnection {
      * @param command Stringa del comando da eseguire
      * @return Risposta dal database
      */
-    private static String executeCommand(String command) throws IOException {
+    private static String executeCommand(String command) throws Exception 
+    {
         try (Socket socket = new Socket(DB_HOST, DB_PORT);
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) 
+            OutputStream out = socket.getOutputStream();
+            Scanner in = new Scanner(socket.getInputStream());
+            )
         {
-            out.println(command);
-            String response = in.readLine();
-            out.println(".");
-            in.readLine();
+            out.write((command + '\n').getBytes());
+
+            String response = in.nextLine();
+            out.write((".\n").getBytes());
+
             return response;
         }
     }
@@ -30,7 +35,7 @@ public class DatabaseConnection {
      * @param path Path della chiave da recuperare
      * @return Valore associato al path
      */
-    public static String Get(String path) throws IOException {
+    public static String Get(String path) throws Exception {
         return executeCommand("GET " + path);
     }
 
@@ -40,7 +45,7 @@ public class DatabaseConnection {
      * @param value Valore da associare al path
      * @return Risposta dal database
      */
-    public static String Set(String path, String value) throws IOException {
+    public static String Set(String path, String value) throws Exception {
         return executeCommand("SET " + path + " " + value);
     }
 
@@ -49,7 +54,7 @@ public class DatabaseConnection {
      * @param path Path della chiave da eliminare
      * @return Risposta dal database
      */
-    public static String Delete(String path) throws IOException {
+    public static String Delete(String path) throws Exception {
         return executeCommand("DEL " + path);
     }
 
@@ -58,8 +63,8 @@ public class DatabaseConnection {
      * @param path Path da verificare
      * @return true se il path esiste, false altrimenti
      */
-    public static boolean Exists(String path) throws IOException {
+    public static boolean Exists(String path) throws Exception {
         String response = executeCommand("EXISTS " + path);
-        return "1".equals(response);
+        return "true".equals(response);
     }
 }

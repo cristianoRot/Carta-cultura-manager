@@ -1,10 +1,10 @@
-package it.unimib.sd2025;
+package it.unimib.sd2025.User;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.UUID;
 
+import it.unimib.sd2025.System.DatabaseConnection;
+import it.unimib.sd2025.Voucher.Voucher;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -28,26 +28,31 @@ public class UserResource {
                 }
 
 
-            user.setId(UUID.randomUUID().toString());
+            user.setId(user.getFiscalCode());
 
-            if (DatabaseConnection.Exists("user:" + user.getFiscalCode())) 
+            if (DatabaseConnection.Exists("users/" + user.getId())) 
             {
                 return Response.status(Response.Status.CONFLICT)
                     .entity("User with fiscal code " + user.getFiscalCode() + " already exists.").build();
             }
 
-            DatabaseConnection.Set("user:" + user.getFiscalCode(), JsonbBuilder.create().toJson(user));
+            DatabaseConnection.Set("users/" + user.getFiscalCode(), JsonbBuilder.create().toJson(user));
 
+            /*
             UserContribution contribution = new UserContribution(user.getFiscalCode(), 500.0, 0.0, 0.0, 500.0);
             DatabaseConnection.Set("contribution:" + user.getFiscalCode(), JsonbBuilder.create().toJson(contribution));
+            */
 
-            String userCountStr = DatabaseConnection.Get("stats:userCount");
+            /* --------------- SBAGLIATO RIFARE -------------
+            String userCountStr = DatabaseConnection.Get("system/stats/userCount");
             int userCount = userCountStr != null && !userCountStr.equals("null") ? Integer.parseInt(userCountStr) : 0;
-            DatabaseConnection.Set("stats:userCount", String.valueOf(userCount + 1));
-
-            String totalAvailableStr = DatabaseConnection.Get("stats:totalAvailable");
+            DatabaseConnection.Set("system/stats/userCount", String.valueOf(userCount + 1));
+            
+            String totalAvailableStr = DatabaseConnection.Get("system/stats/totalAvailable");
             double totalAvailable = totalAvailableStr != null && !totalAvailableStr.equals("null") ? Double.parseDouble(totalAvailableStr) : 0.0;
-            DatabaseConnection.Set("stats:totalAvailable", String.valueOf(totalAvailable + 500.0));
+            DatabaseConnection.Set("system/stats/totalAvailable", String.valueOf(totalAvailable + 500.0));
+
+            */
 
             try
             {
@@ -59,7 +64,7 @@ public class UserResource {
                 return Response.serverError().build();
             }
         } 
-        catch (IOException e) 
+        catch (Exception e) 
         {
             return Response.serverError().build();
         }
@@ -83,7 +88,7 @@ public class UserResource {
 
             return Response.ok(user).build();
         } 
-        catch (IOException e) 
+        catch (Exception e) 
         {
             return Response.serverError().build();
         }
@@ -106,7 +111,7 @@ public class UserResource {
             UserContribution contribution = JsonbBuilder.create().fromJson(contributionJson, UserContribution.class);
             return Response.ok(contribution).build();
         } 
-        catch (IOException e) 
+        catch (Exception e) 
         {
             return Response.serverError().build();
         }
@@ -141,7 +146,7 @@ public class UserResource {
 
             return Response.ok(vouchers).build();
         } 
-        catch (IOException e) {
+        catch (Exception e) {
             return Response.serverError().build();
         }
     }

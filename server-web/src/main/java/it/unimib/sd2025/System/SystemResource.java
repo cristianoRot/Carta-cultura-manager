@@ -1,8 +1,5 @@
-package it.unimib.sd2025;
+package it.unimib.sd2025.System;
 
-import java.io.IOException;
-
-import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -19,17 +16,17 @@ public class SystemResource {
     @GET
     @Path("/stats")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSystemStats() {
-        try {
-            // Recupera i dati dal database
-            String userCountStr = DatabaseConnection.Get("stats:userCount");
-            String totalAvailableStr = DatabaseConnection.Get("stats:totalAvailable");
-            String totalAllocatedStr = DatabaseConnection.Get("stats:totalAllocated");
-            String totalSpentStr = DatabaseConnection.Get("stats:totalSpent");
-            String totalVouchersStr = DatabaseConnection.Get("stats:totalVouchers");
-            String vouchersConsumedStr = DatabaseConnection.Get("stats:vouchersConsumed");
+    public Response getSystemStats() 
+    {
+        try 
+        {
+            String userCountStr = DatabaseConnection.Get("system/stats/userCount");
+            String totalAvailableStr = DatabaseConnection.Get("system/stats/totalAvailable");
+            String totalAllocatedStr = DatabaseConnection.Get("system/stats/totalAllocated");
+            String totalSpentStr = DatabaseConnection.Get("system/stats/totalSpent");
+            String totalVouchersStr = DatabaseConnection.Get("system/stats/totalVouchers");
+            String vouchersConsumedStr = DatabaseConnection.Get("system/stats/vouchersConsumed");
             
-            // Converte i dati nei tipi corretti
             int userCount = userCountStr != null && !userCountStr.equals("null") ? 
                 Integer.parseInt(userCountStr) : 0;
             double totalAvailable = totalAvailableStr != null && !totalAvailableStr.equals("null") ? 
@@ -43,7 +40,6 @@ public class SystemResource {
             int vouchersConsumed = vouchersConsumedStr != null && !vouchersConsumedStr.equals("null") ? 
                 Integer.parseInt(vouchersConsumedStr) : 0;
             
-            // Crea l'oggetto delle statistiche
             SystemStats stats = new SystemStats(
                 userCount,
                 totalAvailable,
@@ -54,7 +50,9 @@ public class SystemResource {
             );
             
             return Response.ok(stats).build();
-        } catch (IOException e) {
+        } 
+        catch (Exception e) 
+        {
             return Response.serverError().entity("Error communicating with database: " + e.getMessage()).build();
         }
     }

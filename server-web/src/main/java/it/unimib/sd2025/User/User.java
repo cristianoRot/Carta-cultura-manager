@@ -1,9 +1,11 @@
-package it.unimib.sd2025;
+package it.unimib.sd2025.User;
 
 /**
  * Classe che rappresenta un utente nel sistema.
  */
-public class User {
+
+public class User 
+{
     private String id;
     private String name;
     private String surname;

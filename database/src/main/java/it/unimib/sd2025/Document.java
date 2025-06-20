@@ -3,15 +3,37 @@ package it.unimib.sd2025;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+import org.json.JSONException;
+
 public class Document
 {
     private static final Map<String, String> document = new HashMap<>();
 
     public Document() {}
 
-    public Document(String value)
+    public Document(String json) 
     {
+        try 
+        {
+            JSONObject jsonObj = new JSONObject(json);
 
+            synchronized (document) 
+            {
+                document.clear();
+                
+                for (String key : jsonObj.keySet()) 
+                {
+                    Object valObj = jsonObj.opt(key);
+                    String value = (valObj != null) ? valObj.toString() : null;
+                    document.put(key, value);
+                }
+            }
+        } 
+        catch (JSONException e) 
+        {
+            System.err.println("Error parsing JSON with org.json: " + e.getMessage());
+        }
     }
 
     public String Get(String key) 
