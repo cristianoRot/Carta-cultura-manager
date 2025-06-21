@@ -113,31 +113,6 @@ public class UserResource {
     }
 
     @GET
-    @Path("/{fiscalCode}/balance")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserBalance(@PathParam("fiscalCode") String fiscalCode) 
-    {
-        try 
-        {
-            double available = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/balance"));
-            double allocated = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/contribAllocated"));
-            double spent = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/contribSpent"));
-            double total = available + allocated + spent;
-
-            String json = String.format(Locale.US,
-                "{\"available\":%.2f,\"allocated\":%.2f,\"spent\":%.2f,\"total\":%.2f}",
-                available, allocated, spent, total
-            );
-
-            return Response.ok(json, MediaType.APPLICATION_JSON).build();
-        } 
-        catch (Exception e) 
-        {
-            return Response.serverError().build();
-        }
-    }
-
-    @GET
     @Path("/{userId}/vouchers")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserVouchers(@PathParam("userId") String userId) 
