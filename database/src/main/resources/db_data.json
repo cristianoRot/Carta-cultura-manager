@@ -1,0 +1,32 @@
+{
+  "users": {
+    "RSSMRA85M01H501U": {
+      "name": "Mario",
+      "surname": "Rossi",
+      "email": "mario.rossi@example.com",
+      "fiscalCode": "RSSMRA85M01H501U"
+    },
+    "VRDLNZ90A01F205X": {
+      "name": "Lorenzo",
+      "surname": "Verdi",
+      "email": "lorenzo.verdi@example.com",
+      "fiscalCode": "VRDLNZ90A01F205X"
+    },
+    "BNCLDI75C22L219Y": {
+      "name": "Lucia",
+      "surname": "Bianchi",
+      "email": "lucia.bianchi@example.com",
+      "fiscalCode": "BNCLDI75C22L219Y"
+    }
+  },
+  "system": {
+    "stats": {
+      "userCount": 3,
+      "totalAvailable": 10000,
+      "totalAllocated": 6000,
+      "totalSpent": 4500,
+      "totalVouchers": 50,
+      "vouchersConsumed": 20
+    }
+  }
+}

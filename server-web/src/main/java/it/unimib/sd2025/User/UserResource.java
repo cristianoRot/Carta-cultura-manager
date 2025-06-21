@@ -27,10 +27,7 @@ public class UserResource {
                     return Response.status(Response.Status.BAD_REQUEST).build();
                 }
 
-
-            user.setId(user.getFiscalCode());
-
-            if (DatabaseConnection.Exists("users/" + user.getId())) 
+            if (DatabaseConnection.Exists("users/" + user.getFiscalCode())) 
             {
                 return Response.status(Response.Status.CONFLICT)
                     .entity("User with fiscal code " + user.getFiscalCode() + " already exists.").build();

@@ -3,6 +3,12 @@ package it.unimib.sd2025;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONArray;
+import java.util.Iterator;
 
 /*
  * Format request:  ACTION collection/document/key value      ( es. SET users/XXXX/name Mario )
@@ -11,6 +17,8 @@ import java.util.*;
 public class Main {
     public static final int PORT = 3030;
     private static final Map<String, Collection> database = new HashMap<>();
+
+    private static final String DB_DATA_PATH = "../../../../resources/db_data.json";
     
     public static void StartServer() throws IOException {
         var server = new ServerSocket(PORT);
@@ -125,6 +133,46 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        loadFromFile(DB_DATA_PATH);
         StartServer();
+    }
+
+    public static void loadFromFile(String filePath) {
+        try 
+        {
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            JSONObject root = new JSONObject(content);
+
+            synchronized (database) 
+            {
+                database.clear();
+
+                for (Iterator<String> it = root.keys(); it.hasNext(); ) 
+                {
+                    String collectionName = it.next();
+                    JSONObject docsObj = root.optJSONObject(collectionName);
+
+                    if (docsObj == null) continue;
+
+                    Collection coll = database.computeIfAbsent(collectionName, k -> new Collection());
+
+                    for (Iterator<String> dit = docsObj.keys(); dit.hasNext(); ) 
+                    {
+                        String docKey = dit.next();
+                        JSONObject fieldsObj = docsObj.optJSONObject(docKey);
+
+                        if (fieldsObj == null) continue;
+
+                        String docJson = fieldsObj.toString();
+                        coll.Set(docKey, docJson);
+                    }
+                }
+            }
+            System.out.println("Database initialized from file: " + filePath);
+        } 
+        catch (Exception e) 
+        {
+            System.err.println("Error loading database from file: " + e.getMessage());
+        }
     }
 }

@@ -6,28 +6,18 @@ package it.unimib.sd2025.User;
 
 public class User 
 {
-    private String id;
+    private String fiscalCode;
     private String name;
     private String surname;
     private String email;
-    private String fiscalCode;
 
     public User() {}
 
     public User(String id, String name, String surname, String email, String fiscalCode) {
-        this.id = id;
+        this.fiscalCode = fiscalCode;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.fiscalCode = fiscalCode;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
