@@ -10,7 +10,7 @@ import jakarta.ws.rs.ext.Provider;
  * Filtro per abilitare il CORS sulle risorse REST.
  */
 @Provider
-public class CorsFilter implements ContainerResponseFilter {
+public class CORSFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
         responseContext.getHeaders().add("Access-Control-Allow-Origin", "*");

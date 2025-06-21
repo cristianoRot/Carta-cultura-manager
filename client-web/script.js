@@ -1,4 +1,3 @@
-
 console.log("Script client-web caricato.");
 
 const API_BASE_URL = 'http://localhost:8080'; 
@@ -401,7 +400,10 @@ async function fetchAndDisplaySystemStats() {
             document.getElementById('statsTotalVouchersGenerated').textContent = stats.totalVouchersGenerated;
             document.getElementById('statsTotalVouchersConsumed').textContent = stats.totalVouchersConsumed;
 
-            displayMessage('systemStatsStatus', '', false); 
+            // Aggiorna barre grafiche
+            updateStatBars(stats);
+
+            displayMessage('systemStatsStatus', '', false);
         } else {
             displayMessage('systemStatsStatus', `Errore nel caricamento delle statistiche: ${response.statusText} (Code: ${response.status})`, true);
         }
@@ -411,6 +413,33 @@ async function fetchAndDisplaySystemStats() {
     }
 }
 
+/**
+ * Aggiorna la larghezza delle barre grafiche in base ai valori ricevuti.
+ * @param {Object} stats - Oggetto contenente le statistiche del sistema.
+ */
+function updateStatBars(stats) {
+    // Utenti: normalizza su 1000 per esempio
+    const maxUsers = 1000;
+    const usersPerc = Math.min((stats.totalUsers / maxUsers) * 100, 100);
+    document.getElementById('barTotalUsers').style.width = usersPerc + '%';
+
+    // Contributi
+    const contribValues = [stats.totalContributionAvailable, stats.totalContributionAllocated, stats.totalContributionSpent];
+    const maxContrib = Math.max(...contribValues, 1); // evita divisione per zero
+    document.getElementById('barContribAvailable').style.width = ((stats.totalContributionAvailable / maxContrib) * 100) + '%';
+    document.getElementById('barContribAllocated').style.width = ((stats.totalContributionAllocated / maxContrib) * 100) + '%';
+    document.getElementById('barContribSpent').style.width = ((stats.totalContributionSpent / maxContrib) * 100) + '%';
+
+    // Vouchers
+    const voucherValues = [stats.totalVouchersGenerated, stats.totalVouchersConsumed];
+    const maxVouchers = Math.max(...voucherValues, 1);
+    document.getElementById('barVouchersGenerated').style.width = ((stats.totalVouchersGenerated / maxVouchers) * 100) + '%';
+    document.getElementById('barVouchersConsumed').style.width = ((stats.totalVouchersConsumed / maxVouchers) * 100) + '%';
+}
+
+// =====================
+// Event listeners globali
+// =====================
 
 document.addEventListener('DOMContentLoaded', () => {
     // Registrazione utente

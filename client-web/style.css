@@ -44,14 +44,31 @@ h4 {
 
 /* Sezioni principali */
 section {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 18px;
-    box-shadow: 0 4px 24px rgba(58,12,163,0.08);
+    box-shadow: 0 6px 28px rgba(58,12,163,0.08);
     margin: 2em auto;
     padding: 2em;
-    max-width: 500px;
+    max-width: 700px;
+    position: relative;
+    overflow: hidden;
     animation: fadeIn 1s;
     padding-right: 3em;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+/* Accent bar in alto */
+section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg,#3a0ca3 0%,#4361ee 100%);
 }
 
 hr {
@@ -77,6 +94,7 @@ input, select {
     border-radius: 8px;
     transition: border-color 0.3s, box-shadow 0.3s;
     font-size: 1em;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
 }
 
 input:focus, select:focus {
@@ -94,7 +112,7 @@ form div, #userLookup > div {
    ====================== */
 
 button {
-    background: linear-gradient(90deg, #3a0ca3 0%, #4361ee 100%);
+    background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -103,11 +121,12 @@ button {
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(67,97,238,0.12);
-    transition: background 0.3s, transform 0.2s;
+    transition: background var(--transition-base), transform 0.25s ease-out;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 
 button:hover {
-    background: linear-gradient(90deg, #4361ee 0%, #3a0ca3 100%);
+    background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
     transform: translateY(-2px) scale(1.04);
 }
 
@@ -161,7 +180,11 @@ button:hover {
 }
 
 #voucherList > div {
-    background: #e0e7ff;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 18px rgba(17,17,26,0.1);
     border-radius: 10px;
     padding: 1em;
     animation: fadeInUp 0.7s;
@@ -169,11 +192,17 @@ button:hover {
 
 /* Stile singolo buono */
 .voucher-item {
-    background-color: #f9f9f9;
-    border: 1px solid #eee;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 18px rgba(17,17,26,0.1);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.voucher-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(17,17,26,0.12);
 }
 
 .voucher-item p {
@@ -185,6 +214,7 @@ button:hover {
     padding: 5px 10px;
     font-size: 14px;
     margin-top: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
 }
 
 .voucher-item .voucher-actions button.consumeVoucherBtn {
@@ -209,6 +239,10 @@ button:hover {
 }
 .voucher-item .voucher-actions button.modifyVoucherBtn:hover {
     background: linear-gradient(90deg, #ee0979 0%, #ff6a00 100%);
+}
+
+.voucher-item .voucher-actions button:hover {
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
 }
 
 /* ======================
@@ -248,5 +282,329 @@ button:hover {
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(40px);}
     to { opacity: 1; transform: translateY(0);}
+}
+
+/* ======================
+   DASHBOARD LAYOUT
+   ====================== */
+
+#dashboardContainer {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+}
+
+#sidebar {
+    background: #3a0ca3;
+    color: #fff;
+    padding: 2em 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#sidebar h2 {
+    color: #fff;
+    margin-top: 0;
+}
+
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 2em 0 0 0;
+    width: 100%;
+}
+
+#sidebar ul li {
+    margin-bottom: 1em;
+}
+
+#sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    padding: 0.7em 1em;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+#sidebar ul li a:hover,
+#sidebar ul li a:focus {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+#content {
+    padding: 2em;
+}
+
+
+section {
+    max-width: 700px;
+}
+
+@media (max-width: 768px) {
+    #dashboardContainer {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    #sidebar {
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 1em;
+    }
+
+    #sidebar ul {
+        display: flex;
+        gap: 1em;
+        margin: 0;
+    }
+
+    #sidebar ul li {
+        margin: 0;
+    }
+
+    section {
+        max-width: 100%;
+    }
+}
+
+/* ======================
+   CARD
+   ====================== */
+
+/* Accent bar in alto */
+section::before {
+    height: 8px;
+    background: linear-gradient(90deg, var(--clr-primary) 0%, var(--clr-primary-light) 100%);
+}
+
+/* ======================
+   PROGRESS BAR (STATISTICHE)
+   ====================== */
+
+.stats-item {
+    margin-bottom: 20px;
+}
+
+.stats-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.stats-value {
+    font-weight: 700;
+    color: #3a0ca3;
+}
+
+.stats-bar {
+    background: #e0e7ff;
+    border-radius: 10px;
+    height: 12px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+.stats-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg,#4361ee 0%,#3a0ca3 100%);
+    width: 0%;
+    transition: width 0.6s ease-out;
+}
+
+
+:root {
+    --clr-primary: #3a0ca3;
+    --clr-primary-light: #4361ee;
+    --clr-card-bg: #ffffff;
+    --clr-shadow: rgba(17, 17, 26, 0.08);
+    --radius-card: 20px;
+    --transition-base: 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+
+section:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 45px rgba(17, 17, 26, 0.15);
+}
+
+/* Input e Select */
+input, select {
+    background: #fdfdff;
+    border: 1px solid #d1d1e9;
+    padding: 0.85em 1em;
+    border-radius: 10px;
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+input:focus, select:focus {
+    border-color: var(--clr-primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+}
+
+/* Bottoni */
+button:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+
+button:active {
+    transform: translateY(0) scale(0.98);
+}
+
+
+form div, #userLookup > div {
+    margin-bottom: 1.3em;
+}
+
+
+section {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+
+section:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 45px rgba(17, 17, 26, 0.15);
+}
+
+
+.voucher-item {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 18px rgba(17,17,26,0.1);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.voucher-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(17,17,26,0.12);
+}
+
+
+button {
+    background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+button:hover {
+    background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
+}
+
+
+.voucher-item .voucher-actions button {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.voucher-item .voucher-actions button:hover {
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+}
+input, select {
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+
+section {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.voucher-item {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+button:hover, section:hover, .voucher-item:hover {
+    transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+}
+
+/* ====================== 
+   SIDEBAR CREDITS
+   ====================== */
+.sidebar-credits {
+    margin-top: auto;
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.55);
+    text-align: center;
+    line-height: 1.4;
+    padding-top: 2em;
+}
+
+
+
+
+button,
+.voucher-item .voucher-actions button {
+    border-radius: 10px; /* corner radius */
+    padding: 0.9em 1.9em;
+    font-size: 1em;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
+    box-shadow: 0 4px 14px rgba(58, 12, 163, 0.15);
+    transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, background 0.3s ease-out;
+}
+button:hover,
+.voucher-item .voucher-actions button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 26px rgba(67, 97, 238, 0.25);
+    background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+}
+button:active,
+.voucher-item .voucher-actions button:active {
+    transform: translateY(0) scale(0.97);
+}
+
+
+.lookup-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+}
+.lookup-form label {
+    flex: 1 1 100%;
+}
+#lookupFiscalCode {
+    flex: 1 1 auto;
+    max-width: 300px;
+}
+#lookupUserBtn {
+    flex: 0 0 auto;
+    margin-bottom: 2px; 
+}
+
+
+input, select {
+    max-width: 350px;
+    border-radius: 12px;
+    padding: 0.9em 1.1em;
+    background: #ffffff;
+}
+
+@media (max-width: 768px) {
+    input, select {
+        max-width: 100%; /* su mobile resta full width */
+    }
+    .lookup-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    #lookupUserBtn {
+        width: 100%;
+    }
+}
+
+
+#registrationForm {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem 3.5rem; /* row-gap col-gap */
+}
+#registrationForm > div {
+    margin-bottom: 0; /* gap gestisce lo spacing */
 }
 
