@@ -15,7 +15,8 @@ public class Main {
     public static final int PORT = 3030;
     private static final Map<String, Collection> database = new HashMap<>();
 
-    private static final String DB_DATA_PATH = "/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/database/src/main/resources/db_data.json";
+   
+    private static final String DB_DATA_PATH = java.nio.file.Paths.get("src", "main", "resources", "db_data.json").toString();
 
     public static void StartServer() throws IOException {
         var server = new ServerSocket(PORT);
