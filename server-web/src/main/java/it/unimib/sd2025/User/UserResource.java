@@ -39,14 +39,8 @@ public class UserResource {
             DatabaseConnection.Set("users/" + user.getFiscalCode() + "/contribAllocated", "0");
             DatabaseConnection.Set("users/" + user.getFiscalCode() + "/contribSpent", "0");
 
-            // Aggiorna le statistiche di sistema
-            String userCountStr = DatabaseConnection.Get("system/stats/userCount");
-            int userCount = (userCountStr != null && !userCountStr.equals("null")) ? Integer.parseInt(userCountStr) : 0;
-            DatabaseConnection.Set("system/stats/userCount", String.valueOf(userCount + 1));
-
-            String totalAvailableStr = DatabaseConnection.Get("system/stats/totalAvailable");
-            double totalAvailable = (totalAvailableStr != null && !totalAvailableStr.equals("null")) ? Double.parseDouble(totalAvailableStr) : 0.0;
-            DatabaseConnection.Set("system/stats/totalAvailable", String.valueOf(totalAvailable + 500.0));
+            DatabaseConnection.Increment("system/stats/userCount", 1);
+            DatabaseConnection.Increment("system/stats/totalAvailable", 500.0);
 
             try
             {

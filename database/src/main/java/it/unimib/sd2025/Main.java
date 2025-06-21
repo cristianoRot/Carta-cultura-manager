@@ -3,22 +3,21 @@ package it.unimib.sd2025;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import org.json.JSONObject;
 
 /*
- * Format request:  ACTION collection/document/key value      ( es. SET users/XXXX/name Mario )
+ * Format request:  ACTION collection/document/key value    ( es. SET users/XXXX/name Mario )
  */
 
-public class Main {
+public class Main 
+{
     public static final int PORT = 3030;
     private static final Map<String, Collection> database = new HashMap<>();
 
-   
-    private static final String DB_DATA_PATH = java.nio.file.Paths.get("src", "main", "resources", "db_data.json").toString();
+    private static final String DB_DATA_PATH = "db_data.json";
 
-    public static void StartServer() throws IOException {
+    public static void StartServer() throws IOException 
+    {
         var server = new ServerSocket(PORT);
 
         System.out.println("Database listening at localhost:" + PORT);
@@ -39,14 +38,16 @@ public class Main {
         }
     }
 
-    private static class Handler extends Thread {
+    private static class Handler extends Thread 
+    {
         private Socket client;
 
         public Handler(Socket client) {
             this.client = client;
         }
 
-        public void run() {
+        public void run() 
+        {
             try (var out = new PrintWriter(client.getOutputStream(), true);
                  var in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
                 
@@ -63,56 +64,81 @@ public class Main {
             }
         }
 
-        private String HandleRequest(String command) {
+        private String HandleRequest(String command) 
+        {
             String[] parts = command.split(" ");
-            if (parts.length < 2) return "ERR BAD REQUEST";
+            if (parts.length < 2) return ResponseCode.BAD_REQUEST;
 
             String cmd = parts[0].toUpperCase();
             String path = parts[1];
             String value = parts.length > 2 ? parts[2] : null;
 
             String[] pathParts = path.split("/");
-            if (pathParts.length < 2) return "ERR BAD REQUEST";
+
+            if (pathParts.length == 0) return ResponseCode.BAD_REQUEST;
 
             String collection = pathParts[0];
-            String document = pathParts[1];
+            String document = pathParts.length > 1 ? pathParts[1] : null;
             String parameter = pathParts.length > 2 ? pathParts[2] : null;
 
-            return parameter == null ? 
-                HandleDocumentRequest(cmd, collection, document, value) :
-                HandleParameterRequest(cmd, collection, document, parameter, value);
+            return document == null ?
+                HandleCollectionRequest(cmd, collection, value) :   
+                parameter == null ? 
+                    HandleDocumentRequest(cmd, collection, document, value) :
+                    HandleParameterRequest(cmd, collection, document, parameter, value);
         }
 
-        private String HandleDocumentRequest(String command, String colKey, String docKey, String value) {
-            Collection collection = GetOrCreateCollection(colKey);
-            if (collection == null) return "ERR INTERNAL ERROR";
-
-            switch (command) {
-                case "GET": return collection.Get(docKey).toString();
-                case "SET": return collection.Set(docKey, value);
-                case "DEL": return collection.Delete(docKey);
-                case "EXISTS": return collection.Exists(docKey);
-                default: return "ERR BAD REQUEST";
+        private String HandleCollectionRequest(String command, String colKey, String json)
+        {
+            try
+            {
+                switch (command) {
+                    case "GET": return database.get(colKey).toString();
+                    case "SET": return database.put(colKey, new Collection(json)).toString();
+                    case "DEL": return database.remove(colKey).toString();
+                    case "EXISTS": return database.containsKey(colKey) ? "true" : "false";
+                    default: return ResponseCode.BAD_REQUEST;
+                }
+            }
+            catch (Exception e)
+            {
+                return ResponseCode.ERROR;
             }
         }
 
-        private String HandleParameterRequest(String command, String colKey, String docKey, String parmKey, String value) {
+        private String HandleDocumentRequest(String command, String colKey, String docKey, String json) 
+        {
             Collection collection = GetOrCreateCollection(colKey);
-            if (collection == null) return "ERR INTERNAL ERROR";
+            if (collection == null) return ResponseCode.ERROR;
+
+            switch (command) {
+                case "GET": return collection.Get(docKey).toString();
+                case "SET": return collection.Set(docKey, json);
+                case "DEL": return collection.Delete(docKey);
+                case "EXISTS": return collection.Exists(docKey);
+                default: return ResponseCode.BAD_REQUEST;
+            }
+        }
+
+        private String HandleParameterRequest(String command, String colKey, String docKey, String parmKey, String value) 
+        {
+            Collection collection = GetOrCreateCollection(colKey);
+            if (collection == null) return ResponseCode.ERROR;
 
             Document document = collection.Get(docKey);
             if (document == null && command.equals("SET")) {
                 document = new Document();
                 collection.Set(docKey, document.toString());
             }
-            if (document == null) return "null";
+            if (document == null) return ResponseCode.BAD_REQUEST;
 
             switch (command) {
                 case "GET": return document.Get(parmKey);
                 case "SET": return document.Set(parmKey, value);
                 case "DEL": return document.Delete(parmKey);
                 case "EXISTS": return document.Exists(parmKey);
-                default: return "ERR BAD REQUEST";
+                case "INCREMENT": return document.Increment(parmKey, value);
+                default: return ResponseCode.BAD_REQUEST;
             }
         }
 
@@ -135,10 +161,16 @@ public class Main {
         StartServer();
     }
 
-    public static void loadFromFile(String filePath) {
+    public static void loadFromFile(String filePath) 
+    {
         try 
         {
-            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            InputStream is = Main.class.getClassLoader().getResourceAsStream("db_data.json");
+
+            if (is == null) 
+                throw new FileNotFoundException("db_data.json non trovato nel classpath.");
+
+            String content = new String(is.readAllBytes());
             JSONObject root = new JSONObject(content);
 
             synchronized (database) 
@@ -167,6 +199,7 @@ public class Main {
                     }
                 }
             }
+
             System.out.println("Database initialized from file: " + filePath);
         } 
         catch (Exception e) 

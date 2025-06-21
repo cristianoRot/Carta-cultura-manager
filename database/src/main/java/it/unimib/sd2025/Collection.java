@@ -3,14 +3,43 @@ package it.unimib.sd2025;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Collection
 {
-    private final Map<String, Document> collections = new HashMap<>();
+    private final Map<String, Document> documents = new HashMap<>();
+
+    public Collection() {}
+
+    public Collection(String json) 
+    {
+        try 
+        {
+            JSONObject jsonObj = new JSONObject(json);
+
+            synchronized (documents) 
+            {
+                documents.clear();
+                
+                for (String key : jsonObj.keySet()) 
+                {
+                    Object valObj = jsonObj.opt(key);
+                    Document doc = (valObj != null) ? new Document(valObj.toString()) : null;
+                    documents.put(key, doc);
+                }
+            }
+        } 
+        catch (JSONException e) 
+        {
+            System.err.println("Error parsing JSON: " + e.getMessage());
+        }
+    }
 
     public Document Get(String key) 
     {
-        synchronized(collections) {
-            return collections.get(key);
+        synchronized(documents) {
+            return documents.get(key);
         }
     }
     
@@ -20,16 +49,15 @@ public class Collection
         {
             Document doc = new Document(document);
 
-            synchronized(collections) {
-                collections.put(key, doc);
+            synchronized(documents) {
+                documents.put(key, doc);
             }
 
-            return "OK";
+            return ResponseCode.OK;
         } 
         catch (Exception e) 
         {
-            System.err.println("Error setting value: " + e.getMessage());
-            return "ERR";
+            return ResponseCode.ERROR;
         }
     }
 
@@ -37,10 +65,10 @@ public class Collection
     {
         try 
         {
-            synchronized (collections) {
-                if (collections.containsKey(key)) 
+            synchronized (documents) {
+                if (documents.containsKey(key)) 
                 {
-                    collections.remove(key);
+                    documents.remove(key);
                     return "true";
                 } 
                 else 
@@ -51,15 +79,35 @@ public class Collection
         } 
         catch (Exception e) 
         {
-            System.err.println("Error deleting value: " + e.getMessage());
-            return "ERR";
+            return ResponseCode.ERROR;
         }
     }
 
     public String Exists(String key) 
     {
-        synchronized (collections) {
-            return collections.containsKey(key) ? "true" : "false";
+        synchronized (documents) {
+            return documents.containsKey(key) ? "true" : "false";
+        }
+    }
+
+    public String toString() 
+    {
+        synchronized (documents) {
+            StringBuilder json = new StringBuilder();
+            json.append("{");
+            
+            boolean first = true;
+            for (Map.Entry<String, Document> entry : documents.entrySet()) 
+            {
+                if (!first) {
+                    json.append(",");
+                }
+                json.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue().toString()).append("\"");
+                first = false;
+            }
+            
+            json.append("}");
+            return json.toString();
         }
     }
 }

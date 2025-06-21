@@ -8,7 +8,7 @@ import org.json.JSONException;
 
 public class Document
 {
-    private final Map<String, String> document = new HashMap<>();
+    private final Map<String, String> parameters = new HashMap<>();
 
     public Document() {}
 
@@ -18,28 +18,28 @@ public class Document
         {
             JSONObject jsonObj = new JSONObject(json);
 
-            synchronized (document) 
+            synchronized (parameters) 
             {
-                document.clear();
+                parameters.clear();
                 
                 for (String key : jsonObj.keySet()) 
                 {
                     Object valObj = jsonObj.opt(key);
                     String value = (valObj != null) ? valObj.toString() : null;
-                    document.put(key, value);
+                    parameters.put(key, value);
                 }
             }
         } 
         catch (JSONException e) 
         {
-            System.err.println("Error parsing JSON with org.json: " + e.getMessage());
+            System.err.println("Error parsing JSON: " + e.getMessage());
         }
     }
 
     public String Get(String key) 
     {
-        synchronized(document) {
-            return document.get(key);
+        synchronized(parameters) {
+            return parameters.get(key);
         }
     }
     
@@ -47,16 +47,15 @@ public class Document
     {
         try 
         {
-            synchronized(document) {
-                 document.put(key, value);
+            synchronized(parameters) {
+                 parameters.put(key, value);
             }
 
-            return "OK";
+            return ResponseCode.OK;
         } 
         catch (Exception e) 
         {
-            System.err.println("Error setting value: " + e.getMessage());
-            return "ERR";
+            return ResponseCode.ERROR;
         }
     }
 
@@ -64,10 +63,10 @@ public class Document
     {
         try 
         {
-            synchronized (document) {
-                if (document.containsKey(key)) 
+            synchronized (parameters) {
+                if (parameters.containsKey(key)) 
                 {
-                    document.remove(key);
+                    parameters.remove(key);
                     return "true";
                 } 
                 else 
@@ -78,26 +77,56 @@ public class Document
         } 
         catch (Exception e) 
         {
-            System.err.println("Error deleting value: " + e.getMessage());
-            return "ERR";
+            return ResponseCode.ERROR;
         }
     }
 
     public String Exists(String key) 
     {
-        synchronized (document) {
-            return document.containsKey(key) ? "true" : "false";
+        synchronized (parameters) {
+            return parameters.containsKey(key) ? "true" : "false";
+        }
+    }
+
+    public String Increment(String key, String value)
+    {
+        try
+        {
+            synchronized (parameters) {
+                String value_s = parameters.get(key);
+                int value_i = Integer.parseInt(value_s);
+
+                parameters.put(key, Integer.toString(value_i + Integer.parseInt(value)));
+                return ResponseCode.OK;
+            }
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                synchronized (parameters) {
+                    String value_s = parameters.get(key);
+                    double value_d = Double.parseDouble(value_s);
+
+                    parameters.put(key, Double.toString(value_d + Double.parseDouble(value)));
+                    return ResponseCode.OK;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ResponseCode.BAD_REQUEST;
+            }
         }
     }
 
     public String toString() 
     {
-        synchronized (document) {
+        synchronized (parameters) {
             StringBuilder json = new StringBuilder();
             json.append("{");
             
             boolean first = true;
-            for (Map.Entry<String, String> entry : document.entrySet()) 
+            for (Map.Entry<String, String> entry : parameters.entrySet()) 
             {
                 if (!first) {
                     json.append(",");
