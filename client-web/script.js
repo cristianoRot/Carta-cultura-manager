@@ -75,7 +75,7 @@ async function loadUserContribution(fiscalCode) {
         if (balanceResponse.ok) 
         {
             const contribution = await balanceResponse.json();
-            document.getElementById('balance').textContent = contribution.available.toFixed(2);
+            document.getElementById('contribAvailable').textContent = contribution.available.toFixed(2);
             document.getElementById('contribAllocated').textContent = contribution.allocated.toFixed(2);
             document.getElementById('contribSpent').textContent = contribution.spent.toFixed(2);
             document.getElementById('contribTotal').textContent = contribution.total.toFixed(2);
@@ -83,7 +83,7 @@ async function loadUserContribution(fiscalCode) {
         else 
         {
             console.error(`Errore nel recupero del contributo: ${balanceResponse.statusText}`);
-            document.getElementById('balance').textContent = 'N/D';
+            document.getElementById('contribAvailable').textContent = 'N/D';
             document.getElementById('contribAllocated').textContent = 'N/D';
             document.getElementById('contribSpent').textContent = 'N/D';
             document.getElementById('contribTotal').textContent = 'N/D';

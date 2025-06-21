@@ -32,11 +32,11 @@
   "system": {
     "stats": {
       "userCount": 3,
-      "totalAvailable": 10000,
-      "totalAllocated": 6000,
-      "totalSpent": 4500,
-      "totalVouchers": 50,
-      "vouchersConsumed": 20
+      "totalAvailable": 1200,
+      "totalAllocated": 300,
+      "totalSpent": 0,
+      "totalVouchers": 0,
+      "vouchersConsumed": 0
     }
   }
 }

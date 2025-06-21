@@ -2,6 +2,7 @@ package it.unimib.sd2025.User;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 
 import it.unimib.sd2025.System.DatabaseConnection;
 import it.unimib.sd2025.Voucher.Voucher;
@@ -38,16 +39,14 @@ public class UserResource {
             DatabaseConnection.Set("users/" + user.getFiscalCode() + "/contribAllocated", "0");
             DatabaseConnection.Set("users/" + user.getFiscalCode() + "/contribSpent", "0");
 
-            /* --------------- SBAGLIATO RIFARE -------------
+            // Aggiorna le statistiche di sistema
             String userCountStr = DatabaseConnection.Get("system/stats/userCount");
-            int userCount = userCountStr != null && !userCountStr.equals("null") ? Integer.parseInt(userCountStr) : 0;
+            int userCount = (userCountStr != null && !userCountStr.equals("null")) ? Integer.parseInt(userCountStr) : 0;
             DatabaseConnection.Set("system/stats/userCount", String.valueOf(userCount + 1));
-            
-            String totalAvailableStr = DatabaseConnection.Get("system/stats/totalAvailable");
-            double totalAvailable = totalAvailableStr != null && !totalAvailableStr.equals("null") ? Double.parseDouble(totalAvailableStr) : 0.0;
-            DatabaseConnection.Set("system/stats/totalAvailable", String.valueOf(totalAvailable + 500.0));
 
-            */
+            String totalAvailableStr = DatabaseConnection.Get("system/stats/totalAvailable");
+            double totalAvailable = (totalAvailableStr != null && !totalAvailableStr.equals("null")) ? Double.parseDouble(totalAvailableStr) : 0.0;
+            DatabaseConnection.Set("system/stats/totalAvailable", String.valueOf(totalAvailable + 500.0));
 
             try
             {
@@ -96,13 +95,38 @@ public class UserResource {
     {
         try 
         {
-            int balance = Integer.parseInt(DatabaseConnection.Get("users/" + fiscalCode + "/balance"));
-            int contribAllocated = Integer.parseInt(DatabaseConnection.Get("users/" + fiscalCode + "/contribAllocated"));
-            int contribSpent = Integer.parseInt(DatabaseConnection.Get("users/" + fiscalCode + "/contribSpent"));
+            double balance = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/balance"));
+            double contribAllocated = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/contribAllocated"));
+            double contribSpent = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/contribSpent"));
 
-            String json = String.format(
-                "{\"balance\":%d,\"contribAllocated\":%d,\"contribSpent\":%d}",
+            String json = String.format(Locale.US,
+                "{\"balance\":%.2f,\"contribAllocated\":%.2f,\"contribSpent\":%.2f}",
                 balance, contribAllocated, contribSpent
+            );
+
+            return Response.ok(json, MediaType.APPLICATION_JSON).build();
+        } 
+        catch (Exception e) 
+        {
+            return Response.serverError().build();
+        }
+    }
+
+    @GET
+    @Path("/{fiscalCode}/balance")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserBalance(@PathParam("fiscalCode") String fiscalCode) 
+    {
+        try 
+        {
+            double available = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/balance"));
+            double allocated = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/contribAllocated"));
+            double spent = Double.parseDouble(DatabaseConnection.Get("users/" + fiscalCode + "/contribSpent"));
+            double total = available + allocated + spent;
+
+            String json = String.format(Locale.US,
+                "{\"available\":%.2f,\"allocated\":%.2f,\"spent\":%.2f,\"total\":%.2f}",
+                available, allocated, spent, total
             );
 
             return Response.ok(json, MediaType.APPLICATION_JSON).build();
@@ -120,18 +144,18 @@ public class UserResource {
     {
         try 
         {
-            String vouchersCountStr = DatabaseConnection.Get("vouchersCount:" + userId);
+            String vouchersCountStr = DatabaseConnection.Get("users/" + userId + "/vouchersCount");
             int vouchersCount = vouchersCountStr == null || vouchersCountStr.equals("null") ? 0 : Integer.parseInt(vouchersCountStr);
 
             Voucher[] vouchers = new Voucher[vouchersCount];
 
             for (int i = 0; i < vouchersCount; i++) 
             {
-                String voucherId = DatabaseConnection.Get("voucherIdByIndex:" + userId + ":" + i);
+                String voucherId = DatabaseConnection.Get("users/" + userId + "/voucherIdByIndex-" + i);
 
                 if (voucherId != null && !voucherId.equals("null")) 
                 {
-                    String voucherJson = DatabaseConnection.Get("voucher:" + voucherId);
+                    String voucherJson = DatabaseConnection.Get("vouchers/" + voucherId);
 
                     if (voucherJson != null && !voucherJson.equals("null")) 
                     {
