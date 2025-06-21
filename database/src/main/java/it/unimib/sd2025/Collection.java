@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Collection
 {
-    private static final Map<String, Document> collections = new HashMap<>();
+    private final Map<String, Document> collections = new HashMap<>();
 
     public Document Get(String key) 
     {

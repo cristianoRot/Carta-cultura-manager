@@ -6,9 +6,6 @@ import java.util.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.json.JSONObject;
-import org.json.JSONException;
-import org.json.JSONArray;
-import java.util.Iterator;
 
 /*
  * Format request:  ACTION collection/document/key value      ( es. SET users/XXXX/name Mario )
@@ -18,8 +15,8 @@ public class Main {
     public static final int PORT = 3030;
     private static final Map<String, Collection> database = new HashMap<>();
 
-    private static final String DB_DATA_PATH = "../../../../resources/db_data.json";
-    
+    private static final String DB_DATA_PATH = "/Users/cristiano/Desktop/Universita/Sistemi Distribuiti/Progetto-Cultura/database/src/main/resources/db_data.json";
+
     public static void StartServer() throws IOException {
         var server = new ServerSocket(PORT);
 
@@ -154,7 +151,8 @@ public class Main {
 
                     if (docsObj == null) continue;
 
-                    Collection coll = database.computeIfAbsent(collectionName, k -> new Collection());
+                    Collection coll = new Collection();
+                    database.put(collectionName, coll);
 
                     for (Iterator<String> dit = docsObj.keys(); dit.hasNext(); ) 
                     {

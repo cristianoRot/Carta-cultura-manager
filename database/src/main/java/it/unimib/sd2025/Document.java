@@ -8,7 +8,7 @@ import org.json.JSONException;
 
 public class Document
 {
-    private static final Map<String, String> document = new HashMap<>();
+    private final Map<String, String> document = new HashMap<>();
 
     public Document() {}
 
