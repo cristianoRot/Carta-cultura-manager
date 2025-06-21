@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import it.unimib.sd2025.System.DatabaseConnection;
-import it.unimib.sd2025.User.UserContribution;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -18,6 +17,8 @@ import jakarta.ws.rs.core.Response;
 /**
  * API REST per la gestione dei buoni.
  */
+
+/* 
 @Path("api/vouchers")
 public class VoucherResource {
 
@@ -28,15 +29,14 @@ public class VoucherResource {
         return userLocks.computeIfAbsent(userId, k -> new ReentrantLock());
     }
 
-    /**
-     * Crea un nuovo buono.
-     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createVoucher(CreateVoucherRequest request) {
+    public Response createVoucher(CreateVoucherRequest request) 
+    {
         ReentrantLock userLock = getUserLock(request.getUserId());
         userLock.lock();
+
         try {
             // Recupera il contributo dell'utente
             String contributionJson = DatabaseConnection.Get("contribution:" + request.getUserId());
@@ -97,9 +97,6 @@ public class VoucherResource {
         }
     }
 
-    /**
-     * Aggiorna un buono esistente.
-     */
     @PUT
     @Path("/{voucherId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -152,9 +149,6 @@ public class VoucherResource {
         }
     }
 
-    /**
-     * Segna un buono come consumato.
-     */
     @POST
     @Path("/{voucherId}/consume")
     @Produces(MediaType.APPLICATION_JSON)
@@ -237,9 +231,6 @@ public class VoucherResource {
         }
     }
 
-    /**
-     * Elimina un buono.
-     */
     @DELETE
     @Path("/{voucherId}")
     public Response deleteVoucher(@PathParam("voucherId") String voucherId) {
@@ -363,9 +354,6 @@ public class VoucherResource {
         }
     }
 
-    /**
-     * Aggiorna le statistiche globali quando viene creato un buono.
-     */
     private void updateGlobalStats(boolean isConsume, double amount) throws Exception {
         // Incrementa il numero totale di buoni
         String totalVouchersStr = DatabaseConnection.Get("stats:totalVouchers");
@@ -389,3 +377,4 @@ public class VoucherResource {
         DatabaseConnection.Set("stats:totalAllocated", String.valueOf(totalAllocated + amount));
     }
 }
+ */

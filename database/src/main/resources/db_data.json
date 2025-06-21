@@ -4,21 +4,31 @@
       "name": "Mario",
       "surname": "Rossi",
       "email": "mario.rossi@example.com",
-      "fiscalCode": "RSSMRA85M01H501U"
+      "fiscalCode": "RSSMRA85M01H501U",
+      "balance" : "400",
+      "contribAllocated" : "100",
+      "contribSpent" : "0"
     },
     "VRDLNZ90A01F205X": {
       "name": "Lorenzo",
       "surname": "Verdi",
       "email": "lorenzo.verdi@example.com",
-      "fiscalCode": "VRDLNZ90A01F205X"
+      "fiscalCode": "VRDLNZ90A01F205X",
+      "balance" : "400",
+      "contribAllocated" : "100",
+      "contribSpent" : "0"
     },
     "BNCLDI75C22L219Y": {
       "name": "Lucia",
       "surname": "Bianchi",
       "email": "lucia.bianchi@example.com",
-      "fiscalCode": "BNCLDI75C22L219Y"
+      "fiscalCode": "BNCLDI75C22L219Y",
+      "balance" : "400",
+      "contribAllocated" : "100",
+      "contribSpent" : "0"
     }
   },
+
   "system": {
     "stats": {
       "userCount": 3,

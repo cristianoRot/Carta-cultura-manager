@@ -10,10 +10,15 @@ public class User
     private String name;
     private String surname;
     private String email;
+    private double available;
+    private double allocated;
+    private double spent;
+    private double total;
 
     public User() {}
 
-    public User(String id, String name, String surname, String email, String fiscalCode) {
+    public User(String id, String name, String surname, String email, String fiscalCode) 
+    {
         this.fiscalCode = fiscalCode;
         this.name = name;
         this.surname = surname;

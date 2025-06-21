@@ -34,11 +34,9 @@ public class UserResource {
             }
 
             DatabaseConnection.Set("users/" + user.getFiscalCode(), JsonbBuilder.create().toJson(user));
-
-            /*
-            UserContribution contribution = new UserContribution(user.getFiscalCode(), 500.0, 0.0, 0.0, 500.0);
-            DatabaseConnection.Set("contribution:" + user.getFiscalCode(), JsonbBuilder.create().toJson(contribution));
-            */
+            DatabaseConnection.Set("users/" + user.getFiscalCode() + "/balance", "500");
+            DatabaseConnection.Set("users/" + user.getFiscalCode() + "/contribAllocated", "0");
+            DatabaseConnection.Set("users/" + user.getFiscalCode() + "/contribSpent", "0");
 
             /* --------------- SBAGLIATO RIFARE -------------
             String userCountStr = DatabaseConnection.Get("system/stats/userCount");
@@ -92,21 +90,22 @@ public class UserResource {
     }
 
     @GET
-    @Path("/{userId}/contribution")
+    @Path("/{fiscalCode}/contribution")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserContribution(@PathParam("userId") String userId) 
+    public Response getUserContribution(@PathParam("fiscalCode") String fiscalCode) 
     {
         try 
         {
-            String contributionJson = DatabaseConnection.Get("contribution:" + userId);
+            int balance = Integer.parseInt(DatabaseConnection.Get("users/" + fiscalCode + "/balance"));
+            int contribAllocated = Integer.parseInt(DatabaseConnection.Get("users/" + fiscalCode + "/contribAllocated"));
+            int contribSpent = Integer.parseInt(DatabaseConnection.Get("users/" + fiscalCode + "/contribSpent"));
 
-            if (contributionJson == null || contributionJson.equals("null")) 
-            {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
+            String json = String.format(
+                "{\"balance\":%d,\"contribAllocated\":%d,\"contribSpent\":%d}",
+                balance, contribAllocated, contribSpent
+            );
 
-            UserContribution contribution = JsonbBuilder.create().fromJson(contributionJson, UserContribution.class);
-            return Response.ok(contribution).build();
+            return Response.ok(json, MediaType.APPLICATION_JSON).build();
         } 
         catch (Exception e) 
         {

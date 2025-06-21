@@ -70,20 +70,24 @@ async function loadUserContribution(fiscalCode) {
     if (!fiscalCode) return;
 
     try {
-        const contributionResponse = await fetch(`${API_BASE_URL}/api/users/${fiscalCode}/contribution`);
-        if (contributionResponse.ok) {
-            const contribution = await contributionResponse.json();
-            document.getElementById('contribAvailable').textContent = contribution.available.toFixed(2);
+        const balanceResponse = await fetch(`${API_BASE_URL}/api/users/${fiscalCode}/balance`);
+
+        if (balanceResponse.ok) 
+        {
+            const contribution = await balanceResponse.json();
+            document.getElementById('balance').textContent = contribution.available.toFixed(2);
             document.getElementById('contribAllocated').textContent = contribution.allocated.toFixed(2);
             document.getElementById('contribSpent').textContent = contribution.spent.toFixed(2);
             document.getElementById('contribTotal').textContent = contribution.total.toFixed(2);
-        } else {
-            console.error(`Errore nel recupero del contributo: ${contributionResponse.statusText}`);
-            document.getElementById('contribAvailable').textContent = 'N/D';
+        } 
+        else 
+        {
+            console.error(`Errore nel recupero del contributo: ${balanceResponse.statusText}`);
+            document.getElementById('balance').textContent = 'N/D';
             document.getElementById('contribAllocated').textContent = 'N/D';
             document.getElementById('contribSpent').textContent = 'N/D';
             document.getElementById('contribTotal').textContent = 'N/D';
-            displayMessage('lookupStatus', `Dati contributo non disponibili (Status: ${contributionResponse.status})`, true);
+            displayMessage('lookupStatus', `Dati contributo non disponibili (Status: ${balanceResponse.status})`, true);
         }
     } catch (error) {
         console.error('Contribution fetch error:', error);
