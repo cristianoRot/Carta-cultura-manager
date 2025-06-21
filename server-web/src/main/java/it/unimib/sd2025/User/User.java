@@ -10,19 +10,21 @@ public class User
     private String name;
     private String surname;
     private String email;
-    private double available;
-    private double allocated;
-    private double spent;
-    private double total;
+    private double balance;
+    private String contribAllocated;
+    private String contribSpent;
 
     public User() {}
 
-    public User(String id, String name, String surname, String email, String fiscalCode) 
+    public User(String id, String name, String surname, String email, String fiscalCode, double balance, String contribAllocated, String contribSpent) 
     {
         this.fiscalCode = fiscalCode;
         this.name = name;
         this.surname = surname;
         this.email = email;
+        this.balance = balance;
+        this.contribAllocated = contribAllocated;
+        this.contribSpent = contribSpent;
     }
 
     public String getName() {
@@ -35,6 +37,10 @@ public class User
 
     public String getSurname() {
         return surname;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 
     public void setSurname(String surname) {

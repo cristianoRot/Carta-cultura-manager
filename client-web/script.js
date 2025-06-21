@@ -174,6 +174,7 @@ async function loadUserVouchers() {
 
     try {
         const response = await fetch(`${API_BASE_URL}/api/users/${currentFiscalCode}/vouchers`);
+        
         if (response.ok) {
             const vouchers = await response.json();
             if (vouchers.length === 0) {
@@ -242,24 +243,38 @@ async function handleGenerateVoucher() {
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/vouchers`, {
+        const response = await fetch(`${API_BASE_URL}/api/users/${currentFiscalCode}/voucher`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount, category, userId: currentFiscalCode }),
+            body: JSON.stringify({
+                id: "",
+                amount: amount,
+                category: category,
+                status: "generated",
+                createdAt: new Date().toISOString(),
+                consumedAt: null,
+                userId: currentFiscalCode
+            })
         });
 
-        if (response.status === 201) {
+        if (response.status === 201) 
+        {
             displayMessage('voucherStatus', 'Buono generato con successo!', false);
             document.getElementById('generateVoucherForm').reset();
             await loadUserVouchers();
             await loadUserContribution(currentFiscalCode);
-        } else if (response.status === 400) {
+        } 
+        else if (response.status === 400) 
+        {
             const errorData = await response.json();
             displayMessage('voucherStatus', `Errore: ${errorData.message || 'Richiesta non valida (es. fondi insufficienti).'}`, true);
-        } else if (response.status === 404) {
+        } 
+        else if (response.status === 404) 
+        {
             displayMessage('voucherStatus', 'Errore: Utente non trovato per la generazione del buono.', true);
         }
-        else {
+        else 
+        {
             displayMessage('voucherStatus', `Errore durante la generazione del buono: ${response.statusText}`, true);
         }
     } catch (error) {

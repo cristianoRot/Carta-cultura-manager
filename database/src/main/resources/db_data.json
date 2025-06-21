@@ -1,10 +1,10 @@
 {
   "users": {
-    "RSSMRA85M01H501U": {
-      "name": "Mario",
-      "surname": "Rossi",
-      "email": "mario.rossi@example.com",
-      "fiscalCode": "RSSMRA85M01H501U",
+    "RTNCST04R06G942O": {
+      "name": "Cristiano",
+      "surname": "Rotunno",
+      "email": "cristiano.rotunno@gmail.com",
+      "fiscalCode": "RTNCST04R06G942O",
       "balance" : "400",
       "contribAllocated" : "100",
       "contribSpent" : "0"

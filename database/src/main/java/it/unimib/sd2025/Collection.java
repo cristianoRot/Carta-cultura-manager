@@ -102,7 +102,7 @@ public class Collection
                 if (!first) {
                     json.append(",");
                 }
-                json.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue().toString()).append("\"");
+                json.append("\"").append(entry.getKey()).append("\":").append(entry.getValue().toString());
                 first = false;
             }
             

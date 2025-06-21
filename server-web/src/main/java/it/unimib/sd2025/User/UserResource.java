@@ -3,10 +3,15 @@ package it.unimib.sd2025.User;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
+import java.util.HashMap;
 
 import it.unimib.sd2025.System.DatabaseConnection;
 import it.unimib.sd2025.Voucher.Voucher;
+import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -71,10 +76,8 @@ public class UserResource {
             {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-            
-            User user = JsonbBuilder.create().fromJson(userJson, User.class);
 
-            return Response.ok(user).build();
+            return Response.ok(userJson).build();
         } 
         catch (Exception e) 
         {
@@ -107,35 +110,80 @@ public class UserResource {
     }
 
     @GET
-    @Path("/{userId}/vouchers")
+    @Path("/{fiscalCode}/vouchers")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserVouchers(@PathParam("userId") String userId) 
+    public Response getVouchers(@PathParam("fiscalCode") String fiscalCode) 
     {
-        try 
+        try
         {
-            String vouchersCountStr = DatabaseConnection.Get("users/" + userId + "/vouchersCount");
-            int vouchersCount = vouchersCountStr == null || vouchersCountStr.equals("null") ? 0 : Integer.parseInt(vouchersCountStr);
+            String vouchersJson = DatabaseConnection.Get("vouchers");
 
-            Voucher[] vouchers = new Voucher[vouchersCount];
+            if (vouchersJson == null || vouchersJson.equals("ERROR") || vouchersJson.isBlank()) 
+                return Response.ok("[]", MediaType.APPLICATION_JSON).build();
+            
 
-            for (int i = 0; i < vouchersCount; i++) 
+            Jsonb jsonb = JsonbBuilder.create();
+            Map<?, ?> rawVouchersMap = jsonb.fromJson(vouchersJson, Map.class);
+            Map<String, Voucher> allVouchers = new HashMap<>(rawVouchersMap.size());
+
+            for (var entry : rawVouchersMap.entrySet()) 
             {
-                String voucherId = DatabaseConnection.Get("users/" + userId + "/voucherIdByIndex-" + i);
+                String voucherId = String.class.cast(entry.getKey());
+                String voucherJson = jsonb.toJson(entry.getValue());
+                Voucher v = jsonb.fromJson(voucherJson, Voucher.class);
+                allVouchers.put(voucherId, v);
+            }
+            
+            List<Voucher> userVouchers = new ArrayList<>();
 
-                if (voucherId != null && !voucherId.equals("null")) 
-                {
-                    String voucherJson = DatabaseConnection.Get("vouchers/" + voucherId);
-
-                    if (voucherJson != null && !voucherJson.equals("null")) 
-                    {
-                        vouchers[i] = JsonbBuilder.create().fromJson(voucherJson, Voucher.class);
-                    }
-                }
+            for (Voucher v : allVouchers.values()) 
+            {
+                if (fiscalCode.equals(v.getUserId()))
+                    userVouchers.add(v);
             }
 
-            return Response.ok(vouchers).build();
-        } 
-        catch (Exception e) {
+            String resultJson = jsonb.toJson(userVouchers);
+            return Response.ok(resultJson, MediaType.APPLICATION_JSON).build();
+        }
+        catch (Exception e)
+        {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/{fiscalCode}/voucher")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createVoucher(@PathParam("fiscalCode") String fiscalCode, Voucher voucher) 
+    {
+        try
+        {
+            String balance_s = DatabaseConnection.Get("users/" + fiscalCode + "/balance");
+            double balance = Double.parseDouble(balance_s);
+
+            if (voucher.getAmount() > balance) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"status\":\"declined\",\"error\":\"Saldo insufficiente per creare il voucher richiesto.\"}")
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+            }
+
+            String voucherId = java.util.UUID.randomUUID().toString();
+            voucher.setId(voucherId);
+
+            String voucherJson = JsonbBuilder.create().toJson(voucher);
+
+            DatabaseConnection.Set("vouchers/" + voucherId, voucherJson);
+            DatabaseConnection.Increment("users/" + fiscalCode + "/balance", -voucher.getAmount());
+
+            return Response.status(Response.Status.CREATED)
+                           .entity(voucherJson)
+                           .type(MediaType.APPLICATION_JSON)
+                           .build();
+        }
+        catch (Exception e)
+        {
             return Response.serverError().build();
         }
     }
