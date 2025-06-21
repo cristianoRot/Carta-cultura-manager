@@ -6,17 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carta Cultura Giovani</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
     <div id="dashboardContainer">
         <nav id="sidebar">
-            <h2>Carta Cultura</h2>
+            <div class="sidebar-header">
+                <h2>Carta Cultura</h2>
+                <button id="sidebarToggleBtn" title="Comprimi/Espandi Sidebar">&laquo;</button>
+            </div>
             <ul>
-                <li><a href="#userRegistration">Registrazione</a></li>
-                <li><a href="#userLookup">Utente</a></li>
-                <li><a href="#voucherManagement">Buoni</a></li>
-                <li><a href="#systemStatusSection">Statistiche</a></li>
+                <li><a href="#userRegistration"><span class="icon">+</span> <span class="link-text">Registrazione</span></a></li>
+                <li><a href="#userLookup"><span class="icon">🔍</span> <span class="link-text">Utente</span></a></li>
+                <li><a href="#voucherManagement"><span class="icon">🎟️</span> <span class="link-text">Buoni</span></a></li>
+                <li><a href="#systemStatusSection"><span class="icon">📊</span> <span class="link-text">Statistiche</span></a></li>
             </ul>
             <p class="sidebar-credits">Progetto realizzato da Alessandro Rutigliano, Cristiano Rotunno e Davide Riccio</p>
         </nav>
@@ -24,59 +28,61 @@
         <main id="content">
             <h1>Gestione Carta Cultura Giovani</h1>
 
-            <section id="userRegistration">
-                <h2>Registrazione Utente</h2>
-                <form id="registrationForm">
-                    <div>
-                        <label for="regName">Nome:</label>
-                        <input type="text" id="regName" name="regName" required>
+            <div class="content-grid">
+                <section id="userRegistration">
+                    <h2><span class="icon">&#43;</span> Registrazione Utente</h2>
+                    <form id="registrationForm">
+                        <div class="form-row">
+                            <div>
+                                <label for="regName">Nome:</label>
+                                <input type="text" id="regName" name="regName" required>
+                            </div>
+                            <div>
+                                <label for="regSurname">Cognome:</label>
+                                <input type="text" id="regSurname" name="regSurname" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="regEmail">Email:</label>
+                            <input type="email" id="regEmail" name="regEmail" required>
+                        </div>
+                        <div>
+                            <label for="regFiscalCode">Codice Fiscale:</label>
+                            <input type="text" id="regFiscalCode" name="regFiscalCode" required minlength="16" maxlength="16">
+                        </div>
+                        <button type="button" id="registerUserBtn">Registra Utente</button>
+                    </form>
+                    <div id="registrationStatus"></div>
+                </section>
+                
+                <section id="userLookup">
+                    <h2><span class="icon">&#128269;</span> Ricerca Utente e Contributo</h2>
+                    <div class="lookup-form">
+                        <div>
+                            <label for="lookupFiscalCode">Codice Fiscale Utente:</label>
+                            <input type="text" id="lookupFiscalCode" name="lookupFiscalCode" minlength="16" maxlength="16">
+                        </div>
+                        <button type="button" id="lookupUserBtn">Cerca</button>
                     </div>
-                    <div>
-                        <label for="regSurname">Cognome:</label>
-                        <input type="text" id="regSurname" name="regSurname" required>
+                    <div id="lookupStatus"></div>
+
+                    <div id="userDataDisplay" style="display: none;">
+                        <h3>Dati Utente</h3>
+                        <p><strong>Nome:</strong> <span id="userName"></span></p>
+                        <p><strong>Cognome:</strong> <span id="userSurname"></span></p>
+                        <p><strong>Email:</strong> <span id="userEmail"></span></p>
+
+                        <h4>Stato Contributo</h4>
+                        <p><strong>Disponibile:</strong> €<span id="contribAvailable"></span></p>
+                        <p><strong>Allocato (non speso):</strong> €<span id="contribAllocated"></span></p>
+                        <p><strong>Speso:</strong> €<span id="contribSpent"></span></p>
+                        <p><strong>Totale:</strong> €<span id="contribTotal"></span></p>
                     </div>
-                    <div>
-                        <label for="regEmail">Email:</label>
-                        <input type="email" id="regEmail" name="regEmail" required>
-                    </div>
-                    <div>
-                        <label for="regFiscalCode">Codice Fiscale:</label>
-                        <input type="text" id="regFiscalCode" name="regFiscalCode" required minlength="16" maxlength="16">
-                    </div>
-                    <button type="button" id="registerUserBtn">Registra Utente</button>
-                </form>
-                <div id="registrationStatus"></div>
-            </section>
-
-            <hr>
-
-            <section id="userLookup">
-                <h2>Ricerca Utente e Contributo</h2>
-                <div class="lookup-form">
-                    <label for="lookupFiscalCode">Codice Fiscale Utente:</label>
-                    <input type="text" id="lookupFiscalCode" name="lookupFiscalCode" minlength="16" maxlength="16">
-                    <button type="button" id="lookupUserBtn">Cerca Utente</button>
-                </div>
-                <div id="lookupStatus"></div>
-
-                <div id="userDataDisplay" style="display: none;">
-                    <h3>Dati Utente</h3>
-                    <p><strong>Nome:</strong> <span id="userName"></span></p>
-                    <p><strong>Cognome:</strong> <span id="userSurname"></span></p>
-                    <p><strong>Email:</strong> <span id="userEmail"></span></p>
-
-                    <h4>Stato Contributo</h4>
-                    <p><strong>Disponibile:</strong> €<span id="contribAvailable"></span></p>
-                    <p><strong>Allocato (non speso):</strong> €<span id="contribAllocated"></span></p>
-                    <p><strong>Speso:</strong> €<span id="contribSpent"></span></p>
-                    <p><strong>Totale:</strong> €<span id="contribTotal"></span></p>
-                </div>
-            </section>
-
-            <hr>
+                </section>
+            </div>
 
             <section id="voucherManagement">
-                <h2>Gestione Buoni</h2>
+                <h2><span class="icon">&#127915;</span> Gestione Buoni</h2>
                 <div id="voucherStatus"></div>
 
                 <h3>Genera Nuovo Buono</h3>
@@ -107,42 +113,47 @@
                 </div>
             </section>
 
-            <hr>
-
             <section id="systemStatusSection">
-                <h2>Stato Globale del Sistema</h2>
-                <button type="button" id="refreshStatsBtn">Aggiorna Statistiche</button>
-                <div id="systemStatsStatus"></div>
+                <h2>
+                    <span><span class="icon">&#128200;</span> Stato Globale del Sistema</span>
+                    <button type="button" id="refreshStatsBtn"><span class="icon">&#8635;</span> Aggiorna</button>
+                </h2>
+                <div id="systemStatsStatus" class="error-message"></div>
                 <div id="systemStatsDisplay">
                     <div class="stats-item">
                         <span class="stats-label">Utenti registrati</span>
                         <span class="stats-value" id="statsTotalUsers">N/D</span>
-                        <div class="stats-bar"><div class="stats-bar-fill" id="barTotalUsers"></div></div>
                     </div>
                     <div class="stats-item">
                         <span class="stats-label">Contributi disponibili (€)</span>
                         <span class="stats-value" id="statsTotalContribAvailable">N/D</span>
-                        <div class="stats-bar"><div class="stats-bar-fill" id="barContribAvailable"></div></div>
                     </div>
                     <div class="stats-item">
                         <span class="stats-label">Contributi allocati (€)</span>
                         <span class="stats-value" id="statsTotalContribAllocated">N/D</span>
-                        <div class="stats-bar"><div class="stats-bar-fill" id="barContribAllocated"></div></div>
                     </div>
                     <div class="stats-item">
                         <span class="stats-label">Contributi spesi (€)</span>
                         <span class="stats-value" id="statsTotalContribSpent">N/D</span>
-                        <div class="stats-bar"><div class="stats-bar-fill" id="barContribSpent"></div></div>
                     </div>
                     <div class="stats-item">
                         <span class="stats-label">Buoni generati</span>
                         <span class="stats-value" id="statsTotalVouchersGenerated">N/D</span>
-                        <div class="stats-bar"><div class="stats-bar-fill" id="barVouchersGenerated"></div></div>
                     </div>
                     <div class="stats-item">
                         <span class="stats-label">Buoni consumati</span>
                         <span class="stats-value" id="statsTotalVouchersConsumed">N/D</span>
-                        <div class="stats-bar"><div class="stats-bar-fill" id="barVouchersConsumed"></div></div>
+                    </div>
+                </div>
+
+                <div id="chartsContainer">
+                    <div class="chart-wrapper chart-wrapper--pie">
+                        <h3>Distribuzione Contributi</h3>
+                        <canvas id="contributionChart"></canvas>
+                    </div>
+                    <div class="chart-wrapper chart-wrapper--bar">
+                        <h3>Utilizzo Buoni</h3>
+                        <canvas id="vouchersChart"></canvas>
                     </div>
                 </div>
             </section>

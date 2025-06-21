@@ -2,19 +2,34 @@ console.log("Script client-web caricato.");
 
 const API_BASE_URL = 'http://localhost:8080'; 
 let currentFiscalCode = null;
+let contributionChart = null;
+let vouchersChart = null;
 
 /**
  * Mostra un messaggio in un elemento specificato, opzionalmente stilizzandolo come errore.
  * @param {string} elementId - L'ID dell'elemento HTML in cui mostrare il messaggio.
  * @param {string} message - Il messaggio da mostrare.
  * @param {boolean} isError - Se il messaggio rappresenta un errore.
+ * @param {boolean} isPermanentError - Se il messaggio di errore non scompare.
  */
-function displayMessage(elementId, message, isError = false) {
+function displayMessage(elementId, message, isError = false, isPermanentError = false) {
     const element = document.getElementById(elementId);
     if (element) {
         element.textContent = message;
         element.style.color = isError ? 'red' : 'green';
         element.style.display = message ? 'block' : 'none'; 
+
+        // Nascondi messaggio dopo 5 secondi se non è un errore permanente
+        if (!isPermanentError) {
+            setTimeout(() => {
+                element.style.opacity = '0';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                    element.textContent = '';
+                    element.style.opacity = '1';
+                }, 500);
+            }, 5000);
+        }
     }
 }
 
@@ -386,6 +401,114 @@ async function handleModifyVoucherCategory(event) {
 }
 
 /**
+ * Renderizza o aggiorna il grafico a torta per la distribuzione dei contributi.
+ * @param {object} stats - L'oggetto con le statistiche di sistema.
+ */
+function renderContributionChart(stats) {
+    const ctx = document.getElementById('contributionChart').getContext('2d');
+
+    if (contributionChart) {
+        contributionChart.destroy();
+    }
+
+    contributionChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Disponibile', 'Allocato', 'Speso'],
+            datasets: [{
+                label: 'Distribuzione Contributi',
+                data: [
+                    stats.totalContributionAvailable,
+                    stats.totalContributionAllocated,
+                    stats.totalContributionSpent
+                ],
+                backgroundColor: [
+                    'rgba(67, 97, 238, 0.8)',
+                    'rgba(255, 152, 0, 0.8)',
+                    'rgba(239, 83, 80, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(67, 97, 238, 1)',
+                    'rgba(255, 152, 0, 1)',
+                    'rgba(239, 83, 80, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(context.parsed);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Renderizza o aggiorna il grafico a barre per l'utilizzo dei buoni.
+ * @param {object} stats - L'oggetto con le statistiche di sistema.
+ */
+function renderVouchersChart(stats) {
+    const ctx = document.getElementById('vouchersChart').getContext('2d');
+
+    if (vouchersChart) {
+        vouchersChart.destroy();
+    }
+
+    vouchersChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Buoni Generati', 'Buoni Consumati'],
+            datasets: [{
+                label: 'Numero di Buoni',
+                data: [stats.totalVouchersGenerated, stats.totalVouchersConsumed],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(75, 192, 192, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+/**
  * Recupera e mostra le statistiche globali del sistema.
  */
 async function fetchAndDisplaySystemStats() {
@@ -402,41 +525,24 @@ async function fetchAndDisplaySystemStats() {
             document.getElementById('statsTotalVouchersGenerated').textContent = stats.totalVouchersGenerated;
             document.getElementById('statsTotalVouchersConsumed').textContent = stats.totalVouchersConsumed;
 
-            // Aggiorna barre grafiche
-            updateStatBars(stats);
+            renderContributionChart(stats);
+            renderVouchersChart(stats);
 
             displayMessage('systemStatsStatus', '', false);
         } else {
-            displayMessage('systemStatsStatus', `Errore nel caricamento delle statistiche: ${response.statusText} (Code: ${response.status})`, true);
+            const errorText = `Errore nel caricamento delle statistiche.`;
+            displayMessage('systemStatsStatus', errorText, true, true);
+            // Nascondi i valori se c'è un errore
+            const statValues = document.querySelectorAll('#systemStatsDisplay .stats-value');
+            statValues.forEach(el => el.textContent = 'N/D');
         }
     } catch (error) {
         console.error('System stats fetch error:', error);
-        displayMessage('systemStatsStatus', 'Errore di connessione durante il caricamento delle statistiche.', true);
+        const errorText = 'Errore di connessione durante il caricamento delle statistiche.';
+        displayMessage('systemStatsStatus', errorText, true, true);
+        const statValues = document.querySelectorAll('#systemStatsDisplay .stats-value');
+        statValues.forEach(el => el.textContent = 'N/D');
     }
-}
-
-/**
- * Aggiorna la larghezza delle barre grafiche in base ai valori ricevuti.
- * @param {Object} stats - Oggetto contenente le statistiche del sistema.
- */
-function updateStatBars(stats) {
-    // Utenti: normalizza su 1000 per esempio
-    const maxUsers = 1000;
-    const usersPerc = Math.min((stats.totalUsers / maxUsers) * 100, 100);
-    document.getElementById('barTotalUsers').style.width = usersPerc + '%';
-
-    // Contributi
-    const contribValues = [stats.totalContributionAvailable, stats.totalContributionAllocated, stats.totalContributionSpent];
-    const maxContrib = Math.max(...contribValues, 1); // evita divisione per zero
-    document.getElementById('barContribAvailable').style.width = ((stats.totalContributionAvailable / maxContrib) * 100) + '%';
-    document.getElementById('barContribAllocated').style.width = ((stats.totalContributionAllocated / maxContrib) * 100) + '%';
-    document.getElementById('barContribSpent').style.width = ((stats.totalContributionSpent / maxContrib) * 100) + '%';
-
-    // Vouchers
-    const voucherValues = [stats.totalVouchersGenerated, stats.totalVouchersConsumed];
-    const maxVouchers = Math.max(...voucherValues, 1);
-    document.getElementById('barVouchersGenerated').style.width = ((stats.totalVouchersGenerated / maxVouchers) * 100) + '%';
-    document.getElementById('barVouchersConsumed').style.width = ((stats.totalVouchersConsumed / maxVouchers) * 100) + '%';
 }
 
 // =====================
@@ -486,4 +592,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Caricamento iniziale delle statistiche di sistema
     fetchAndDisplaySystemStats();
+
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const dashboardContainer = document.getElementById('dashboardContainer');
+
+    sidebarToggleBtn.addEventListener('click', () => {
+        dashboardContainer.classList.toggle('sidebar-collapsed');
+    });
 });

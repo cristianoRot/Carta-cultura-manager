@@ -1,452 +1,231 @@
-/* ======================
-   FONT E BODY GENERALE
-   ====================== */
+/* ========================================================================== */
+/* ====================== RESET E IMPOSTAZIONI GLOBALI ====================== */
+/* ========================================================================== */
+:root {
+    --clr-primary: #5B21B6;
+    --clr-primary-light: #6366F1;
+    --clr-bg-main: #F5F3FF;
+    --clr-bg-sidebar: var(--clr-primary);
+    --clr-bg-card: #ffffff;
+    --clr-text-light: #ffffff;
+    --clr-text-dark: #1e293b;
+    --clr-text-muted: #64748b;
+    --clr-border: #e2e8f0;
+    --shadow-sm: 0 2px 8px rgba(91, 33, 182, 0.07);
+    --shadow-md: 0 6px 28px rgba(91, 33, 182, 0.1);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --transition-base: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 
-/* Importa font  */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
-/* ======================
-   TITOLI E SEZIONI
-   ====================== */
-
-/* Stile generale del body */
-body {
-    font-family: 'Montserrat', Arial, sans-serif;
-    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
-    color: #22223b;
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background-color: var(--clr-bg-main);
+    color: var(--clr-text-dark);
     line-height: 1.6;
 }
 
-/* Titoli principali e sottotitoli */
-h1, h2, h3, h4 {
-    color: #3a0ca3;
-    text-align: center;
-    margin-top: 0.5em;
-}
-
-h1 {
-    margin-bottom: 30px;
-}
-
-h2 {
-    margin-bottom: 10px;
-}
-
-h3 {
-    margin-bottom: 5px;
-}
-
-h4 {
-    margin-bottom: 5px;
-}
-
-/* Sezioni principali */
-section {
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 18px;
-    box-shadow: 0 6px 28px rgba(58,12,163,0.08);
-    margin: 2em auto;
-    padding: 2em;
-    max-width: 700px;
-    position: relative;
-    overflow: hidden;
-    animation: fadeIn 1s;
-    padding-right: 3em;
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-/* Accent bar in alto */
-section::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    background: linear-gradient(90deg,#3a0ca3 0%,#4361ee 100%);
-}
-
-hr {
-    border: none;
-    border-top: 2px solid #e0e7ff;
-    margin: 2em 0;
-}
-
-/* ======================
-   FORM E INPUT
-   ====================== */
-
-label {
-    display: block;
-    margin-bottom: 0.3em;
-    font-weight: 600;
-}
-
-input, select {
-    width: 100%;
-    padding: 0.7em;
-    border: 1px solid #bdbdbd;
-    border-radius: 8px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    font-size: 1em;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
-}
-
-input:focus, select:focus {
-    border-color: #3a0ca3;
-    box-shadow: 0 0 0 2px #b6ccfe;
-    outline: none;
-}
-
-form div, #userLookup > div {
-    margin-bottom: 1em;
-}
-
-/* ======================
-   BOTTONI
-   ====================== */
-
-button {
-    background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.8em 1.5em;
-    font-size: 1em;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(67,97,238,0.12);
-    transition: background var(--transition-base), transform 0.25s ease-out;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
-}
-
-button:hover {
-    background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
-    transform: translateY(-2px) scale(1.04);
-}
-
-/* ======================
-   STATUS E MESSAGGI
-   ====================== */
-
-#registrationStatus,
-#lookupStatus,
-#voucherStatus,
-#systemStatsStatus {
-    margin-top: 15px;
-    font-weight: bold;
-    min-height: 1.2em;
-    display: none;
-    transition: opacity 0.5s;
-    opacity: 1;
-}
-
-/* ======================
-   SEZIONE DATI UTENTE
-   ====================== */
-
-#userDataDisplay {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #e0e7ff;
-    border-radius: 10px;
-}
-
-#userDataDisplay p {
-    margin-bottom: 8px;
-}
-
-#userDataDisplay span {
-    font-weight: normal;
-    color: #555;
-}
-
-/* ======================
-   SEZIONE BUONI (VOUCHER)
-   ====================== */
-
-#voucherManagement {
-}
-
-#voucherList {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-}
-
-#voucherList > div {
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 18px rgba(17,17,26,0.1);
-    border-radius: 10px;
-    padding: 1em;
-    animation: fadeInUp 0.7s;
-}
-
-/* Stile singolo buono */
-.voucher-item {
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 18px rgba(17,17,26,0.1);
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-.voucher-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 28px rgba(17,17,26,0.12);
-}
-
-.voucher-item p {
-    margin: 5px 0;
-}
-
-/* Bottoni azioni buono */
-.voucher-item .voucher-actions button {
-    padding: 5px 10px;
-    font-size: 14px;
-    margin-top: 10px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-}
-
-.voucher-item .voucher-actions button.consumeVoucherBtn {
-    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
-    color: #fff;
-}
-.voucher-item .voucher-actions button.consumeVoucherBtn:hover {
-    background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
-}
-
-.voucher-item .voucher-actions button.deleteVoucherBtn {
-    background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
-    color: #fff;
-}
-.voucher-item .voucher-actions button.deleteVoucherBtn:hover {
-    background: linear-gradient(90deg, #f09819 0%, #ff5858 100%);
-}
-
-.voucher-item .voucher-actions button.modifyVoucherBtn {
-    background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%);
-    color: #fff;
-}
-.voucher-item .voucher-actions button.modifyVoucherBtn:hover {
-    background: linear-gradient(90deg, #ee0979 0%, #ff6a00 100%);
-}
-
-.voucher-item .voucher-actions button:hover {
-    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-}
-
-/* ======================
-   SEZIONE STATISTICHE SISTEMA
-   ====================== */
-
-#systemStatusSection {
-}
-
-#systemStatsDisplay p {
-    margin-bottom: 8px;
-    font-size: 1em;
-}
-
-#systemStatsDisplay strong {
-    color: #3a0ca3;
-}
-
-#refreshStatsBtn {
-    margin-bottom: 15px;
-    background-color: #17a2b8;
-}
-
-#refreshStatsBtn:hover {
-    background-color: #117a8b;
-}
-
-/* ======================
-   UTILITY E ANIMAZIONI
-   ====================== */
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(30px);}
-    to { opacity: 1; transform: translateY(0);}
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(40px);}
-    to { opacity: 1; transform: translateY(0);}
-}
-
-/* ======================
-   DASHBOARD LAYOUT
-   ====================== */
-
+/* ========================================================================== */
+/* ========================= LAYOUT PRINCIPALE (DASHBOARD) ========================== */
+/* ========================================================================== */
 #dashboardContainer {
     display: grid;
     grid-template-columns: 260px 1fr;
     min-height: 100vh;
+    transition: grid-template-columns 0.3s ease;
 }
 
 #sidebar {
-    background: #3a0ca3;
-    color: #fff;
-    padding: 2em 1em;
+    background: linear-gradient(180deg, var(--clr-primary) 0%, var(--clr-primary-light) 100%);
+    color: var(--clr-text-light);
+    padding: 2em 1.5em;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-#sidebar h2 {
-    color: #fff;
-    margin-top: 0;
+#content {
+    padding: 2em 3em;
+    overflow-y: auto;
+}
+
+/* ========================================================================== */
+/* ================================= SIDEBAR ================================ */
+/* ========================================================================== */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+#sidebar .sidebar-header h2 {
+    color: var(--clr-text-light);
+    margin: 0;
+    font-size: 1.6em;
 }
 
 #sidebar ul {
     list-style: none;
-    padding: 0;
-    margin: 2em 0 0 0;
     width: 100%;
 }
 
 #sidebar ul li {
-    margin-bottom: 1em;
+    margin-bottom: 0.8em;
 }
 
 #sidebar ul li a {
-    color: #fff;
+    color: var(--clr-text-light);
     text-decoration: none;
     font-weight: 600;
-    display: block;
-    padding: 0.7em 1em;
-    border-radius: 8px;
-    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    padding: 0.8em 1em;
+    border-radius: var(--radius-md);
+    transition: background var(--transition-base);
 }
 
 #sidebar ul li a:hover,
 #sidebar ul li a:focus {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-#content {
-    padding: 2em;
+#sidebar .icon {
+    font-size: 1.2em;
+    width: 20px;
+    text-align: center;
 }
 
+.sidebar-credits {
+    margin-top: auto;
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    line-height: 1.4;
+    padding-top: 2em;
+}
+
+
+/* ========================================================================== */
+/* ================================ CONTENUTO =============================== */
+/* ========================================================================== */
+#content h1 {
+    color: var(--clr-primary);
+    margin-bottom: 1.5em;
+    font-size: 2.2em;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    align-items: stretch;
+    gap: 2em;
+    margin-bottom: 2em;
+}
 
 section {
-    max-width: 700px;
+    background: var(--clr-bg-card);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 2em;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
-
-@media (max-width: 768px) {
-    #dashboardContainer {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-    }
-
-    #sidebar {
-        flex-direction: row;
-        justify-content: space-around;
-        padding: 1em;
-    }
-
-    #sidebar ul {
-        display: flex;
-        gap: 1em;
-        margin: 0;
-    }
-
-    #sidebar ul li {
-        margin: 0;
-    }
-
-    section {
-        max-width: 100%;
-    }
-}
-
-/* ======================
-   CARD
-   ====================== */
-
-/* Accent bar in alto */
-section::before {
-    height: 8px;
-    background: linear-gradient(90deg, var(--clr-primary) 0%, var(--clr-primary-light) 100%);
-}
-
-/* ======================
-   PROGRESS BAR (STATISTICHE)
-   ====================== */
-
-.stats-item {
-    margin-bottom: 20px;
-}
-
-.stats-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.stats-value {
-    font-weight: 700;
-    color: #3a0ca3;
-}
-
-.stats-bar {
-    background: #e0e7ff;
-    border-radius: 10px;
-    height: 12px;
-    margin-top: 6px;
-    overflow: hidden;
-}
-
-.stats-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg,#4361ee 0%,#3a0ca3 100%);
-    width: 0%;
-    transition: width 0.6s ease-out;
-}
-
-
-:root {
-    --clr-primary: #3a0ca3;
-    --clr-primary-light: #4361ee;
-    --clr-card-bg: #ffffff;
-    --clr-shadow: rgba(17, 17, 26, 0.08);
-    --radius-card: 20px;
-    --transition-base: 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
 
 section:hover {
-    transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 20px 45px rgba(17, 17, 26, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 35px rgba(58, 12, 163, 0.1);
 }
 
-/* Input e Select */
+section h2 {
+    color: var(--clr-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 1.5em;
+    font-size: 1.4em;
+}
+
+section h2 .icon {
+    font-size: 1em;
+}
+
+/* Aggiunge spazio sotto le sezioni principali nel contenuto */
+#content > section {
+    margin-bottom: 2em;
+}
+
+/* ========================================================================== */
+/* =============================== FORM E INPUT ============================= */
+/* ========================================================================== */
+form div {
+    margin-bottom: 1.2em;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5em;
+}
+
+.form-row > div {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
 input, select {
-    background: #fdfdff;
-    border: 1px solid #d1d1e9;
-    padding: 0.85em 1em;
-    border-radius: 10px;
+    width: 100%;
+    padding: 0.8em 1em;
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
     transition: border-color var(--transition-base), box-shadow var(--transition-base);
+    font-size: 1em;
+    background-color: #fdfdff;
 }
 
 input:focus, select:focus {
-    border-color: var(--clr-primary);
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+    border-color: var(--clr-primary-light);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    outline: none;
 }
 
-/* Bottoni */
+
+/* ========================================================================== */
+/* ================================= BOTTONI ================================ */
+/* ========================================================================== */
+button {
+    background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-light) 100%);
+    color: var(--clr-text-light);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+}
+
 button:hover {
-    transform: translateY(-3px) scale(1.05);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
 }
 
 button:active {
@@ -454,157 +233,292 @@ button:active {
 }
 
 
-form div, #userLookup > div {
-    margin-bottom: 1.3em;
-}
-
-
-section {
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-}
-
-
-section:hover {
-    transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 20px 45px rgba(17, 17, 26, 0.15);
-}
-
-
-.voucher-item {
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 18px rgba(17,17,26,0.1);
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-.voucher-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 28px rgba(17,17,26,0.12);
-}
-
-
-button {
-    background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
-}
-
-button:hover {
-    background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
-}
-
-
-.voucher-item .voucher-actions button {
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-}
-
-.voucher-item .voucher-actions button:hover {
-    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-}
-input, select {
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
-}
-
-
-section {
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-.voucher-item {
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-button:hover, section:hover, .voucher-item:hover {
-    transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
-}
-
-/* ====================== 
-   SIDEBAR CREDITS
-   ====================== */
-.sidebar-credits {
-    margin-top: auto;
-    font-size: 0.75em;
-    color: rgba(255, 255, 255, 0.55);
-    text-align: center;
-    line-height: 1.4;
-    padding-top: 2em;
-}
-
-
-
-
-button,
-.voucher-item .voucher-actions button {
-    border-radius: 10px; /* corner radius */
-    padding: 0.9em 1.9em;
-    font-size: 1em;
-    font-weight: 700;
-    background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
-    box-shadow: 0 4px 14px rgba(58, 12, 163, 0.15);
-    transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, background 0.3s ease-out;
-}
-button:hover,
-.voucher-item .voucher-actions button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 26px rgba(67, 97, 238, 0.25);
-    background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
-}
-button:active,
-.voucher-item .voucher-actions button:active {
-    transform: translateY(0) scale(0.97);
-}
-
-
+/* ========================================================================== */
+/* ========================== SEZIONI SPECIFICHE ============================ */
+/* ========================================================================== */
+/* --- Ricerca Utente --- */
 .lookup-form {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
     gap: 1rem;
 }
-.lookup-form label {
-    flex: 1 1 100%;
-}
-#lookupFiscalCode {
+
+.lookup-form > div {
     flex: 1 1 auto;
-    max-width: 300px;
-}
-#lookupUserBtn {
-    flex: 0 0 auto;
-    margin-bottom: 2px; 
+    margin-bottom: 0;
 }
 
-
-input, select {
-    max-width: 350px;
-    border-radius: 12px;
-    padding: 0.9em 1.1em;
-    background: #ffffff;
+.lookup-form button {
+    flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
-    input, select {
-        max-width: 100%; /* su mobile resta full width */
-    }
-    .lookup-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    #lookupUserBtn {
-        width: 100%;
-    }
+#userDataDisplay {
+    margin-top: 1.5em;
+    padding: 1.5em;
+    background-color: #fcfcff;
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
 }
 
+#userDataDisplay h3, #userDataDisplay h4 {
+    color: var(--clr-primary);
+    margin-bottom: 0.5em;
+    gap: 1em;
+}
 
-#registrationForm {
+/* --- Gestione Buoni --- */
+#voucherList {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.voucher-item {
+    background: #fcfcff;
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    padding: 1em 1.5em;
+}
+
+.voucher-item p {
+    margin: 5px 0;
+    gap: 1.5em;
+}
+
+.voucher-item .voucher-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 0.5em;
+}
+
+.voucher-item .voucher-actions button {
+    padding: 5px 12px;
+    font-size: 14px;
+}
+.voucher-item .voucher-actions button.consumeVoucherBtn {
+    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+}
+.voucher-item .voucher-actions button.deleteVoucherBtn {
+    background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+}
+.voucher-item .voucher-actions button.modifyVoucherBtn {
+    background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%);
+}
+
+/* --- Statistiche Sistema --- */
+#systemStatusSection h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#systemStatusSection h2 > span {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+#systemStatusSection #refreshStatsBtn {
+    padding: 0.6em 1.2em;
+    font-size: 0.9em;
+}
+
+#systemStatsDisplay {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem 3.5rem; /* row-gap col-gap */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5em;
 }
-#registrationForm > div {
-    margin-bottom: 0; /* gap gestisce lo spacing */
+
+.stats-item {
+    background-color: #fcfcff;
+    padding: 1.5em;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+}
+
+.stats-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    color: var(--clr-text-muted);
+    grid-column: span 3;
+}
+
+.stats-value {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--clr-primary);
+}
+
+#chartsContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2em;
+    margin-top: 2em;
+}
+
+@media (min-width: 992px) {
+    #chartsContainer {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    .chart-wrapper--pie {
+        grid-column: span 2;
+    }
+    .chart-wrapper--bar {
+        grid-column: span 3;
+    }
+}
+
+.chart-wrapper {
+    background-color: #fcfcff;
+    padding: 1.5em;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+}
+
+.chart-wrapper h3 {
+    text-align: center;
+    margin-bottom: 1em;
+    color: var(--clr-primary-light);
+}
+
+/* ========================================================================== */
+/* ========================== MESSAGGI DI STATO ============================= */
+/* ========================================================================== */
+#registrationStatus,
+#lookupStatus,
+#voucherStatus,
+#systemStatsStatus {
+    margin-top: 15px;
+    font-weight: bold;
+    padding: 0.8em 1.2em;
+    border-radius: var(--radius-md);
+    display: none; /* Inizialmente nascosto */
+}
+
+#systemStatsStatus.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+    display: block; /* Mostra quando ha la classe */
+    margin-bottom: 1em;
+}
+
+
+/* ========================================================================== */
+/* ================================ RESPONSIVE ============================== */
+/* ========================================================================== */
+@media (max-width: 1200px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 992px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #dashboardContainer {
+        grid-template-columns: 1fr;
+    }
+
+    #sidebar {
+        grid-row: 1;
+        flex-direction: row;
+        align-items: center;
+        padding: 1em;
+        justify-content: space-between;
+    }
+    
+    #sidebar h2 {
+        margin: 0;
+    }
+
+    #sidebar ul {
+        display: flex;
+        gap: 0.5em;
+        margin: 0;
+        width: auto;
+    }
+
+    #sidebar ul li a {
+        padding: 0.5em;
+    }
+
+    #sidebar ul li a span:not(.icon) {
+        display: none;
+    }
+
+    #sidebar .sidebar-credits, #sidebarToggleBtn {
+        display: none;
+    }
+
+    #content {
+        padding: 1.5em;
+    }
+    
+    #content h1 {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-row, .lookup-form {
+        flex-direction: column;
+        gap: 1.2em;
+    }
+}
+
+/* Stili per la sidebar collassabile */
+#dashboardContainer.sidebar-collapsed {
+    grid-template-columns: 80px 1fr;
+}
+
+/* Nasconde gli elementi testuali */
+#dashboardContainer.sidebar-collapsed .link-text,
+#dashboardContainer.sidebar-collapsed .sidebar-credits,
+#dashboardContainer.sidebar-collapsed .sidebar-header h2 {
+    display: none;
+}
+
+/* Centra gli elementi visibili (icone e bottone) */
+#dashboardContainer.sidebar-collapsed .sidebar-header {
+    justify-content: center;
+}
+
+#dashboardContainer.sidebar-collapsed #sidebar ul {
+    align-items: center;
+}
+
+#dashboardContainer.sidebar-collapsed #sidebar ul a {
+    justify-content: center;
+    padding: 0.8em;
+}
+
+/* Ruota il bottone per indicare lo stato */
+#dashboardContainer.sidebar-collapsed #sidebarToggleBtn {
+    transform: rotate(180deg);
+}
+
+/* Stile del bottone per collassare */
+#sidebarToggleBtn {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--clr-text-light);
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    transition: all var(--transition-base);
+}
+
+#sidebarToggleBtn:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 

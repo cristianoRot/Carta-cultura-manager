@@ -33,10 +33,10 @@
     "stats": {
       "userCount": 3,
       "totalAvailable": 1200,
-      "totalAllocated": 300,
-      "totalSpent": 0,
-      "totalVouchers": 0,
-      "vouchersConsumed": 0
+      "totalAllocated": 700,
+      "totalSpent": 400,
+      "totalVouchers": 69,
+      "vouchersConsumed": 30
     }
   }
 }
