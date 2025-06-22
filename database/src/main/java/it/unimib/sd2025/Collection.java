@@ -32,7 +32,7 @@ public class Collection
         } 
         catch (JSONException e) 
         {
-            System.err.println("Error parsing JSON: " + e.getMessage());
+            System.err.println("Error parsing JSON (Collection): " + e.getMessage());
         }
     }
 

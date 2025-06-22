@@ -1,4 +1,4 @@
-package it.unimib.sd2025.Voucher;
+package it.unimib.sd2025.User;
 
 /**
  * Classe che rappresenta un buono nel sistema.

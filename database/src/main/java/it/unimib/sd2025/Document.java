@@ -32,7 +32,7 @@ public class Document
         } 
         catch (JSONException e) 
         {
-            System.err.println("Error parsing JSON: " + e.getMessage());
+            System.err.println("Error parsing JSON (Document): " + e.getMessage());
         }
     }
 

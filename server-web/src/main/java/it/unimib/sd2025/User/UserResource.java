@@ -6,7 +6,6 @@ import java.util.Locale;
 import java.util.HashMap;
 
 import it.unimib.sd2025.System.DatabaseConnection;
-import it.unimib.sd2025.Voucher.Voucher;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import java.util.Map;
