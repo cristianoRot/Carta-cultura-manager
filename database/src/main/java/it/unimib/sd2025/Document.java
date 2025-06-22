@@ -131,7 +131,7 @@ public class Document
                 if (!first) {
                     json.append(",");
                 }
-                json.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue()).append("\"");
+                json.append("\"").append(entry.getKey()).append("\":").append(JSONObject.quote(entry.getValue()));
                 first = false;
             }
             

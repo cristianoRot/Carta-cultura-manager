@@ -66,7 +66,7 @@ public class Main
 
         private String HandleRequest(String command) 
         {
-            String[] parts = command.split(" ");
+            String[] parts = command.split(" ", 3);
             if (parts.length < 2) return ResponseCode.BAD_REQUEST;
 
             String cmd = parts[0].toUpperCase();
