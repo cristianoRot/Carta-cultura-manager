@@ -38,5 +38,62 @@
       "totalVouchers": 69,
       "vouchersConsumed": 30
     }
+  },
+
+  "vouchers": {
+    "3b922dc6-fa73-474b-b0f5-4529505b120a": {
+      "id": "3b922dc6-fa73-474b-b0f5-4529505b120a",
+      "amount": 40,
+      "category": "musica",
+      "status": "generated",
+      "createdAt": "2025-05-13T20:15:24.043760",
+      "consumedAt": "2025-05-23T20:15:24.043760",
+      "userId": "RTNCST04R06G942O"
+    },
+    "daa33953-75e3-47fe-9de9-acef1affb98a": {
+      "id": "daa33953-75e3-47fe-9de9-acef1affb98a",
+      "amount": 55,
+      "category": "cultura",
+      "status": "consumed",
+      "createdAt": "2025-05-05T20:15:24.043888",
+      "consumedAt": "2025-05-15T20:15:24.043888",
+      "userId": "RTNCST04R06G942O"
+    },
+    "439a7af7-6cea-4ea4-80ac-cb25b72df37b": {
+      "id": "439a7af7-6cea-4ea4-80ac-cb25b72df37b",
+      "amount": 70,
+      "category": "cinema",
+      "status": "generated",
+      "createdAt": "2025-05-10T20:15:24.043978",
+      "consumedAt": null,
+      "userId": "VRDLNZ90A01F205X"
+    },
+    "827d2f63-594e-4dda-bbe0-5ec2f384e0c8": {
+      "id": "827d2f63-594e-4dda-bbe0-5ec2f384e0c8",
+      "amount": 75,
+      "category": "musei",
+      "status": "consumed",
+      "createdAt": "2025-06-08T20:15:24.044065",
+      "consumedAt": "2025-06-16T20:15:24.044065",
+      "userId": "VRDLNZ90A01F205X"
+    },
+    "36ce5b56-bcf6-45a1-97a9-b77cb9bbcabd": {
+      "id": "36ce5b56-bcf6-45a1-97a9-b77cb9bbcabd",
+      "amount": 35,
+      "category": "musica",
+      "status": "consumed",
+      "createdAt": "2025-06-16T20:15:24.044325",
+      "consumedAt": "2025-06-20T20:15:24.044325",
+      "userId": "VRDLNZ90A01F205X"
+    },
+    "5acd2c4b-8e65-4689-8bf9-00fa1a15563b": {
+      "id": "5acd2c4b-8e65-4689-8bf9-00fa1a15563b",
+      "amount": 40,
+      "category": "musica",
+      "status": "generated",
+      "createdAt": "2025-05-18T20:15:24.044716",
+      "consumedAt": null,
+      "userId": "BNCLDI75C22L219Y"
+    }
   }
 }

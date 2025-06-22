@@ -92,12 +92,20 @@ public class Main
         {
             try
             {
-                switch (command) {
-                    case "GET": return database.get(colKey).toString();
-                    case "SET": return database.put(colKey, new Collection(json)).toString();
-                    case "DEL": return database.remove(colKey).toString();
-                    case "EXISTS": return database.containsKey(colKey) ? "true" : "false";
-                    default: return ResponseCode.BAD_REQUEST;
+                synchronized (database) {
+                    switch (command) {
+                        case "GET": {
+                            Collection col = database.get(colKey);
+                            if (col == null) {
+                                return ResponseCode.NOT_FOUND;
+                            }
+                            return col.toString();
+                        }
+                        case "SET": return database.put(colKey, new Collection(json)).toString();
+                        case "DEL": return database.remove(colKey).toString();
+                        case "EXISTS": return database.containsKey(colKey) ? "true" : "false";
+                        default: return ResponseCode.BAD_REQUEST;
+                    }
                 }
             }
             catch (Exception e)
@@ -112,7 +120,13 @@ public class Main
             if (collection == null) return ResponseCode.ERROR;
 
             switch (command) {
-                case "GET": return collection.Get(docKey).toString();
+                case "GET": {
+                    Document doc = collection.Get(docKey);
+                    if (doc == null) {
+                        return ResponseCode.NOT_FOUND;
+                    }
+                    return doc.toString();
+                }
                 case "SET": return collection.Set(docKey, json);
                 case "DEL": return collection.Delete(docKey);
                 case "EXISTS": return collection.Exists(docKey);
@@ -133,7 +147,13 @@ public class Main
             if (document == null) return ResponseCode.BAD_REQUEST;
 
             switch (command) {
-                case "GET": return document.Get(parmKey);
+                case "GET": {
+                    var par = document.Get(parmKey);
+                    if (par == null) {
+                        return ResponseCode.NOT_FOUND;
+                    }
+                    return par.toString();
+                }
                 case "SET": return document.Set(parmKey, value);
                 case "DEL": return document.Delete(parmKey);
                 case "EXISTS": return document.Exists(parmKey);

@@ -1,9 +1,7 @@
 package it.unimib.sd2025.User;
 
-/**
- * Classe che rappresenta un buono nel sistema.
- */
-public class Voucher {
+public class Voucher 
+{
     private String id;
     private double amount;
     private String category;

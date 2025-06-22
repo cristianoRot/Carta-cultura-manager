@@ -2,6 +2,8 @@ package it.unimib.sd2025.User;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.HashMap;
 
@@ -9,6 +11,7 @@ import it.unimib.sd2025.System.DatabaseConnection;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.List;
 import java.util.ArrayList;
 import jakarta.ws.rs.*;
@@ -71,7 +74,7 @@ public class UserResource {
         {
             String userJson = DatabaseConnection.Get("users/" + fiscalCode);
 
-            if (userJson == null || userJson.equals("null")) 
+            if (userJson == null || userJson.equals("NOT_FOUND")) 
             {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
@@ -117,10 +120,9 @@ public class UserResource {
         {
             String vouchersJson = DatabaseConnection.Get("vouchers");
 
-            if (vouchersJson == null || vouchersJson.equals("ERROR") || vouchersJson.isBlank()) 
+            if (vouchersJson == null || vouchersJson.equals("NOT_FOUND") || vouchersJson.isBlank()) 
                 return Response.ok("[]", MediaType.APPLICATION_JSON).build();
             
-
             Jsonb jsonb = JsonbBuilder.create();
             Map<?, ?> rawVouchersMap = jsonb.fromJson(vouchersJson, Map.class);
             Map<String, Voucher> allVouchers = new HashMap<>(rawVouchersMap.size());
@@ -175,6 +177,11 @@ public class UserResource {
 
             DatabaseConnection.Set("vouchers/" + voucherId, voucherJson);
             DatabaseConnection.Increment("users/" + fiscalCode + "/balance", -voucher.getAmount());
+            DatabaseConnection.Increment("users/" + fiscalCode + "/contribAllocated", voucher.getAmount());
+
+            DatabaseConnection.Increment("system/stats/totalVouchers", 1);
+            DatabaseConnection.Increment("system/stats/totalAvailable", -voucher.getAmount());
+            DatabaseConnection.Increment("system/stats/totalAllocated", voucher.getAmount());
 
             return Response.status(Response.Status.CREATED)
                            .entity(voucherJson)
@@ -184,6 +191,46 @@ public class UserResource {
         catch (Exception e)
         {
             return Response.serverError().build();
+        }
+    }
+
+    @POST
+    @Path("/{fiscalCode}/voucher/{voucherId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response consumeVoucher(@PathParam("fiscalCode") String fiscalCode, @PathParam("voucherId") String voucherId) 
+    {
+        try 
+        {
+            String voucherJson = DatabaseConnection.Get("vouchers/" + voucherId);
+
+            if (voucherJson == null || voucherJson.equals("NOT_FOUND"))
+                return Response.status(Response.Status.NOT_FOUND).entity("Voucher non trovato").build();
+
+            Voucher voucher = JsonbBuilder.create().fromJson(voucherJson, Voucher.class);
+
+            if (!voucher.getUserId().equals(fiscalCode))
+                return Response.status(Response.Status.FORBIDDEN).entity("Il Voucher non è di tua proprietà").build();
+
+            if (voucher.getStatus().equals("consumed"))
+                return Response.status(Response.Status.BAD_REQUEST).entity("Voucher già consumato").build();
+
+            voucher.setStatus("consumed");
+            voucher.setConsumedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            
+            DatabaseConnection.Set("vouchers/" + voucherId, JsonbBuilder.create().toJson(voucher));
+            
+            DatabaseConnection.Increment("users/" + fiscalCode + "/contribAllocated", -voucher.getAmount());
+            DatabaseConnection.Increment("users/" + fiscalCode + "/contribSpent", +voucher.getAmount());
+            
+            DatabaseConnection.Increment("system/stats/vouchersConsumed", 1);
+            DatabaseConnection.Increment("system/stats/totalAllocated", -voucher.getAmount());
+            DatabaseConnection.Increment("system/stats/totalSpent", voucher.getAmount());
+            
+            return Response.ok(voucher).build();
+        } 
+        catch (Exception ex) 
+        {
+            return Response.serverError().entity("Errore: " + ex.getMessage()).build();
         }
     }
 }

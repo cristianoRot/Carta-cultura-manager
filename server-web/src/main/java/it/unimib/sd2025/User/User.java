@@ -1,9 +1,5 @@
 package it.unimib.sd2025.User;
 
-/**
- * Classe che rappresenta un utente nel sistema.
- */
-
 public class User 
 {
     private String fiscalCode;
@@ -61,5 +57,21 @@ public class User
 
     public void setFiscalCode(String fiscalCode) {
         this.fiscalCode = fiscalCode;
+    }
+
+    public String getContribAllocated() {
+        return contribAllocated;
+    }
+
+    public void setContribAllocated(String contribAllocated) {
+        this.contribAllocated = contribAllocated;
+    }
+    
+    public String getContribSpent() {
+        return contribSpent;
+    }
+
+    public void setContribSpent(String contribSpent) {
+        this.contribSpent = contribSpent;
     }
 }

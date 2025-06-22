@@ -1,17 +1,8 @@
-console.log("Script client-web caricato.");
-
 const API_BASE_URL = 'http://localhost:8080'; 
 let currentFiscalCode = null;
 let contributionChart = null;
 let vouchersChart = null;
 
-/**
- * Mostra un messaggio in un elemento specificato, opzionalmente stilizzandolo come errore.
- * @param {string} elementId - L'ID dell'elemento HTML in cui mostrare il messaggio.
- * @param {string} message - Il messaggio da mostrare.
- * @param {boolean} isError - Se il messaggio rappresenta un errore.
- * @param {boolean} isPermanentError - Se il messaggio di errore non scompare.
- */
 function displayMessage(elementId, message, isError = false, isPermanentError = false) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -19,7 +10,6 @@ function displayMessage(elementId, message, isError = false, isPermanentError = 
         element.style.color = isError ? 'red' : 'green';
         element.style.display = message ? 'block' : 'none'; 
 
-        // Nascondi messaggio dopo 5 secondi se non è un errore permanente
         if (!isPermanentError) {
             setTimeout(() => {
                 element.style.opacity = '0';
@@ -33,9 +23,6 @@ function displayMessage(elementId, message, isError = false, isPermanentError = 
     }
 }
 
-/**
- * Gestisce il processo di registrazione utente.
- */
 async function handleRegisterUser() {
     const name = document.getElementById('regName').value;
     const surname = document.getElementById('regSurname').value;
@@ -77,10 +64,6 @@ async function handleRegisterUser() {
     }
 }
 
-/**
- * Carica e mostra lo stato del contributo per un dato codice fiscale.
- * @param {string} fiscalCode - Il codice fiscale dell'utente.
- */
 async function loadUserContribution(fiscalCode) {
     if (!fiscalCode) return;
 
@@ -108,9 +91,6 @@ async function loadUserContribution(fiscalCode) {
     }
 }
 
-/**
- * Gestisce la ricerca utente e il recupero dello stato del contributo.
- */
 async function handleLookupUser() {
     const fiscalCodeInput = document.getElementById('lookupFiscalCode').value;
     const userDataDisplayDiv = document.getElementById('userDataDisplay');
@@ -120,14 +100,16 @@ async function handleLookupUser() {
     displayMessage('lookupStatus', '', false);
     userDataDisplayDiv.style.display = 'none';
     voucherListDiv.innerHTML = '';
-    currentFiscalCode = null;
-    if (voucherManagementSection) voucherManagementSection.style.display = 'none';
 
+    currentFiscalCode = null;
+    
+    if (voucherManagementSection) voucherManagementSection.style.display = 'none';
 
     if (!fiscalCodeInput) {
         displayMessage('lookupStatus', 'Inserire un Codice Fiscale per la ricerca.', true);
         return;
     }
+
     if (fiscalCodeInput.length !== 16) {
         displayMessage('lookupStatus', 'Il Codice Fiscale deve essere di 16 caratteri.', true);
         return;
@@ -135,7 +117,9 @@ async function handleLookupUser() {
 
     try {
         const userResponse = await fetch(`${API_BASE_URL}/api/users/${fiscalCodeInput}`);
-        if (userResponse.ok) {
+
+        if (userResponse.ok) 
+        {
             const user = await userResponse.json();
             document.getElementById('userName').textContent = user.name;
             document.getElementById('userSurname').textContent = user.surname;
@@ -158,9 +142,6 @@ async function handleLookupUser() {
     }
 }
 
-/**
- * Carica e mostra i buoni per l'utente corrente.
- */
 async function loadUserVouchers() {
     const voucherListDiv = document.getElementById('voucherList');
     displayMessage('voucherStatus', '', false);
@@ -218,10 +199,7 @@ async function loadUserVouchers() {
     }
 }
 
-/**
- * Gestisce la generazione di un nuovo buono.
- */
-async function handleGenerateVoucher() {
+async function handleVoucherGeneration() {
     const amountInput = document.getElementById('voucherAmount');
     const categoryInput = document.getElementById('voucherCategory');
     const amount = parseFloat(amountInput.value);
@@ -257,25 +235,23 @@ async function handleGenerateVoucher() {
             })
         });
 
-        if (response.status === 201) 
-        {
-            displayMessage('voucherStatus', 'Buono generato con successo!', false);
-            document.getElementById('generateVoucherForm').reset();
-            await loadUserVouchers();
-            await loadUserContribution(currentFiscalCode);
-        } 
-        else if (response.status === 400) 
-        {
-            const errorData = await response.json();
-            displayMessage('voucherStatus', `Errore: ${errorData.message || 'Richiesta non valida (es. fondi insufficienti).'}`, true);
-        } 
-        else if (response.status === 404) 
-        {
-            displayMessage('voucherStatus', 'Errore: Utente non trovato per la generazione del buono.', true);
-        }
-        else 
-        {
-            displayMessage('voucherStatus', `Errore durante la generazione del buono: ${response.statusText}`, true);
+        switch (response.status) {
+            case 201:
+                displayMessage('voucherStatus', 'Buono generato con successo!', false);
+                document.getElementById('generateVoucherForm').reset();
+                await loadUserVouchers();
+                await loadUserContribution(currentFiscalCode);
+                break;
+            case 400: {
+                const errorData = await response.json();
+                displayMessage('voucherStatus', `Errore: ${errorData.message || 'Richiesta non valida (es. fondi insufficienti).'}`, true);
+                break;
+            }
+            case 404:
+                displayMessage('voucherStatus', 'Errore: Utente non trovato per la generazione del buono.', true);
+                break;
+            default:
+                displayMessage('voucherStatus', `Errore durante la generazione del buono: ${response.statusText}`, true);
         }
     } catch (error) {
         console.error('Generate voucher error:', error);
@@ -283,10 +259,6 @@ async function handleGenerateVoucher() {
     }
 }
 
-/**
- * Gestisce il consumo di un buono.
- * @param {Event} event - L'evento click dal pulsante "consuma".
- */
 async function handleConsumeVoucher(event) {
     const voucherId = event.target.dataset.voucherId;
     displayMessage('voucherStatus', '', false);
@@ -297,23 +269,28 @@ async function handleConsumeVoucher(event) {
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/vouchers/${voucherId}/consume`, {
+        const response = await fetch(`${API_BASE_URL}/api/users/${currentFiscalCode}/voucher/${voucherId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
         });
 
-        if (response.ok) {
-            displayMessage('voucherStatus', `Buono ${voucherId} consumato con successo!`, false);
-            await loadUserVouchers();
-            await loadUserContribution(currentFiscalCode);
-        } else if (response.status === 400) {
-            const errorData = await response.json();
-            displayMessage('voucherStatus', `Errore: ${errorData.message || 'Impossibile consumare il buono.'}`, true);
-        } else if (response.status === 404) {
-            displayMessage('voucherStatus', 'Errore: Buono non trovato o già consumato/cancellato.', true);
-        }
-        else {
-            displayMessage('voucherStatus', `Errore durante il consumo del buono: ${response.statusText}`, true);
+        switch (response.status) {
+            case 200: {
+                displayMessage('voucherStatus', `Buono ${voucherId} consumato con successo!`, false);
+                await loadUserVouchers();
+                await loadUserContribution(currentFiscalCode);
+                break;
+            }
+            case 400: {
+                const errorData = await response.json();
+                displayMessage('voucherStatus', `Errore: ${errorData.message || 'Impossibile consumare il buono.'}`, true);
+                break;
+            }
+            case 404:
+                displayMessage('voucherStatus', 'Errore: Buono non trovato o già consumato/cancellato.', true);
+                break;
+            default:
+                displayMessage('voucherStatus', `Errore durante il consumo del buono: ${response.statusText}`, true);
         }
     } catch (error) {
         console.error('Consume voucher error:', error);
@@ -321,10 +298,6 @@ async function handleConsumeVoucher(event) {
     }
 }
 
-/**
- * Gestisce l'eliminazione di un buono.
- * @param {Event} event - L'evento click dal pulsante "cancella".
- */
 async function handleDeleteVoucher(event) {
     const voucherId = event.target.dataset.voucherId;
     displayMessage('voucherStatus', '', false);
@@ -361,10 +334,6 @@ async function handleDeleteVoucher(event) {
     }
 }
 
-/**
- * Gestisce la modifica della categoria di un buono.
- * @param {Event} event - L'evento click che ha scatenato la funzione.
- */
 async function handleModifyVoucherCategory(event) {
     const voucherId = event.target.dataset.voucherId;
     const currentCategory = event.target.dataset.currentCategory;
@@ -451,10 +420,6 @@ async function handleModifyVoucherCategory(event) {
     };
 }
 
-/**
- * Renderizza o aggiorna il grafico a torta per la distribuzione dei contributi.
- * @param {object} stats - L'oggetto con le statistiche di sistema.
- */
 function renderContributionChart(stats) {
     const ctx = document.getElementById('contributionChart').getContext('2d');
 
@@ -511,10 +476,6 @@ function renderContributionChart(stats) {
     });
 }
 
-/**
- * Renderizza o aggiorna il grafico a barre per l'utilizzo dei buoni.
- * @param {object} stats - L'oggetto con le statistiche di sistema.
- */
 function renderVouchersChart(stats) {
     const ctx = document.getElementById('vouchersChart').getContext('2d');
 
@@ -559,9 +520,6 @@ function renderVouchersChart(stats) {
     });
 }
 
-/**
- * Recupera e mostra le statistiche globali del sistema.
- */
 async function fetchAndDisplaySystemStats() {
     displayMessage('systemStatsStatus', 'Caricamento statistiche...', false);
     try {
@@ -596,18 +554,11 @@ async function fetchAndDisplaySystemStats() {
     }
 }
 
-// =====================
-// Event listeners globali
-// =====================
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Registrazione utente
     const registerUserBtn = document.getElementById('registerUserBtn');
     if (registerUserBtn) {
         registerUserBtn.addEventListener('click', handleRegisterUser);
     }
-
-    // Ricerca utente
     const lookupUserBtn = document.getElementById('lookupUserBtn');
     if (lookupUserBtn) {
         lookupUserBtn.addEventListener('click', handleLookupUser);
@@ -623,17 +574,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Generazione buono
     const generateVoucherBtn = document.getElementById('generateVoucherBtn');
     const voucherAmountInput = document.getElementById('voucherAmount');
     if (generateVoucherBtn) {
-        generateVoucherBtn.addEventListener('click', handleGenerateVoucher);
+        generateVoucherBtn.addEventListener('click', handleVoucherGeneration);
     }
 
     const voucherManagementSection = document.getElementById('voucherManagement');
     if (voucherManagementSection) voucherManagementSection.style.display = 'none';
 
-    // Delegazione eventi per le azioni sui buoni
     const voucherListDiv = document.getElementById('voucherList');
     if (voucherListDiv) {
         voucherListDiv.addEventListener('click', function (event) {
@@ -647,12 +596,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Statistiche di sistema
     const refreshStatsBtn = document.getElementById('refreshStatsBtn');
     if (refreshStatsBtn) {
         refreshStatsBtn.addEventListener('click', fetchAndDisplaySystemStats);
     }
-    // Caricamento iniziale delle statistiche di sistema
+
     fetchAndDisplaySystemStats();
 
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
