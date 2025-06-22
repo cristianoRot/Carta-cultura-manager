@@ -233,4 +233,40 @@ public class UserResource {
             return Response.serverError().entity("Errore: " + ex.getMessage()).build();
         }
     }
+
+    @DELETE
+    @Path("/{fiscalCode}/voucher/{voucherId}")
+    public Response deleteVoucher(@PathParam("fiscalCode") String fiscalCode, @PathParam("voucherId") String voucherId)
+    {
+        try 
+        {
+            String voucherJson = DatabaseConnection.Get("vouchers/" + voucherId);
+
+            if (voucherJson == null || voucherJson.equals("NOT_FOUND"))
+                return Response.status(Response.Status.NOT_FOUND).entity("Voucher non trovato").build();
+
+            Voucher voucher = JsonbBuilder.create().fromJson(voucherJson, Voucher.class);
+
+            if (!voucher.getUserId().equals(fiscalCode))
+                return Response.status(Response.Status.FORBIDDEN).entity("Il Voucher non è di tua proprietà").build();
+
+            if (voucher.getStatus().equals("consumed"))
+                return Response.status(Response.Status.BAD_REQUEST).entity("Voucher già consumato").build();
+
+            DatabaseConnection.Delete("vouchers/" + voucherId);
+
+            DatabaseConnection.Increment("users/" + fiscalCode + "/balance", voucher.getAmount());
+            DatabaseConnection.Increment("users/" + fiscalCode + "/contribAllocated", -voucher.getAmount());
+
+            DatabaseConnection.Increment("system/stats/totalVouchers", -1);
+            DatabaseConnection.Increment("system/stats/totalAvailable", voucher.getAmount());
+            DatabaseConnection.Increment("system/stats/totalAllocated", -voucher.getAmount());
+
+            return Response.noContent().build();
+        } 
+        catch (Exception ex) 
+        {
+            return Response.serverError().entity("Errore: " + ex.getMessage()).build();
+        }
+    }
 }

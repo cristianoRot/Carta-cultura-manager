@@ -309,9 +309,9 @@ async function handleDeleteVoucher(event) {
 
     if (!confirm(`Sei sicuro di voler cancellare il buono ${voucherId}?`)) return;
 
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/vouchers/${voucherId}`, {
+    try 
+    {
+        const response = await fetch(`${API_BASE_URL}/api/users/${currentFiscalCode}/voucher/${voucherId}`, {
             method: 'DELETE',
         });
 
