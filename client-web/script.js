@@ -363,56 +363,92 @@ async function handleDeleteVoucher(event) {
 
 /**
  * Gestisce la modifica della categoria di un buono.
- * @param {Event} event - L'evento click dal pulsante "modifica".
+ * @param {Event} event - L'evento click che ha scatenato la funzione.
  */
 async function handleModifyVoucherCategory(event) {
     const voucherId = event.target.dataset.voucherId;
     const currentCategory = event.target.dataset.currentCategory;
-    displayMessage('voucherStatus', '', false);
+    const voucherItem = event.target.closest('.voucher-item');
 
+    // Evita modifiche multiple sullo stesso elemento
+    if (voucherItem.classList.contains('is-editing')) {
+        return;
+    }
+    voucherItem.classList.add('is-editing');
 
-    if (!voucherId) {
-        displayMessage('voucherStatus', 'ID Buono non trovato.', true);
+    // Crea il selettore delle categorie
+    const categorySelect = document.createElement('select');
+    categorySelect.innerHTML = document.getElementById('voucherCategory').innerHTML;
+    categorySelect.value = currentCategory; 
+
+    // Trova il paragrafo della categoria e sostituiscilo con il selettore
+    const categoryParagraph = Array.from(voucherItem.querySelectorAll('p')).find(p => p.textContent.includes('Categoria:'));
+    
+    if (!categoryParagraph) {
+        console.error("Elemento 'p' della categoria non trovato.");
+        voucherItem.classList.remove('is-editing');
         return;
     }
 
-    const newCategory = prompt(`Modifica la categoria per il buono ${voucherId}.\nCategoria attuale: ${currentCategory}\nNuova categoria (es. cinema, musica, libri):`);
+    const originalCategoryText = categoryParagraph.innerHTML; // Salva il testo originale
+    
+    // Funzione per ripristinare l'interfaccia
+    const restoreUI = () => {
+        categoryParagraph.innerHTML = originalCategoryText;
+        categoryParagraph.classList.remove('category-edit-container');
+        voucherItem.classList.remove('is-editing');
+    };
 
-    if (newCategory === null || newCategory.trim() === '') {
-        displayMessage('voucherStatus', 'Modifica annullata o categoria non valida.', false);
-        return;
-    }
+    // Crea pulsanti Salva e Annulla
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Salva';
+    saveButton.className = 'modifyVoucherBtn'; 
 
-    const availableCategories = Array.from(document.getElementById('voucherCategory').options).map(opt => opt.value).filter(val => val);
-    if (!availableCategories.includes(newCategory.trim().toLowerCase())) {
-        displayMessage('voucherStatus', `Categoria "${newCategory}" non valida. Scegli tra: ${availableCategories.join(', ')}.`, true);
-        return;
-    }
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Annulla';
+    cancelButton.className = 'deleteVoucherBtn';
 
+    // Sostituisci il testo con il selettore e i pulsanti
+    categoryParagraph.innerHTML = '';
+    categoryParagraph.classList.add('category-edit-container');
+    categoryParagraph.appendChild(categorySelect);
+    categoryParagraph.appendChild(saveButton);
+    categoryParagraph.appendChild(cancelButton);
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/vouchers/${voucherId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ category: newCategory.trim().toLowerCase() }),
-        });
+    // Gestione del click su "Annulla"
+    cancelButton.onclick = restoreUI;
 
-        if (response.ok) {
-            displayMessage('voucherStatus', `Categoria del buono ${voucherId} modificata con successo!`, false);
-            await loadUserVouchers();
-        } else if (response.status === 400) {
-            const errorData = await response.json();
-            displayMessage('voucherStatus', `Errore: ${errorData.message || 'Impossibile modificare la categoria (es. buono non modificabile).'}`, true);
-        } else if (response.status === 404) {
-            displayMessage('voucherStatus', 'Errore: Buono non trovato.', true);
+    // Gestione del click su "Salva"
+    saveButton.onclick = async () => {
+        const newCategory = categorySelect.value;
+        if (!newCategory || newCategory === currentCategory) {
+            restoreUI();
+            return;
         }
-        else {
-            displayMessage('voucherStatus', `Errore durante la modifica: ${response.statusText}`, true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/vouchers/${voucherId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category: newCategory }),
+            });
+
+            if (response.ok) {
+                displayMessage('voucherStatus', 'Categoria del buono aggiornata con successo!', false);
+                await loadUserVouchers(); // Ricarica i buoni per vedere le modifiche
+                await loadUserContribution(currentFiscalCode);
+            } else {
+                const errorData = await response.json().catch(() => null);
+                const message = errorData?.message || `Errore durante la modifica: ${response.statusText}`;
+                displayMessage('voucherStatus', message, true);
+                restoreUI();
+            }
+        } catch (error) {
+            console.error('Modify category error:', error);
+            displayMessage('voucherStatus', 'Errore di connessione durante la modifica del buono.', true);
+            restoreUI();
         }
-    } catch (error) {
-        console.error('Modify voucher error:', error);
-        displayMessage('voucherStatus', 'Errore di connessione o richiesta fallita.', true);
-    }
+    };
 }
 
 /**
@@ -577,8 +613,19 @@ document.addEventListener('DOMContentLoaded', () => {
         lookupUserBtn.addEventListener('click', handleLookupUser);
     }
 
+    const lookupFiscalCodeInput = document.getElementById('lookupFiscalCode');
+    if (lookupFiscalCodeInput) {
+        lookupFiscalCodeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Previene qualsiasi azione predefinita del browser
+                handleLookupUser();
+            }
+        });
+    }
+
     // Generazione buono
     const generateVoucherBtn = document.getElementById('generateVoucherBtn');
+    const voucherAmountInput = document.getElementById('voucherAmount');
     if (generateVoucherBtn) {
         generateVoucherBtn.addEventListener('click', handleGenerateVoucher);
     }
@@ -615,3 +662,13 @@ document.addEventListener('DOMContentLoaded', () => {
         dashboardContainer.classList.toggle('sidebar-collapsed');
     });
 });
+
+const lookupFiscalCodeInput = document.getElementById('lookupFiscalCode');
+if (lookupFiscalCodeInput) {
+    lookupFiscalCodeInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleLookupUser();
+        }
+    });
+}

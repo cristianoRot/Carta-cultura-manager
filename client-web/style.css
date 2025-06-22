@@ -286,24 +286,26 @@ button:active {
     gap: 1.5em;
 }
 
+.voucher-item .category-edit-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
 .voucher-item .voucher-actions {
     margin-top: 10px;
     display: flex;
     gap: 0.5em;
 }
 
-.voucher-item .voucher-actions button {
-    padding: 5px 12px;
-    font-size: 14px;
+.voucher-item button.consumeVoucherBtn {
+    background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
 }
-.voucher-item .voucher-actions button.consumeVoucherBtn {
-    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+.voucher-item button.deleteVoucherBtn {
+    background: linear-gradient(90deg, #EF4444 0%, #F87171 100%);
 }
-.voucher-item .voucher-actions button.deleteVoucherBtn {
-    background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
-}
-.voucher-item .voucher-actions button.modifyVoucherBtn {
-    background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%);
+.voucher-item button.modifyVoucherBtn {
+    background: linear-gradient(90deg, #F59E0B 0%, #FBBF24 100%);
 }
 
 /* --- Statistiche Sistema --- */
