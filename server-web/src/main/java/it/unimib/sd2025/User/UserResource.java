@@ -268,4 +268,33 @@ public class UserResource {
             return Response.serverError().entity("Errore: " + ex.getMessage()).build();
         }
     }
+
+    @PUT
+    @Path("/{fiscalCode}/voucher/{voucherId}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateVoucher(@PathParam("fiscalCode") String fiscalCode, @PathParam("voucherId") String voucherId, String category)
+    {
+        try
+        {
+            String voucherJson = DatabaseConnection.Get("vouchers/" + voucherId);
+
+            if (voucherJson == null || voucherJson.equals("NOT_FOUND"))
+                return Response.status(Response.Status.NOT_FOUND).entity("Voucher non trovato").build();
+
+            Voucher voucher = JsonbBuilder.create().fromJson(voucherJson, Voucher.class);
+            
+            if (voucher.getStatus().equals("consumed"))
+                return Response.status(Response.Status.BAD_REQUEST).entity("Impossibile modificare un voucher consumato").build();
+
+            voucher.setCategory(category);
+            DatabaseConnection.Set("vouchers/" + voucherId, JsonbBuilder.create().toJson(voucher));
+
+            return Response.ok(voucher).build();
+        } 
+        catch (Exception ex) 
+        {
+            return Response.serverError().entity("Errore: " + ex.getMessage()).build();
+        }
+    }
 }

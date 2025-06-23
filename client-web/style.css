@@ -90,7 +90,6 @@ section h2 .icon {
     font-size: 1em;
 }
 
-/* Aggiunge spazio sotto le sezioni principali nel contenuto */
 #content > section {
     margin-bottom: 2em;
 }
@@ -377,14 +376,14 @@ button:active {
     font-weight: bold;
     padding: 0.8em 1.2em;
     border-radius: var(--border-radius);
-    display: none; /* Inizialmente nascosto */
+    display: none;
 }
 
 #systemStatsStatus.error-message {
     background-color: #ffebee;
     color: #c62828;
     border: 1px solid #ffcdd2;
-    display: block; /* Mostra quando ha la classe */
+    display: block;
     margin-bottom: 1em;
 }
 

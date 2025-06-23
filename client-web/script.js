@@ -339,18 +339,15 @@ async function handleModifyVoucherCategory(event) {
     const currentCategory = event.target.dataset.currentCategory;
     const voucherItem = event.target.closest('.voucher-item');
 
-    // Evita modifiche multiple sullo stesso elemento
     if (voucherItem.classList.contains('is-editing')) {
         return;
     }
     voucherItem.classList.add('is-editing');
 
-    // Crea il selettore delle categorie
     const categorySelect = document.createElement('select');
     categorySelect.innerHTML = document.getElementById('voucherCategory').innerHTML;
     categorySelect.value = currentCategory; 
 
-    // Trova il paragrafo della categoria e sostituiscilo con il selettore
     const categoryParagraph = Array.from(voucherItem.querySelectorAll('p')).find(p => p.textContent.includes('Categoria:'));
     
     if (!categoryParagraph) {
@@ -359,16 +356,14 @@ async function handleModifyVoucherCategory(event) {
         return;
     }
 
-    const originalCategoryText = categoryParagraph.innerHTML; // Salva il testo originale
+    const originalCategoryText = categoryParagraph.innerHTML;
     
-    // Funzione per ripristinare l'interfaccia
     const restoreUI = () => {
         categoryParagraph.innerHTML = originalCategoryText;
         categoryParagraph.classList.remove('category-edit-container');
         voucherItem.classList.remove('is-editing');
     };
 
-    // Crea pulsanti Salva e Annulla
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Salva';
     saveButton.className = 'modifyVoucherBtn'; 
@@ -377,17 +372,14 @@ async function handleModifyVoucherCategory(event) {
     cancelButton.textContent = 'Annulla';
     cancelButton.className = 'doneVoucherBtn';
 
-    // Sostituisci il testo con il selettore e i pulsanti
     categoryParagraph.innerHTML = '';
     categoryParagraph.classList.add('category-edit-container');
     categoryParagraph.appendChild(categorySelect);
     categoryParagraph.appendChild(saveButton);
     categoryParagraph.appendChild(cancelButton);
 
-    // Gestione del click su "Annulla"
     cancelButton.onclick = restoreUI;
 
-    // Gestione del click su "Salva"
     saveButton.onclick = async () => {
         const newCategory = categorySelect.value;
         if (!newCategory || newCategory === currentCategory) {
@@ -396,15 +388,15 @@ async function handleModifyVoucherCategory(event) {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/vouchers/${voucherId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/users/${currentFiscalCode}/voucher/${voucherId}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ category: newCategory }),
+                headers: { 'Content-Type': 'text/plain' },
+                body: newCategory
             });
 
             if (response.ok) {
                 displayMessage('voucherStatus', 'Categoria del buono aggiornata con successo!', false);
-                await loadUserVouchers(); // Ricarica i buoni per vedere le modifiche
+                await loadUserVouchers();
                 await loadUserContribution(currentFiscalCode);
             } else {
                 const errorData = await response.json().catch(() => null);
