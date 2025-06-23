@@ -2,8 +2,8 @@
 /* ====================== RESET E IMPOSTAZIONI GLOBALI ====================== */
 /* ========================================================================== */
 :root {
-    --clr-primary: #5B21B6;
-    --clr-primary-light: #6366F1;
+    --clr-primary: #222;;
+    --clr-primary-light: #5a5a5a;
     --clr-bg-main: #F5F3FF;
     --clr-bg-sidebar: var(--clr-primary);
     --clr-bg-card: #ffffff;
@@ -16,6 +16,7 @@
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 18px;
+    --border-radius: 0.5rem;
     --transition-base: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -37,17 +38,7 @@ body {
 /* ========================================================================== */
 #dashboardContainer {
     display: grid;
-    grid-template-columns: 260px 1fr;
-    min-height: 100vh;
-    transition: grid-template-columns 0.3s ease;
-}
-
-#sidebar {
-    background: linear-gradient(180deg, var(--clr-primary) 0%, var(--clr-primary-light) 100%);
-    color: var(--clr-text-light);
-    padding: 2em 1.5em;
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: 1fr;
 }
 
 #content {
@@ -56,69 +47,11 @@ body {
 }
 
 /* ========================================================================== */
-/* ================================= SIDEBAR ================================ */
-/* ========================================================================== */
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-#sidebar .sidebar-header h2 {
-    color: var(--clr-text-light);
-    margin: 0;
-    font-size: 1.6em;
-}
-
-#sidebar ul {
-    list-style: none;
-    width: 100%;
-}
-
-#sidebar ul li {
-    margin-bottom: 0.8em;
-}
-
-#sidebar ul li a {
-    color: var(--clr-text-light);
-    text-decoration: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.8em;
-    padding: 0.8em 1em;
-    border-radius: var(--radius-md);
-    transition: background var(--transition-base);
-}
-
-#sidebar ul li a:hover,
-#sidebar ul li a:focus {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-#sidebar .icon {
-    font-size: 1.2em;
-    width: 20px;
-    text-align: center;
-}
-
-.sidebar-credits {
-    margin-top: auto;
-    font-size: 0.75em;
-    color: rgba(255, 255, 255, 0.6);
-    text-align: center;
-    line-height: 1.4;
-    padding-top: 2em;
-}
-
-
-/* ========================================================================== */
 /* ================================ CONTENUTO =============================== */
 /* ========================================================================== */
 #content h1 {
     color: var(--clr-primary);
-    margin-bottom: 1.5em;
+    margin-bottom: 0.5em;
     font-size: 2.2em;
 }
 
@@ -133,7 +66,7 @@ body {
 section {
     background: var(--clr-bg-card);
     border: 1px solid var(--clr-border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow-md);
     padding: 2em;
     transition: transform var(--transition-base), box-shadow var(--transition-base);
@@ -190,7 +123,7 @@ input, select {
     width: 100%;
     padding: 0.8em 1em;
     border: 1px solid var(--clr-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius);
     transition: border-color var(--transition-base), box-shadow var(--transition-base);
     font-size: 1em;
     background-color: #fdfdff;
@@ -207,25 +140,25 @@ input:focus, select:focus {
 /* ================================= BOTTONI ================================ */
 /* ========================================================================== */
 button {
-    background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-light) 100%);
-    color: var(--clr-text-light);
-    border: none;
-    border-radius: var(--radius-md);
-    padding: 0.8em 1.5em;
-    font-size: 1em;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-base);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
+  color: white;
+  background-color: #222;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  line-height: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  cursor: pointer;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  border: none;
 }
 
 button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+  background-color: #333;
 }
 
 button:active {
@@ -258,7 +191,7 @@ button:active {
     padding: 1.5em;
     background-color: #fcfcff;
     border: 1px solid var(--clr-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius);
 }
 
 #userDataDisplay h3, #userDataDisplay h4 {
@@ -274,10 +207,14 @@ button:active {
     gap: 1em;
 }
 
+#generateVoucherForm {
+    padding: 2rem 0.5rem;
+}
+
 .voucher-item {
     background: #fcfcff;
     border: 1px solid var(--clr-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius);
     padding: 1em 1.5em;
 }
 
@@ -300,12 +237,56 @@ button:active {
 
 .voucher-item button.consumeVoucherBtn {
     background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2em 0.5em;
 }
 .voucher-item button.deleteVoucherBtn {
-    background: linear-gradient(90deg, #EF4444 0%, #F87171 100%);
+    background-color: transparent;
+    color: #EF4444;
+    border: 1px solid #EF4444;
+    padding: 0;
+    border-radius: var(--border-radius);
+    font-size: 1.4rem;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    width: 2em;
+    height: 2em;
+}
+.voucher-item button.deleteVoucherBtn::before {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23EF4444' d='M3 6h18v2H3V6zm2 3h14l-1.5 12h-11L5 9zm5-5h4v2h-4V4z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 0;
+}
+.voucher-item button.deleteVoucherBtn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
 }
 .voucher-item button.modifyVoucherBtn {
-    background: linear-gradient(90deg, #F59E0B 0%, #FBBF24 100%);
+    background-color: transparent;
+    color: var(--clr-primary);
+    border: 1px solid #1e293b;
+    border-radius: var(--border-radius);
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2em 0.5em;
+}
+.voucher-item button.doneVoucherBtn {
+    background-color: transparent;
+    color: var(--clr-primary);
+    border: 1px solid #1e293b;
+    border-radius: var(--border-radius);
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2em 0.5em;
 }
 
 /* --- Statistiche Sistema --- */
@@ -335,7 +316,7 @@ button:active {
 .stats-item {
     background-color: #fcfcff;
     padding: 1.5em;
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius);
     border: 1px solid var(--clr-border);
 }
 
@@ -375,7 +356,7 @@ button:active {
 .chart-wrapper {
     background-color: #fcfcff;
     padding: 1.5em;
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius);
     border: 1px solid var(--clr-border);
 }
 
@@ -395,7 +376,7 @@ button:active {
     margin-top: 15px;
     font-weight: bold;
     padding: 0.8em 1.2em;
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius);
     display: none; /* Inizialmente nascosto */
 }
 
@@ -426,37 +407,6 @@ button:active {
         grid-template-columns: 1fr;
     }
 
-    #sidebar {
-        grid-row: 1;
-        flex-direction: row;
-        align-items: center;
-        padding: 1em;
-        justify-content: space-between;
-    }
-    
-    #sidebar h2 {
-        margin: 0;
-    }
-
-    #sidebar ul {
-        display: flex;
-        gap: 0.5em;
-        margin: 0;
-        width: auto;
-    }
-
-    #sidebar ul li a {
-        padding: 0.5em;
-    }
-
-    #sidebar ul li a span:not(.icon) {
-        display: none;
-    }
-
-    #sidebar .sidebar-credits, #sidebarToggleBtn {
-        display: none;
-    }
-
     #content {
         padding: 1.5em;
     }
@@ -472,55 +422,3 @@ button:active {
         gap: 1.2em;
     }
 }
-
-/* Stili per la sidebar collassabile */
-#dashboardContainer.sidebar-collapsed {
-    grid-template-columns: 80px 1fr;
-}
-
-/* Nasconde gli elementi testuali */
-#dashboardContainer.sidebar-collapsed .link-text,
-#dashboardContainer.sidebar-collapsed .sidebar-credits,
-#dashboardContainer.sidebar-collapsed .sidebar-header h2 {
-    display: none;
-}
-
-/* Centra gli elementi visibili (icone e bottone) */
-#dashboardContainer.sidebar-collapsed .sidebar-header {
-    justify-content: center;
-}
-
-#dashboardContainer.sidebar-collapsed #sidebar ul {
-    align-items: center;
-}
-
-#dashboardContainer.sidebar-collapsed #sidebar ul a {
-    justify-content: center;
-    padding: 0.8em;
-}
-
-/* Ruota il bottone per indicare lo stato */
-#dashboardContainer.sidebar-collapsed #sidebarToggleBtn {
-    transform: rotate(180deg);
-}
-
-/* Stile del bottone per collassare */
-#sidebarToggleBtn {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--clr-text-light);
-    border: none;
-    border-radius: var(--radius-sm);
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    transition: all var(--transition-base);
-}
-
-#sidebarToggleBtn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-

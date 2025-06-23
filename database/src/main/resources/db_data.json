@@ -5,26 +5,26 @@
       "surname": "Rotunno",
       "email": "cristiano.rotunno@gmail.com",
       "fiscalCode": "RTNCST04R06G942O",
-      "balance" : "400",
-      "contribAllocated" : "100",
-      "contribSpent" : "0"
+      "balance" : "405",
+      "contribAllocated" : "40",
+      "contribSpent" : "55"
     },
     "VRDLNZ90A01F205X": {
       "name": "Lorenzo",
       "surname": "Verdi",
       "email": "lorenzo.verdi@example.com",
       "fiscalCode": "VRDLNZ90A01F205X",
-      "balance" : "400",
-      "contribAllocated" : "100",
-      "contribSpent" : "0"
+      "balance" : "320",
+      "contribAllocated" : "70",
+      "contribSpent" : "110"
     },
     "BNCLDI75C22L219Y": {
       "name": "Lucia",
       "surname": "Bianchi",
       "email": "lucia.bianchi@example.com",
       "fiscalCode": "BNCLDI75C22L219Y",
-      "balance" : "400",
-      "contribAllocated" : "100",
+      "balance" : "460",
+      "contribAllocated" : "40",
       "contribSpent" : "0"
     }
   },
@@ -32,11 +32,11 @@
   "system": {
     "stats": {
       "userCount": 3,
-      "totalAvailable": 1200,
-      "totalAllocated": 700,
-      "totalSpent": 400,
-      "totalVouchers": 69,
-      "vouchersConsumed": 30
+      "totalAvailable": 1185,
+      "totalAllocated": 150,
+      "totalSpent": 165,
+      "totalVouchers": 6,
+      "vouchersConsumed": 3
     }
   },
 

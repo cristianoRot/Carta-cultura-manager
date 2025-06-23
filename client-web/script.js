@@ -177,8 +177,8 @@ async function loadUserVouchers() {
                     <div class="voucher-actions">
                         ${voucher.status === 'generated' ? `
                             <button class="consumeVoucherBtn" data-voucher-id="${voucher.id}">Consuma</button>
-                            <button class="deleteVoucherBtn" data-voucher-id="${voucher.id}">Cancella</button>
-                            <button class="modifyVoucherBtn" data-voucher-id="${voucher.id}" data-current-category="${voucher.category}">Modifica Categoria</button>
+                            <button class="modifyVoucherBtn" data-voucher-id="${voucher.id}" data-current-category="${voucher.category}">Modifica</button>
+                            <button class="deleteVoucherBtn" data-voucher-id="${voucher.id}"></button>
                         ` : ''}
                          ${voucher.status === 'consumed' ? `
                             <p><i>Buono già utilizzato.</i></p>
@@ -375,7 +375,7 @@ async function handleModifyVoucherCategory(event) {
 
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'Annulla';
-    cancelButton.className = 'deleteVoucherBtn';
+    cancelButton.className = 'doneVoucherBtn';
 
     // Sostituisci il testo con il selettore e i pulsanti
     categoryParagraph.innerHTML = '';

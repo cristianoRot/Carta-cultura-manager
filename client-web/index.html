@@ -11,26 +11,13 @@
 
 <body>
     <div id="dashboardContainer">
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h2>Carta Cultura</h2>
-                <button id="sidebarToggleBtn" title="Comprimi/Espandi Sidebar">&laquo;</button>
-            </div>
-            <ul>
-                <li><a href="#userRegistration"><span class="icon">+</span> <span class="link-text">Registrazione</span></a></li>
-                <li><a href="#userLookup"><span class="icon">🔍</span> <span class="link-text">Utente</span></a></li>
-                <li><a href="#voucherManagement"><span class="icon">🎟️</span> <span class="link-text">Buoni</span></a></li>
-                <li><a href="#systemStatusSection"><span class="icon">📊</span> <span class="link-text">Statistiche</span></a></li>
-            </ul>
-            <p class="sidebar-credits">Progetto realizzato da Alessandro Rutigliano, Cristiano Rotunno e Davide Riccio</p>
-        </nav>
 
         <main id="content">
-            <h1>Gestione Carta Cultura Giovani</h1>
+            <h1>HOME</h1>
 
             <div class="content-grid">
                 <section id="userRegistration">
-                    <h2><span class="icon">&#43;</span> Registrazione Utente</h2>
+                    <h2>Registrazione</h2>
                     <form id="registrationForm">
                         <div class="form-row">
                             <div>
@@ -56,7 +43,7 @@
                 </section>
                 
                 <section id="userLookup">
-                    <h2><span class="icon">&#128269;</span> Ricerca Utente e Contributo</h2>
+                    <h2>Cerca Utente</h2>
                     <div class="lookup-form">
                         <div>
                             <label for="lookupFiscalCode">Codice Fiscale Utente:</label>
@@ -114,8 +101,8 @@
 
             <section id="systemStatusSection">
                 <h2>
-                    <span><span class="icon">&#128200;</span> Stato Globale del Sistema</span>
-                    <button type="button" id="refreshStatsBtn"><span class="icon">&#8635;</span> Aggiorna</button>
+                    <span>Dati Sistema</span>
+                    <button type="button" id="refreshStatsBtn" style="background: none;"><span class="icon" style="font-size: 1.7em; padding: 0; background: none; color: var(--clr-primary);">&#8635;
                 </h2>
                 <div id="systemStatsStatus" class="error-message"></div>
                 <div id="systemStatsDisplay">
@@ -156,8 +143,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Fine dei contenuti principali -->
         </main>
     </div>
 
