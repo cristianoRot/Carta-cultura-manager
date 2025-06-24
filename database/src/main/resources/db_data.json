@@ -26,12 +26,21 @@
       "balance" : "460",
       "contribAllocated" : "40",
       "contribSpent" : "0"
+    },
+    "RTGLSN04C30C983A": {
+      "name": "Alessandro",
+      "surname": "Rutigliano",
+      "email": "alessandro.rutigliano@example.com",
+      "fiscalCode": "RTGLSN04C30C983A",
+      "balance" : "500",
+      "contribAllocated" : "0",
+      "contribSpent" : "0"
     }
   },
 
   "system": {
     "stats": {
-      "userCount": 3,
+      "userCount": 4,
       "totalAvailable": 1185,
       "totalAllocated": 150,
       "totalSpent": 165,
