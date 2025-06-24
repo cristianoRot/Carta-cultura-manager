@@ -92,6 +92,9 @@ async function loadUserContribution(fiscalCode) {
 }
 
 async function handleLookupUser() {
+    // Svuota la visualizzazione dei buoni all'inizio di ogni ricerca utente
+    document.getElementById('voucherList').innerHTML = '';
+
     const fiscalCodeInput = document.getElementById('lookupFiscalCode').value;
     const userDataDisplayDiv = document.getElementById('userDataDisplay');
     const voucherListDiv = document.getElementById('voucherList');
@@ -164,6 +167,8 @@ async function loadUserVouchers() {
             }
 
             voucherListDiv.innerHTML = '';
+            // Ordina i buoni per data di creazione (dal più recente al più vecchio)
+            vouchers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             vouchers.forEach(voucher => {
                 const voucherElement = document.createElement('div');
                 voucherElement.classList.add('voucher-item');
