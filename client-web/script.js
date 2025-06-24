@@ -370,7 +370,7 @@ async function handleModifyVoucherCategory(event) {
 
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'Annulla';
-    cancelButton.className = 'doneVoucherBtn';
+    cancelButton.className = 'cancelBtn';
 
     categoryParagraph.innerHTML = '';
     categoryParagraph.classList.add('category-edit-container');
@@ -550,6 +550,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerUserBtn = document.getElementById('registerUserBtn');
     if (registerUserBtn) {
         registerUserBtn.addEventListener('click', handleRegisterUser);
+    }
+    // Listener per il tasto Invio nel form di registrazione
+    const registrationForm = document.getElementById('registrationForm');
+    if (registrationForm) {
+        registrationForm.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Previene il submit di default
+                handleRegisterUser();
+            }
+        });
     }
     const lookupUserBtn = document.getElementById('lookupUserBtn');
     if (lookupUserBtn) {

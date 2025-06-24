@@ -1,165 +1,137 @@
+# Progetto Sistemi Distribuiti 2024-2025 - API REST – Carta Cultura Manager
 
-# Progetto Sistemi Distribuiti 2024-2025 - API REST
+Tutte le API espongono risorse JSON e **accettano/rendono** solo `application/json` (eccetto dove diversamente indicato). Il prefisso base del servizio è implicito nelle rotte mostrate (`http://localhost:8080/`).
 
-L'API REST implementata permette la gestione degli utenti, dei buoni e delle statistiche nel sistema Carta Cultura Giovani.
+---
 
-**Attenzione**: l'unica rappresentazione ammessa è in formato JSON. Pertanto vengono assunti gli header `Content-Type: application/json` e `Accept: application/json`.
+## 1. Utenti
 
-## `/api/users`
+### 1.1 `POST /api/users`
+Registra un nuovo utente.
 
-### POST
+Body JSON:
+```json
+{
+  "name": "Mario",
+  "surname": "Rossi",
+  "email": "mario.rossi@example.com",
+  "fiscalCode": "RSSMRA80A01H501U"
+}
+```
+Risposte:
+* `201 Created` – utente creato, contributo iniziale 500 €.
+* `409 Conflict` – codice fiscale già registrato.
+* `400 Bad Request` – campi mancanti/non validi.
 
-**Descrizione**: Registra un nuovo utente nel sistema.
+---
 
-**Parametri**: Nessuno.
+### 1.2 `GET /api/users/{fiscalCode}`
+Recupera i dati di un utente.
 
-**Body richiesta**: Un oggetto utente con i seguenti campi:
-- `name` (string): nome dell'utente
-- `surname` (string): cognome dell'utente
-- `email` (string): email dell'utente
-- `fiscalCode` (string): codice fiscale dell'utente
+Risposte:
+* `200 OK` – oggetto `User`.
+* `404 Not Found` – utente inesistente.
 
-**Risposta**: L'utente creato con l'ID assegnato. Il contributo iniziale di 500€ viene automaticamente creato.
+---
 
-**Codici di stato restituiti**:
-- 201 Created: utente registrato con successo.
-- 409 Conflict: utente con lo stesso codice fiscale già esistente.
-- 400 Bad Request: dati mancanti o non validi.
+### 1.3 `GET /api/users/{fiscalCode}/contribution`
+Restituisce lo stato del contributo residuo.
 
-## `/api/users/{fiscalCode}`
+Esempio risposta:
+```json
+{
+  "balance": 450.00,
+  "contribAllocated": 25.00,
+  "contribSpent": 25.00
+}
+```
 
-### GET
+---
 
-**Descrizione**: Recupera i dati di un utente tramite il suo codice fiscale.
+## 2. Voucher
 
-**Parametri**: `fiscalCode` - Il codice fiscale dell'utente.
+### 2.1 `GET /api/users/{fiscalCode}/vouchers`
+Lista di tutti i voucher di un utente.
 
-**Risposta**: Un oggetto utente con i campi id, name, surname, email e fiscalCode.
+Risposta `200 OK` – array di oggetti `Voucher`.
 
-**Codici di stato restituiti**:
-- 200 OK: utente trovato.
-- 404 Not Found: utente non trovato.
+---
 
-## `/api/users/{userId}/contribution`
+### 2.2 `POST /api/users/{fiscalCode}/voucher`
+Crea un nuovo voucher.
 
-### GET
+Body JSON (il campo `id` viene sempre generato dal server e **sovrascrive** qualsiasi valore passato; `status` e `createdAt` sono facoltativi – se omessi rimangono `null` nel voucher risultante):
+```json
+{
+  "amount": 25.0,
+  "category": "libri",
+  "status": "generated"
+}
+```
+Risposte:
+* `201 Created` – voucher generato, restituisce l'oggetto completo.
+* `400 Bad Request` – importo non valido o saldo insufficiente.
 
-**Descrizione**: Ottiene lo stato del contributo di un utente.
+---
 
-**Parametri**: `userId` - L'ID dell'utente (codice fiscale).
+### 2.3 `POST /api/users/{fiscalCode}/voucher/{voucherId}`
+Consuma (spende) un voucher **ancora in stato `generated`**.
 
-**Risposta**: Un oggetto con i dettagli del contributo:
-- `userId` (string): ID dell'utente
-- `available` (number): importo disponibile per nuovi buoni
-- `allocated` (number): importo allocato in buoni non ancora consumati
-- `spent` (number): importo speso in buoni consumati
-- `total` (number): importo totale del contributo (500€)
+Risposte:
+* `200 OK` – voucher aggiornato (`status": "consumed"`, `consumedAt` impostata).
+* `400 Bad Request` – voucher già consumato.
+* `404 Not Found` – voucher non trovato.
 
-**Codici di stato restituiti**:
-- 200 OK: contributo trovato.
-- 404 Not Found: contributo non trovato.
+---
 
-## `/api/users/{userId}/vouchers`
+### 2.4 `PUT /api/users/{fiscalCode}/voucher/{voucherId}`
+Aggiorna la **categoria** di un voucher non ancora consumato.
 
-### GET
+Content-Type: `text/plain` (solo la nuova categoria nel body).
 
-**Descrizione**: Ottiene la lista dei buoni di un utente.
+Risposte:
+* `200 OK` – voucher aggiornato.
+* `400 Bad Request` – voucher consumato.
+* `404 Not Found` – voucher non trovato.
 
-**Parametri**: `userId` - L'ID dell'utente (codice fiscale).
+---
 
-**Risposta**: Un array di oggetti buono, ciascuno con i seguenti campi:
-- `id` (string): ID del buono
-- `amount` (number): importo del buono
-- `category` (string): categoria del buono
-- `status` (string): stato del buono ('generated' o 'consumed')
-- `createdAt` (string): data di creazione del buono
-- `consumedAt` (string, opzionale): data di consumo del buono
-- `userId` (string): ID dell'utente proprietario del buono
+### 2.5 `DELETE /api/users/{fiscalCode}/voucher/{voucherId}`
+Elimina un voucher non ancora consumato.
 
-**Codici di stato restituiti**:
-- 200 OK: lista dei buoni ottenuta.
+Risposte:
+* `204 No Content` – eliminato.
+* `400 Bad Request` – voucher consumato.
+* `404 Not Found` – voucher non trovato.
 
-## `/api/vouchers`
+---
 
-### POST
+## 3. Statistiche di sistema
 
-**Descrizione**: Crea un nuovo buono per un utente.
+### `GET /api/system/stats`
+Restituisce il riepilogo globale.
 
-**Parametri**: Nessuno.
+Esempio risposta:
+```json
+{
+  "userCount": 10,
+  "totalAvailable": 2345.00,
+  "totalAllocated": 150.00,
+  "totalSpent": 105.00,
+  "totalVouchers": 95,
+  "vouchersConsumed": 40
+}
+```
 
-**Body richiesta**: Un oggetto con i seguenti campi:
-- `amount` (number): importo del buono
-- `category` (string): categoria del buono
-- `userId` (string): ID dell'utente proprietario del buono
+---
 
-**Risposta**: Il buono creato con tutti i suoi dettagli.
-
-**Codici di stato restituiti**:
-- 201 Created: buono creato con successo.
-- 400 Bad Request: importo non valido o superiore al contributo disponibile.
-- 404 Not Found: utente non trovato.
-
-## `/api/vouchers/{voucherId}`
-
-### PUT
-
-**Descrizione**: Modifica un buono esistente.
-
-**Parametri**: `voucherId` - L'ID del buono da modificare.
-
-**Body richiesta**: Un oggetto con il seguente campo:
-- `category` (string): nuova categoria del buono
-
-**Risposta**: Il buono aggiornato con tutti i suoi dettagli.
-
-**Codici di stato restituiti**:
-- 200 OK: buono aggiornato con successo.
-- 400 Bad Request: impossibile modificare un buono già consumato.
-- 404 Not Found: buono non trovato.
-
-### DELETE
-
-**Descrizione**: Elimina un buono esistente.
-
-**Parametri**: `voucherId` - L'ID del buono da eliminare.
-
-**Risposta**: Nessun contenuto.
-
-**Codici di stato restituiti**:
-- 204 No Content: buono eliminato con successo.
-- 400 Bad Request: impossibile eliminare un buono già consumato.
-- 404 Not Found: buono non trovato.
-
-## `/api/vouchers/{voucherId}/consume`
-
-### POST
-
-**Descrizione**: Segna un buono come consumato.
-
-**Parametri**: `voucherId` - L'ID del buono da consumare.
-
-**Risposta**: Il buono aggiornato con tutti i suoi dettagli.
-
-**Codici di stato restituiti**:
-- 200 OK: buono consumato con successo.
-- 400 Bad Request: buono già consumato.
-- 404 Not Found: buono non trovato.
-
-## `/api/system/stats`
-
-### GET
-
-**Descrizione**: Ottiene le statistiche globali del sistema.
-
-**Parametri**: Nessuno.
-
-**Risposta**: Un oggetto con i seguenti campi:
-- `totalUsers` (number): numero totale di utenti registrati
-- `totalContributionAvailable` (number): somma di tutti i contributi disponibili
-- `totalContributionAllocated` (number): somma di tutti i contributi allocati
-- `totalContributionSpent` (number): somma di tutti i contributi spesi
-- `totalVouchersGenerated` (number): numero totale di buoni generati
-- `totalVouchersConsumed` (number): numero totale di buoni consumati
-
-**Codici di stato restituiti**:
-- 200 OK: statistiche ottenute con successo.
+## 4. Codici di stato riassuntivi
+| Codice | Significato |
+|--------|-------------|
+| 200 OK | Operazione riuscita |
+| 201 Created | Risorsa creata |
+| 204 No Content | Operazione riuscita, nessun corpo |
+| 400 Bad Request | Richiesta malformata o non permessa |
+| 404 Not Found | Risorsa inesistente |
+| 409 Conflict | Violazione vincoli unici |
+| 500 Internal Server Error | Errore lato server |

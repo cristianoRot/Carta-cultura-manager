@@ -140,7 +140,7 @@ input:focus, select:focus {
 /* ========================================================================== */
 button {
   color: white;
-  background-color: #222;
+  background: linear-gradient(90deg, #7F00FF 0%, #6EC3F4 100%);
   font-weight: 500;
   border-radius: var(--border-radius);
   font-size: 1rem;
@@ -154,16 +154,53 @@ button {
   display: inline-flex;
   align-items: center;
   border: none;
+  transition: background 0.3s;
 }
 
 button:hover {
-  background-color: #333;
+  background: linear-gradient(90deg, #6a00cc 0%, #5db6e6 100%);
 }
 
 button:active {
     transform: translateY(0) scale(0.98);
 }
 
+.gradient-title {
+  background: linear-gradient(90deg, #7F00FF 0%, #00C6FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  font-weight: bold;
+  font-size: 2.2em;
+  margin-bottom: 0.5em;
+  display: inline-block;
+}
+
+button.cancelBtn {
+  background: transparent;
+  color: #EF4444;
+  border: 1.5px solid #EF4444;
+  transition: background 0.2s, color 0.2s;
+  font-size: 1rem;
+  line-height: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  min-width: 40px;
+  justify-content: center;
+  height: 44px;
+  box-sizing: border-box;
+}
+
+button.cancelBtn:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+  border-color: #b91c1c;
+}
 
 /* ========================================================================== */
 /* ========================== SEZIONI SPECIFICHE ============================ */
@@ -242,7 +279,7 @@ button:active {
     padding: 0.2em 0.5em;
 }
 .voucher-item button.deleteVoucherBtn {
-    background-color: transparent;
+    background: transparent;
     color: #EF4444;
     border: 1px solid #EF4444;
     padding: 0;
@@ -268,24 +305,22 @@ button:active {
     background-color: rgba(239, 68, 68, 0.1);
 }
 .voucher-item button.modifyVoucherBtn {
-    background-color: transparent;
+    background: transparent;
     color: var(--clr-primary);
     border: 1px solid #1e293b;
     border-radius: var(--border-radius);
-    justify-content: center;
-    display: inline-flex;
-    align-items: center;
     padding: 0.2em 0.5em;
+    font-size: 1em;
+    transition: background 0.2s, color 0.2s;
 }
 .voucher-item button.doneVoucherBtn {
-    background-color: transparent;
+    background: transparent;
     color: var(--clr-primary);
     border: 1px solid #1e293b;
     border-radius: var(--border-radius);
-    justify-content: center;
-    display: inline-flex;
-    align-items: center;
     padding: 0.2em 0.5em;
+    font-size: 1em;
+    transition: background 0.2s, color 0.2s;
 }
 
 /* --- Statistiche Sistema --- */

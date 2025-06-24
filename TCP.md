@@ -1,4 +1,3 @@
-
 # Progetto Sistemi Distribuiti 2024-2025 - TCP
 
 ## 1. Panoramica
@@ -21,7 +20,7 @@ Ogni comando è inviato come una singola linea di testo. Ogni risposta è restit
 
 **Esempio:**
 ```
-GET user:12345
+GET users/12345
 ```
 
 ### 2.2. Comandi
@@ -30,27 +29,29 @@ Il database supporta i seguenti comandi:
 
 | Comando | Parametri         | Descrizione                                | Esempio                |
 |---------|-------------------|--------------------------------------------|------------------------|
-| GET     | chiave            | Restituice il valore associato alla chiave | `GET user:12345`      |
-| SET     | chiave, valore    | Imposta il valore alla chiave              | `SET user:12345 {"name":"Mario"}` |
-| DEL     | chiave            | Elimina una chiave dal database            | `DEL user:12345`      |
-| EXISTS  | chiave            | Verifica se una chiave esiste              | `EXISTS user:12345`   |
-| .       |                   | Chiude la connessione                      | `.`                   |
+| GET     | percorso         | Restituisce il valore associato | `GET users/12345` |
+| SET     | percorso, valore | Imposta il valore | `SET users/12345 {"name":"Mario"}` |
+| DEL     | percorso         | Elimina la risorsa | `DEL users/12345` |
+| EXISTS  | percorso         | Verifica se la risorsa esiste | `EXISTS users/12345` |
+| INCREMENT | percorso, delta | Incrementa numerico (anche negativo) | `INCREMENT system/stats/totalAvailable -25.0` |
+| .       | —               | Chiude la connessione | `.` |
 
 ### 2.3. Formato chiavi
 
 Le chiavi seguono la seguente convenzione:
 
-- `user:{fiscalCode}`: Memorizza i dati di un utente (serializzato come JSON)
-- `contribution:{userId}`: Memorizza i dati del contributo di un utente (serializzato come JSON)
-- `voucher:{voucherId}`: Memorizza i dati di un buono (serializzato come JSON)
-- `vouchersCount:{userId}`: Memorizza il numero di buoni di un utente
-- `voucherIdByIndex:{userId}:{index}`: Memorizza l'ID di un buono all'indice specificato per un utente
-- `stats:userCount`: Memorizza il numero totale di utenti
-- `stats:totalAvailable`: Memorizza la somma di tutti i contributi disponibili
-- `stats:totalAllocated`: Memorizza la somma di tutti i contributi allocati
-- `stats:totalSpent`: Memorizza la somma di tutti i contributi spesi
-- `stats:totalVouchers`: Memorizza il numero totale di buoni generati
-- `stats:vouchersConsumed`: Memorizza il numero totale di buoni consumati
+- `users/{fiscalCode}`: JSON con i dati anagrafici dell'utente
+- `users/{fiscalCode}/balance`: saldo residuo del contributo
+- `users/{fiscalCode}/contribAllocated`: contributo già trasformato in voucher
+- `users/{fiscalCode}/contribSpent`: contributo speso tramite voucher consumati
+- `vouchers/{voucherId}`: JSON con i dati di un buono
+- `vouchers`: mappa JSON *id → Voucher* utilizzata per elencare tutti i buoni
+- `system/stats/userCount`: numero totale di utenti
+- `system/stats/totalAvailable`: somma dei contributi ancora disponibili
+- `system/stats/totalAllocated`: somma dei contributi trasformati in voucher
+- `system/stats/totalSpent`: somma dei contributi spesi
+- `system/stats/totalVouchers`: numero totale di voucher generati
+- `system/stats/vouchersConsumed`: numero totale di voucher consumati
 
 ## 3. Gestione degli Errori
 
@@ -62,7 +63,9 @@ Le chiavi seguono la seguente convenzione:
 
 - **Risposte di errore:**  
   - "null": Chiave non trovata
-  - "ERR {messaggio}": Errore con messaggio esplicativo
+  - "BAD_REQUEST": sintassi comando non valida
+  - "NOT_FOUND": risorsa inesistente
+  - "ERROR": errore interno inaspettato
 
 **Esempi di messaggi di errore:**
 - "ERR missing key": Chiave non specificata
@@ -76,17 +79,17 @@ Il database implementa un meccanismo di lock basato sulla chiave per gestire la 
 ## 5. Scambio di Esempio
 
 ```
-Client: SET user:12345 {"name":"Mario","surname":"Rossi","email":"mario@example.com","fiscalCode":"12345"}
+Client: SET users/12345 {"name":"Mario","surname":"Rossi","email":"mario@example.com","fiscalCode":"12345"}
 Server: OK
-Client: GET user:12345
+Client: GET users/12345
 Server: {"name":"Mario","surname":"Rossi","email":"mario@example.com","fiscalCode":"12345"}
-Client: EXISTS user:12345
+Client: EXISTS users/12345
 Server: 1
-Client: DEL user:12345
+Client: DEL users/12345
 Server: 1
-Client: EXISTS user:12345
+Client: EXISTS users/12345
 Server: 0
-Client: GET user:12345
+Client: GET users/12345
 Server: null
 Client: .
 Server: bye

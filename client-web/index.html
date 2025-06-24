@@ -13,7 +13,7 @@
     <div id="dashboardContainer">
 
         <main id="content">
-            <h1>HOME</h1>
+            <h1 class="gradient-title">Carta Cultura Giovani</h1>
 
             <div class="content-grid">
                 <section id="userRegistration">
@@ -59,7 +59,9 @@
                         <p><strong>Cognome:</strong> <span id="userSurname"></span></p>
                         <p><strong>Email:</strong> <span id="userEmail"></span></p>
 
-                        <h4>Stato Contributo</h4>
+                        <hr style="margin: 1.5em 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                        <h3 style="margin-top: 0.5em; font-size: 1.25em;">Stato Contributo</h3>
                         <p><strong>Disponibile:</strong> €<span id="contribAvailable"></span></p>
                         <p><strong>Allocato (non speso):</strong> €<span id="contribAllocated"></span></p>
                         <p><strong>Speso:</strong> €<span id="contribSpent"></span></p>
@@ -68,7 +70,7 @@
             </div>
 
             <section id="voucherManagement">
-                <h2><span class="icon">&#127915;</span> Gestione Buoni</h2>
+                <h2>Gestione Buoni</h2>
                 <div id="voucherStatus"></div>
 
                 <h3>Genera Nuovo Buono</h3>
@@ -147,6 +149,11 @@
     </div>
 
     <script src="script.js"></script>
+
+    <footer style="margin-top: 2em; text-align: center; color: #64748b; font-size: 1em;">
+        <div>Progetto realizzato da:</div>
+        <div>Alessandro Rutigliano (909971), Cristiano Rotunno (914317), Davide Riccio (917209)</div>
+    </footer>
 </body>
 
 </html>
