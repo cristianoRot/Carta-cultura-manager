@@ -50,6 +50,7 @@ async function handleRegisterUser() {
         if (response.ok) {
             displayMessage('registrationStatus', `Utente registrato con successo! Codice Fiscale: ${fiscalCode}`, false);
             document.getElementById('registrationForm').reset();
+            document.getElementById('voucherList').innerHTML = '';
         } else if (response.status === 409) {
             displayMessage('registrationStatus', 'Errore: Utente con questo Codice Fiscale già esistente.', true);
         } else if (response.status === 400) {
