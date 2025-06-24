@@ -31,8 +31,9 @@
                         </div>
                         <div>
                             <label for="regEmail">Email:</label>
-                            <input type="email" id="regEmail" name="regEmail" required>
+                            <input type="email" id="regEmail" name="regEmail" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
                         </div>
+                        <div id="emailError" style="color: red; display: none; font-size: 0.95em; margin-top: 0.2em;">Email non valida</div>
                         <div>
                             <label for="regFiscalCode">Codice Fiscale:</label>
                             <input type="text" id="regFiscalCode" name="regFiscalCode" required minlength="16" maxlength="16">
@@ -154,6 +155,23 @@
         <div>Progetto realizzato da:</div>
         <div>Alessandro Rutigliano (909971), Cristiano Rotunno (914317), Davide Riccio (917209)</div>
     </footer>
+
+    <script>
+        // Validazione email lato client
+        const regEmail = document.getElementById('regEmail');
+        const emailError = document.getElementById('emailError');
+        const registerUserBtn = document.getElementById('registerUserBtn');
+
+        regEmail.addEventListener('input', function () {
+            if (regEmail.validity.patternMismatch || regEmail.validity.typeMismatch) {
+                emailError.style.display = 'block';
+                registerUserBtn.disabled = true;
+            } else {
+                emailError.style.display = 'none';
+                registerUserBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 
 </html>
