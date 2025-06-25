@@ -72,13 +72,13 @@ Server: OK
 Client: GET users/12345
 Server: {"name":"Mario","surname":"Rossi","email":"mario@example.com","fiscalCode":"12345"}
 Client: EXISTS users/12345
-Server: 1
+Server: true
 Client: DEL users/12345
-Server: 1
+Server: true
 Client: EXISTS users/12345
-Server: 0
+Server: false
 Client: GET users/12345
-Server: null
+Server: NOT_FOUND
 Client: .
 Server: bye
 ```
