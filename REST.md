@@ -2,9 +2,7 @@
 
 Tutte le API espongono risorse JSON e **accettano/rendono** solo `application/json` (eccetto dove diversamente indicato). Il prefisso base del servizio è implicito nelle rotte mostrate (`http://localhost:8080/`).
 
-* **API REST:** vedi `REST.md` per la lista completa degli endpoint e dei codici di risposta.
-* **Protocollo TCP:** vedi `TCP.md` per il dettaglio dei comandi supportati dal database.
-* **Documentazione OpenAPI interattiva:** disponibile all'indirizzo [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/) — include tutte le API REST e una panoramica del protocollo TCP.
+**Documentazione OpenAPI interattiva:** disponibile all'indirizzo [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/) — include tutte le API REST e una panoramica del protocollo TCP.
 
 ---
 
