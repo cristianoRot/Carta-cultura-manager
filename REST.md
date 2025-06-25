@@ -66,7 +66,6 @@ Content-Type: application/json
 }
 ```
 
-```
 Risposte:
 * `201 Created` – utente creato, contributo iniziale 500 €.
 * `409 Conflict` – errore: "Codice fiscale già registrato"
