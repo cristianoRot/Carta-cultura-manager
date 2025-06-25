@@ -171,6 +171,7 @@ public class UserResource {
 
             String voucherId = java.util.UUID.randomUUID().toString();
             voucher.setId(voucherId);
+            voucher.setUserId(fiscalCode);
 
             String voucherJson = JsonbBuilder.create().toJson(voucher);
 
