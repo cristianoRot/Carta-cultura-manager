@@ -48,7 +48,7 @@ public class UserResource
             if (DatabaseConnection.Exists("users/" + user.getFiscalCode())) 
             {
                 return Response.status(Response.Status.CONFLICT)
-                    .entity("User with fiscal code " + user.getFiscalCode() + " already exists.").build();
+                    .entity("L'utente con codice fiscale: " + user.getFiscalCode() + " già esiste.").build();
             }
 
             DatabaseConnection.Set("users/" + user.getFiscalCode(), JsonbBuilder.create().toJson(user));
