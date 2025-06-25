@@ -51,6 +51,11 @@ async function handleRegisterUser() {
             displayMessage('registrationStatus', `Utente registrato con successo! Codice Fiscale: ${fiscalCode}`, false);
             document.getElementById('registrationForm').reset();
             document.getElementById('voucherList').innerHTML = '';
+            document.getElementById('lookupFiscalCode').value = '';
+            document.getElementById('userDataDisplay').style.display = 'none';
+            document.getElementById('contribAvailable').textContent = 'N/D';
+            document.getElementById('contribAllocated').textContent = 'N/D';
+            document.getElementById('contribSpent').textContent = 'N/D';
         } else if (response.status === 409) {
             displayMessage('registrationStatus', 'Errore: Utente con questo Codice Fiscale già esistente.', true);
         } else if (response.status === 400) {
