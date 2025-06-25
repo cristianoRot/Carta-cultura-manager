@@ -20,7 +20,6 @@
     </properties>
 
     <dependencies>
-        <!-- Jersey -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
@@ -37,7 +36,6 @@
             <version>${jerseyVersion}</version>
         </dependency>
 
-        <!-- Servlet API -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
@@ -45,7 +43,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- JSON-B & JSON-P -->
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
@@ -57,7 +54,6 @@
             <version>2.0.1</version>
         </dependency>
 
-        <!-- OpenAPI / Swagger -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-jaxrs2-jakarta</artifactId>
