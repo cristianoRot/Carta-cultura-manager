@@ -12,7 +12,7 @@
 
     <servlet-mapping>
         <servlet-name>jakarta.ws.rs.core.Application</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
 
     <session-config>

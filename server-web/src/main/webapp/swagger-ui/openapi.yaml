@@ -1,0 +1,501 @@
+openapi: 3.0.0
+info:
+  title: Carta Cultura Manager API
+  version: "1.0"
+  description: |
+    # Carta Cultura Manager – Documentazione API
+    
+    ## Panoramica
+    Sistema per la gestione della Carta Cultura, con API REST e protocollo TCP custom.
+    
+    ---
+    
+    ## Protocollo TCP
+    - Porta: 3030
+    - Comando-risposta, ispirato a Redis.
+    - Encoding: UTF-8, newline (\n) come delimitatore
+    - Comandi supportati: GET, SET, DEL, EXISTS, INCREMENT, . (chiusura)
+    - Esempio:
+      ```
+      GET users/12345
+      SET users/12345 {"name":"Mario"}
+      .
+      ```
+    - Risposte di successo: OK, 1, 0, {valore}
+    - Risposte di errore: null, BAD_REQUEST, NOT_FOUND, ERROR
+    - Per dettagli vedi TCP.md
+    
+    ---
+    
+    ## API REST
+    Tutte le API espongono risorse JSON e accettano/rendono solo `application/json` (eccetto dove diversamente indicato).
+    Per dettagli vedi REST.md
+    
+    ---
+    
+    ## Codici di stato comuni
+    | Codice | Significato |
+    |--------|-------------|
+    | 200 OK | Operazione riuscita |
+    | 201 Created | Risorsa creata |
+    | 204 No Content | Operazione riuscita, nessun corpo |
+    | 400 Bad Request | Richiesta malformata o non permessa |
+    | 404 Not Found | Risorsa inesistente |
+    | 409 Conflict | Violazione vincoli unici |
+    | 500 Internal Server Error | Errore lato server |
+  
+
+servers:
+  - url: http://localhost:8080/
+
+tags:
+  - name: Utenti
+    description: Operazioni relative agli utenti
+  - name: Voucher
+    description: Gestione dei voucher
+  - name: Sistema
+    description: Statistiche e info di sistema
+
+paths:
+  /api/users:
+    post:
+      tags: [Utenti]
+      summary: Registra un nuovo utente
+      description: |
+        Registra un nuovo utente.
+        
+        **Body JSON:**
+        ```json
+        {
+          "name": "Mario",
+          "surname": "Rossi",
+          "email": "mario.rossi@example.com",
+          "fiscalCode": "RSSMRA80A01H501U"
+        }
+        ```
+        - 201 Created: utente creato, contributo iniziale 500 €.
+        - 409 Conflict: codice fiscale già registrato.
+        - 400 Bad Request: campi mancanti/non validi.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              name: Mario
+              surname: Rossi
+              email: mario.rossi@example.com
+              fiscalCode: RSSMRA80A01H501U
+      responses:
+        '201':
+          description: Utente creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                name: Mario
+                surname: Rossi
+                email: mario.rossi@example.com
+                fiscalCode: RSSMRA80A01H501U
+        '409':
+          description: Codice fiscale già registrato
+          content:
+            application/json:
+              example:
+                error: "Codice fiscale già registrato"
+        '400':
+          description: Campi mancanti o non validi
+          content:
+            application/json:
+              example:
+                error: "Campi mancanti o non validi"
+
+  /api/users/{fiscalCode}:
+    get:
+      tags: [Utenti]
+      summary: Recupera i dati di un utente
+      parameters:
+        - name: fiscalCode
+          in: path
+          required: true
+          description: Codice fiscale dell'utente da recuperare
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Oggetto User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                name: Mario
+                surname: Rossi
+                email: mario.rossi@example.com
+                fiscalCode: RSSMRA80A01H501U
+        '404':
+          description: Utente inesistente
+          content:
+            application/json:
+              example:
+                error: "Utente non trovato"
+
+  /api/users/{fiscalCode}/contribution:
+    get:
+      tags: [Utenti]
+      summary: Restituisce lo stato del contributo residuo
+      parameters:
+        - name: fiscalCode
+          in: path
+          required: true
+          description: Codice fiscale dell'utente
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stato del contributo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributionStatus'
+              example:
+                balance: 450.00
+                contribAllocated: 25.00
+                contribSpent: 25.00
+
+  /api/users/{fiscalCode}/vouchers:
+    get:
+      tags: [Voucher]
+      summary: Lista di tutti i voucher di un utente
+      parameters:
+        - name: fiscalCode
+          in: path
+          required: true
+          description: Codice fiscale dell'utente
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Array di oggetti Voucher
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Voucher'
+              example:
+                - id: "abc123"
+                  amount: 25.0
+                  category: "libri"
+                  status: "generated"
+                  createdAt: "2024-06-24T10:00:00Z"
+                  consumedAt: null
+                - id: "def456"
+                  amount: 25.0
+                  category: "cinema"
+                  status: "consumed"
+                  createdAt: "2024-06-20T10:00:00Z"
+                  consumedAt: "2024-06-21T12:00:00Z"
+
+  /api/users/{fiscalCode}/voucher:
+    post:
+      tags: [Voucher]
+      summary: Crea un nuovo voucher
+      description: |
+        Crea un nuovo voucher per l'utente specificato.
+        
+        **Body JSON:**
+        ```json
+        {
+          "amount": 25.0,
+          "category": "libri",
+          "status": "generated"
+        }
+        ```
+        - 201 Created: voucher generato, restituisce l'oggetto completo.
+        - 400 Bad Request: importo non valido o saldo insufficiente.
+      parameters:
+        - name: fiscalCode
+          in: path
+          required: true
+          description: Codice fiscale dell'utente
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherInput'
+            example:
+              amount: 25.0
+              category: libri
+              status: generated
+      responses:
+        '201':
+          description: Voucher generato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voucher'
+              example:
+                id: "abc123"
+                amount: 25.0
+                category: "libri"
+                status: "generated"
+                createdAt: "2024-06-24T10:00:00Z"
+                consumedAt: null
+        '400':
+          description: Importo non valido o saldo insufficiente
+          content:
+            application/json:
+              example:
+                error: "Saldo insufficiente"
+
+  /api/users/{fiscalCode}/voucher/{voucherId}:
+    post:
+      tags: [Voucher]
+      summary: Consuma (spende) un voucher ancora in stato generated
+      parameters:
+        - name: fiscalCode
+          in: path
+          required: true
+          description: Codice fiscale dell'utente
+          schema:
+            type: string
+        - name: voucherId
+          in: path
+          required: true
+          description: ID del voucher da consumare
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Voucher aggiornato (consumato)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voucher'
+              example:
+                id: "abc123"
+                amount: 25.0
+                category: "libri"
+                status: "consumed"
+                createdAt: "2024-06-24T10:00:00Z"
+                consumedAt: "2024-06-25T09:00:00Z"
+        '400':
+          description: Voucher già consumato
+          content:
+            application/json:
+              example:
+                error: "Voucher già consumato"
+        '404':
+          description: Voucher non trovato
+          content:
+            application/json:
+              example:
+                error: "Voucher non trovato"
+    put:
+      tags: [Voucher]
+      summary: Aggiorna la categoria di un voucher non ancora consumato
+      description: |
+        Aggiorna la categoria di un voucher non ancora consumato.
+        
+        **Content-Type:** text/plain (solo la nuova categoria nel body)
+      parameters:
+        - name: fiscalCode
+          in: path
+          required: true
+          description: Codice fiscale dell'utente
+          schema:
+            type: string
+        - name: voucherId
+          in: path
+          required: true
+          description: ID del voucher da aggiornare
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+            example: "teatro"
+      responses:
+        '200':
+          description: Voucher aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voucher'
+              example:
+                id: "abc123"
+                amount: 25.0
+                category: "teatro"
+                status: "generated"
+                createdAt: "2024-06-24T10:00:00Z"
+                consumedAt: null
+        '400':
+          description: Voucher consumato
+          content:
+            application/json:
+              example:
+                error: "Voucher già consumato"
+        '404':
+          description: Voucher non trovato
+          content:
+            application/json:
+              example:
+                error: "Voucher non trovato"
+    delete:
+      tags: [Voucher]
+      summary: Elimina un voucher non ancora consumato
+      parameters:
+        - name: fiscalCode
+          in: path
+          required: true
+          description: Codice fiscale dell'utente
+          schema:
+            type: string
+        - name: voucherId
+          in: path
+          required: true
+          description: ID del voucher da eliminare
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Eliminato
+        '400':
+          description: Voucher consumato
+          content:
+            application/json:
+              example:
+                error: "Voucher già consumato"
+        '404':
+          description: Voucher non trovato
+          content:
+            application/json:
+              example:
+                error: "Voucher non trovato"
+
+  /api/system/stats:
+    get:
+      tags: [Sistema]
+      summary: Restituisce il riepilogo globale
+      responses:
+        '200':
+          description: Statistiche di sistema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStats'
+              example:
+                userCount: 10
+                totalAvailable: 2345.00
+                totalAllocated: 150.00
+                totalSpent: 105.00
+                totalVouchers: 95
+                vouchersConsumed: 40
+
+components:
+  schemas:
+    User:
+      type: object
+      description: Dati anagrafici dell'utente
+      properties:
+        name:
+          type: string
+          description: Nome dell'utente
+        surname:
+          type: string
+          description: Cognome dell'utente
+        email:
+          type: string
+          description: Email dell'utente
+        fiscalCode:
+          type: string
+          description: Codice fiscale (univoco)
+    ContributionStatus:
+      type: object
+      description: Stato del contributo dell'utente
+      properties:
+        balance:
+          type: number
+          format: float
+          description: Saldo residuo
+        contribAllocated:
+          type: number
+          format: float
+          description: Contributo già trasformato in voucher
+        contribSpent:
+          type: number
+          format: float
+          description: Contributo speso tramite voucher
+    Voucher:
+      type: object
+      description: Dati di un voucher
+      properties:
+        id:
+          type: string
+          description: Identificativo univoco del voucher
+        amount:
+          type: number
+          format: float
+          description: Importo del voucher
+        category:
+          type: string
+          description: Categoria del voucher
+        status:
+          type: string
+          description: Stato del voucher (generated/consumed)
+        createdAt:
+          type: string
+          format: date-time
+          description: Data di creazione
+        consumedAt:
+          type: string
+          format: date-time
+          description: Data di consumo (se consumato)
+    VoucherInput:
+      type: object
+      description: Dati in input per la creazione di un voucher
+      properties:
+        amount:
+          type: number
+          format: float
+          description: Importo richiesto
+        category:
+          type: string
+          description: Categoria desiderata
+        status:
+          type: string
+          description: Stato iniziale (opzionale)
+    SystemStats:
+      type: object
+      description: Statistiche globali del sistema
+      properties:
+        userCount:
+          type: integer
+          description: Numero totale di utenti
+        totalAvailable:
+          type: number
+          format: float
+          description: Somma dei contributi ancora disponibili
+        totalAllocated:
+          type: number
+          format: float
+          description: Somma dei contributi trasformati in voucher
+        totalSpent:
+          type: number
+          format: float
+          description: Somma dei contributi spesi
+        totalVouchers:
+          type: integer
+          description: Numero totale di voucher generati
+        vouchersConsumed:
+          type: integer
+          description: Numero totale di voucher consumati 

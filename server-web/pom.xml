@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>it.unimib.sd2025</groupId>
-    <artifactId>sd-project-web</artifactId> 
+    <artifactId>sd-project-web</artifactId>
     <version>0.1</version>
     <packaging>war</packaging>
 
@@ -13,12 +13,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <java.version>21</java.version>
-        <jerseyVersion>3.1.7</jerseyVersion> 
-        <jettyVersion>12.0.7</jettyVersion> 
-        <servletVersion>6.0.0</servletVersion> 
+        <jerseyVersion>3.1.7</jerseyVersion>
+        <jettyVersion>12.0.7</jettyVersion>
+        <servletVersion>6.0.0</servletVersion>
+        <swaggerVersion>2.2.23</swaggerVersion>
     </properties>
 
     <dependencies>
+        <!-- Jersey -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
@@ -30,27 +32,41 @@
             <version>${jerseyVersion}</version>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jerseyVersion}</version>
+        </dependency>
+
+        <!-- Servlet API -->
+        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${servletVersion}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-            <version>${jerseyVersion}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.eclipse/yasson -->
+
+        <!-- JSON-B & JSON-P -->
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
             <version>3.0.4</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.json</artifactId>
-            <version>2.0.1</version> 
+            <version>2.0.1</version>
+        </dependency>
+
+        <!-- OpenAPI / Swagger -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <version>${swaggerVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swaggerVersion}</version>
         </dependency>
     </dependencies>
 
@@ -75,9 +91,9 @@
                 <artifactId>jetty-ee10-maven-plugin</artifactId>
                 <version>${jettyVersion}</version>
                 <configuration>
-                    <scan>1</scan> 
+                    <scan>1</scan>
                     <webApp>
-                        <contextPath>/</contextPath> 
+                        <contextPath>/</contextPath>
                     </webApp>
                 </configuration>
             </plugin>

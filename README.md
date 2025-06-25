@@ -68,6 +68,7 @@ Se vuoi eseguirli su host/porta differenti, modifica tali costanti e ricompila i
 
 * **API REST:** vedi `REST.md` per la lista completa degli endpoint e dei codici di risposta.
 * **Protocollo TCP:** vedi `TCP.md` per il dettaglio dei comandi supportati dal database.
+* **Documentazione OpenAPI interattiva:** disponibile all'indirizzo [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/) — include tutte le API REST e una panoramica del protocollo TCP.
 
 ## Esempi di utilizzo API
 
