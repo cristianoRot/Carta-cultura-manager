@@ -130,6 +130,7 @@ Elimina un voucher non ancora consumato.
 Risposte:
 * `204 No Content` – eliminato.
 * `400 Bad Request` – voucher consumato.
+* `403 Forbidden` – operazione non permessa.
 * `404 Not Found` – voucher non trovato.
 * `500 Internal Server Error` – errore lato server.
 
