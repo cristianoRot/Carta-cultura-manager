@@ -165,14 +165,6 @@ Content-Type: application/json
 }
 ```
 
-Esempio risposta:
-```json
-{
-  "balance": 450.00,
-  "contribAllocated": 25.00,
-  "contribSpent": 25.00
-}
-```
 
 Risposte:
 * `200 OK` – stato del contributo
