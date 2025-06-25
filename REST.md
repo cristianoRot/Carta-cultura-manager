@@ -22,6 +22,7 @@ Risposte:
 * `201 Created` – utente creato, contributo iniziale 500 €.
 * `409 Conflict` – codice fiscale già registrato.
 * `400 Bad Request` – campi mancanti/non validi.
+* `500 Internal Server Error` – errore lato server.
 
 ---
 
@@ -31,6 +32,7 @@ Recupera i dati di un utente.
 Risposte:
 * `200 OK` – oggetto `User`.
 * `404 Not Found` – utente inesistente.
+* `500 Internal Server Error` – errore lato server.
 
 ---
 
@@ -55,6 +57,28 @@ Lista di tutti i voucher di un utente.
 
 Risposta `200 OK` – array di oggetti `Voucher`.
 
+Esempio risposta:
+```json
+[
+  {
+    "id": "abc123",
+    "amount": 25.0,
+    "category": "libri",
+    "status": "generated",
+    "createdAt": "2024-06-24T10:00:00Z",
+    "consumedAt": null
+  },
+  {
+    "id": "def456",
+    "amount": 25.0,
+    "category": "cinema",
+    "status": "consumed",
+    "createdAt": "2024-06-20T10:00:00Z",
+    "consumedAt": "2024-06-21T12:00:00Z"
+  }
+]
+```
+
 ---
 
 ### 2.2 `POST /api/users/{fiscalCode}/voucher`
@@ -71,6 +95,7 @@ Body JSON (il campo `id` viene sempre generato dal server e **sovrascrive** qual
 Risposte:
 * `201 Created` – voucher generato, restituisce l'oggetto completo.
 * `400 Bad Request` – importo non valido o saldo insufficiente.
+* `500 Internal Server Error` – errore lato server.
 
 ---
 
@@ -81,6 +106,7 @@ Risposte:
 * `200 OK` – voucher aggiornato (`status": "consumed"`, `consumedAt` impostata).
 * `400 Bad Request` – voucher già consumato.
 * `404 Not Found` – voucher non trovato.
+* `500 Internal Server Error` – errore lato server.
 
 ---
 
@@ -93,6 +119,7 @@ Risposte:
 * `200 OK` – voucher aggiornato.
 * `400 Bad Request` – voucher consumato.
 * `404 Not Found` – voucher non trovato.
+* `500 Internal Server Error` – errore lato server.
 
 ---
 
@@ -103,6 +130,7 @@ Risposte:
 * `204 No Content` – eliminato.
 * `400 Bad Request` – voucher consumato.
 * `404 Not Found` – voucher non trovato.
+* `500 Internal Server Error` – errore lato server.
 
 ---
 

@@ -111,6 +111,12 @@ paths:
             application/json:
               example:
                 error: "Campi mancanti o non validi"
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
 
   /api/users/{fiscalCode}:
     get:
@@ -253,6 +259,12 @@ paths:
             application/json:
               example:
                 error: "Saldo insufficiente"
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
 
   /api/users/{fiscalCode}/voucher/{voucherId}:
     post:
@@ -297,6 +309,12 @@ paths:
             application/json:
               example:
                 error: "Voucher non trovato"
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
     put:
       tags: [Voucher]
       summary: Aggiorna la categoria di un voucher non ancora consumato
@@ -350,6 +368,12 @@ paths:
             application/json:
               example:
                 error: "Voucher non trovato"
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
     delete:
       tags: [Voucher]
       summary: Elimina un voucher non ancora consumato
@@ -381,6 +405,12 @@ paths:
             application/json:
               example:
                 error: "Voucher non trovato"
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
 
   /api/system/stats:
     get:
