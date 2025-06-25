@@ -105,6 +105,7 @@ Consuma (spende) un voucher **ancora in stato `generated`**.
 Risposte:
 * `200 OK` – voucher aggiornato (`status": "consumed"`, `consumedAt` impostata).
 * `400 Bad Request` – voucher già consumato.
+* `403 Forbidden` – operazione non permessa.
 * `404 Not Found` – voucher non trovato.
 * `500 Internal Server Error` – errore lato server.
 

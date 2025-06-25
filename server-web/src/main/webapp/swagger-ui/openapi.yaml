@@ -321,6 +321,12 @@ paths:
             application/json:
               example:
                 error: "Voucher già consumato"
+        '403':
+          description: Operazione non permessa
+          content:
+            application/json:
+              example:
+                error: "Operazione non permessa"
         '404':
           description: Voucher non trovato
           content:
