@@ -13,7 +13,7 @@ Un'applicazione per la gestione della Carta Cultura. La directory `client-web` c
 La code-base è organizzata in tre moduli principali:
 
 
-`database/`: Server TCP in-memory basato su collezioni e documenti, ispirato a Google Firebase.
+`database/`: Server TCP in-memory basato su collezioni e documenti, ispirato a Google Firebase. \n
 `server-web/`: Servizio REST basato su Jakarta Servlet + Jersey che funge da **backend** dell'applicazione. Comunica con `database/` via socket TCP. Le API sono documentate in `REST.md`. 
 `client-web/`: Front-end web statico (HTML/JS/CSS) che invoca il backend su `http://localhost:8080`. 
 
