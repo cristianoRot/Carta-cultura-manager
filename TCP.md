@@ -6,7 +6,7 @@
 - **Porta Utilizzata:** 3030
 - **Modello:** Comando-risposta
 
-Il protocollo implementato nel database è un protocollo testuale ispirato a Redis. Il server accetta connessioni TCP su cui vengono inviate comandi e risposte in formato testo.
+Il protocollo implementato nel database è ispirato a Firebase, utilizzando un modello di archiviazione basato su collezioni e documenti. Il server accetta connessioni TCP su cui vengono inviate richieste di lettura e scrittura di documenti nelle collezioni, restituendo risposte in formato JSON.
 
 ## 2. Struttura dei Messaggi
 
