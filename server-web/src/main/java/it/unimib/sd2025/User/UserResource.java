@@ -18,7 +18,18 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response; 
 
 @Path("users")
-public class UserResource {
+public class UserResource 
+{
+    List<String> categories = java.util.Arrays.asList(
+        "Cinema",
+        "Musica (CD, vinili, streaming)",
+        "Concerti",
+        "Eventi Culturali",
+        "Libri (inclusi e-book)",
+        "Musei, Monumenti, Parchi",
+        "Strumenti Musicali",
+        "Teatro e Danza"
+    );
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -278,6 +289,9 @@ public class UserResource {
     {
         try
         {
+            if (!categories.contains(category))
+                return Response.status(Response.Status.BAD_REQUEST).entity("Categoria non valida").type(MediaType.APPLICATION_JSON).build();
+
             String voucherJson = DatabaseConnection.Get("vouchers/" + voucherId);
 
             if (voucherJson == null || voucherJson.equals("NOT_FOUND"))
