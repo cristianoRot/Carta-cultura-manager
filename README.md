@@ -182,7 +182,7 @@ Il database può essere pre-popolato con dati da un file denominato `db_data.jso
 
 *   **Ordine di Caricamento:**
     1.  Il server cerca prima `db_data.json` nel **classpath**. Se stai eseguendo il JAR, puoi includere questo file in `src/main/resources` prima della compilazione, e verrà pacchettizzato nel JAR.
-    2.  Se non trovato nel classpath, il server cerca `initial_data.txt` nella **directory di lavoro corrente** da cui viene eseguito il JAR.
+    2.  Se non trovato nel classpath, il server cerca `db_data.json` nella **directory di lavoro corrente** da cui viene eseguito il JAR.
     3.  Se il file non viene trovato in nessuna delle due posizioni, il database si avvierà con le statistiche globali inizializzate a zero e nessun altro dato.
 
 *   **Formato del File:**
