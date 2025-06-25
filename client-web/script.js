@@ -93,7 +93,6 @@ async function loadUserContribution(fiscalCode) {
 }
 
 async function handleLookupUser() {
-    // Svuota la visualizzazione dei buoni all'inizio di ogni ricerca utente
     document.getElementById('voucherList').innerHTML = '';
 
     const fiscalCodeInput = document.getElementById('lookupFiscalCode').value;
@@ -168,7 +167,6 @@ async function loadUserVouchers() {
             }
 
             voucherListDiv.innerHTML = '';
-            // Ordina i buoni per data di creazione (dal più recente al più vecchio)
             vouchers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             vouchers.forEach(voucher => {
                 const voucherElement = document.createElement('div');
@@ -539,7 +537,7 @@ async function fetchAndDisplaySystemStats() {
         } else {
             const errorText = `Errore nel caricamento delle statistiche.`;
             displayMessage('systemStatsStatus', errorText, true, true);
-            // Nascondi i valori se c'è un errore
+
             const statValues = document.querySelectorAll('#systemStatsDisplay .stats-value');
             statValues.forEach(el => el.textContent = 'N/D');
         }
@@ -557,12 +555,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerUserBtn) {
         registerUserBtn.addEventListener('click', handleRegisterUser);
     }
-    // Listener per il tasto Invio nel form di registrazione
+
     const registrationForm = document.getElementById('registrationForm');
     if (registrationForm) {
         registrationForm.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Previene il submit di default
+                event.preventDefault();
                 handleRegisterUser();
             }
         });
@@ -576,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lookupFiscalCodeInput) {
         lookupFiscalCodeInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Previene qualsiasi azione predefinita del browser
+                event.preventDefault();
                 handleLookupUser();
             }
         });

@@ -42,7 +42,8 @@ public class Main
     {
         private Socket client;
 
-        public Handler(Socket client) {
+        public Handler(Socket client)
+        {
             this.client = client;
         }
 
