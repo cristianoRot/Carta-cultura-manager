@@ -66,14 +66,6 @@ Content-Type: application/json
 }
 ```
 
-Body JSON:
-```json
-{
-  "name": "Mario",
-  "surname": "Rossi",
-  "email": "mario.rossi@example.com",
-  "fiscalCode": "RSSMRA80A01H501U"
-}
 ```
 Risposte:
 * `201 Created` – utente creato, contributo iniziale 500 €.
@@ -277,13 +269,7 @@ Content-Type: application/json
 ```
 
 Body JSON (il campo `id` viene sempre generato dal server e **sovrascrive** qualsiasi valore passato; `status` e `createdAt` sono facoltativi – se omessi rimangono `null` nel voucher risultante):
-```json
-{
-  "amount": 25.0,
-  "category": "libri",
-  "status": "generated"
-}
-```
+
 Risposte:
 * `201 Created` – voucher generato, restituisce l'oggetto completo
 * `400 Bad Request` – errore: "Saldo insufficiente"
