@@ -147,6 +147,12 @@ paths:
             application/json:
               example:
                 error: "Utente non trovato"
+       '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
 
   /api/users/{fiscalCode}/contribution:
     get:
@@ -170,6 +176,12 @@ paths:
                 balance: 450.00
                 contribAllocated: 25.00
                 contribSpent: 25.00
+       '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
 
   /api/users/{fiscalCode}/vouchers:
     get:
@@ -204,6 +216,12 @@ paths:
                   status: "consumed"
                   createdAt: "2024-06-20T10:00:00Z"
                   consumedAt: "2024-06-21T12:00:00Z"
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
 
   /api/users/{fiscalCode}/voucher:
     post:
@@ -430,6 +448,12 @@ paths:
                 totalSpent: 105.00
                 totalVouchers: 95
                 vouchersConsumed: 40
+          '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              example:
+                error: "Errore interno del server"
 
 components:
   schemas:
