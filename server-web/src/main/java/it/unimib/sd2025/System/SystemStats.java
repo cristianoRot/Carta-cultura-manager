@@ -1,9 +1,8 @@
 package it.unimib.sd2025.System;
 
-/**
- * Classe che rappresenta le statistiche globali del sistema.
- */
-public class SystemStats {
+
+public class SystemStats 
+{
     private int totalUsers;
     private double totalContributionAvailable;
     private double totalContributionAllocated;

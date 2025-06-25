@@ -4,15 +4,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-/**
- * API REST per le statistiche di sistema.
- */
 @Path("api/system")
-public class SystemResource {
-
-    /**
-     * Ottiene le statistiche globali del sistema.
-     */
+public class SystemResource 
+{
     @GET
     @Path("/stats")
     @Produces(MediaType.APPLICATION_JSON)
