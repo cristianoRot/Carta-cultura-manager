@@ -93,7 +93,7 @@ curl -X POST \
 curl http://localhost:8080/api/users/RSSMRA80A01H501U
 ```
 
-### 3. Generare un voucher da 25€ (categoria "libri")
+### 3. Generare un voucher da 25€ (categoria "libri") con data
 
 ```bash
 curl -X POST \
@@ -101,7 +101,8 @@ curl -X POST \
      -d '{
            "amount": 25.0,
            "category": "libri",
-           "status": "generated"
+           "status": "generated",
+           "createdAt": "2025-07-25T10:00:00"
          }' \
      http://localhost:8080/api/users/RSSMRA80A01H501U/voucher -i
 ```
