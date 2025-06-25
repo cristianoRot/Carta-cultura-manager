@@ -55,22 +55,10 @@ Le chiavi seguono la seguente convenzione:
 
 ## 3. Gestione degli Errori
 
-- **Risposte di successo:**  
-  - "OK": Operazione completata con successo
-  - "1": Operazione booleana completata con successo e risultato vero
-  - "0": Operazione booleana completata con successo e risultato falso
-  - "{valore}": Il valore associato alla chiave richiesta
-
-- **Risposte di errore:**  
-  - "null": Chiave non trovata
+- **Risposte di errore:** 
   - "BAD_REQUEST": sintassi comando non valida
   - "NOT_FOUND": risorsa inesistente
   - "ERROR": errore interno inaspettato
-
-**Esempi di messaggi di errore:**
-- "ERR missing key": Chiave non specificata
-- "ERR unknown command 'XYZ'": Comando non supportato
-- "ERR missing key or value": Parametri mancanti
 
 ## 4. Gestione della Concorrenza
 
