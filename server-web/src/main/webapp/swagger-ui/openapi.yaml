@@ -176,7 +176,7 @@ paths:
                 balance: 450.00
                 contribAllocated: 25.00
                 contribSpent: 25.00
-       '500':
+        '500':
           description: Errore interno del server
           content:
             application/json:
