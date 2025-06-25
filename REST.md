@@ -48,6 +48,10 @@ Esempio risposta:
 }
 ```
 
+Errori:
+* `404 Not Found` – utente inesistente.
+* `500 Internal Server Error` – errore lato server.
+
 ---
 
 ## 2. Voucher
@@ -78,6 +82,10 @@ Esempio risposta:
   }
 ]
 ```
+
+Errori:
+* `404 Not Found` – utente inesistente.
+* `500 Internal Server Error` – errore lato server.
 
 ---
 
