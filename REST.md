@@ -36,6 +36,36 @@ Content-Type: application/json
 }
 ```
 
+**Esempio risposta 409:**
+```
+HTTP/1.1 409 Conflict
+Content-Type: application/json
+
+{
+  "error": "Codice fiscale già registrato"
+}
+```
+
+**Esempio risposta 400:**
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+  "error": "Campi mancanti o non validi"
+}
+```
+
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Errore interno del server"
+}
+```
+
 Body JSON:
 ```json
 {
@@ -47,9 +77,9 @@ Body JSON:
 ```
 Risposte:
 * `201 Created` – utente creato, contributo iniziale 500 €.
-* `409 Conflict` – codice fiscale già registrato.
-* `400 Bad Request` – campi mancanti/non validi.
-* `500 Internal Server Error` – errore lato server.
+* `409 Conflict` – errore: "Codice fiscale già registrato"
+* `400 Bad Request` – errore: "Campi mancanti o non validi"
+* `500 Internal Server Error` – errore: "Errore interno del server"
 
 ---
 
@@ -76,10 +106,30 @@ Content-Type: application/json
 }
 ```
 
+**Esempio risposta 404:**
+```
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+
+{
+  "error": "Utente non trovato"
+}
+```
+
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Errore interno del server"
+}
+```
+
 Risposte:
 * `200 OK` – oggetto `User`.
-* `404 Not Found` – utente inesistente.
-* `500 Internal Server Error` – errore lato server.
+* `404 Not Found` – errore: "Utente non trovato"
+* `500 Internal Server Error` – errore: "Errore interno del server"
 
 ---
 
@@ -105,6 +155,16 @@ Content-Type: application/json
 }
 ```
 
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Errore interno del server"
+}
+```
+
 Esempio risposta:
 ```json
 {
@@ -114,9 +174,9 @@ Esempio risposta:
 }
 ```
 
-Errori:
-* `404 Not Found` – utente inesistente.
-* `500 Internal Server Error` – errore lato server.
+Risposte:
+* `200 OK` – stato del contributo
+* `500 Internal Server Error` – errore: "Errore interno del server"
 
 ---
 
@@ -157,32 +217,19 @@ Content-Type: application/json
 ]
 ```
 
-Risposta `200 OK` – array di oggetti `Voucher`.
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
 
-Esempio risposta:
-```json
-[
-  {
-    "id": "abc123",
-    "amount": 25.0,
-    "category": "libri",
-    "status": "generated",
-    "createdAt": "2024-06-24T10:00:00Z",
-    "consumedAt": null
-  },
-  {
-    "id": "def456",
-    "amount": 25.0,
-    "category": "cinema",
-    "status": "consumed",
-    "createdAt": "2024-06-20T10:00:00Z",
-    "consumedAt": "2024-06-21T12:00:00Z"
-  }
-]
+{
+  "error": "Errore interno del server"
+}
 ```
 
-Errori:
-* `500 Internal Server Error` – errore lato server.
+Risposte:
+* `200 OK` – array di oggetti `Voucher`
+* `500 Internal Server Error` – errore: "Errore interno del server"
 
 ---
 
@@ -217,6 +264,26 @@ Content-Type: application/json
 }
 ```
 
+**Esempio risposta 400:**
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+  "error": "Saldo insufficiente"
+}
+```
+
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Errore interno del server"
+}
+```
+
 Body JSON (il campo `id` viene sempre generato dal server e **sovrascrive** qualsiasi valore passato; `status` e `createdAt` sono facoltativi – se omessi rimangono `null` nel voucher risultante):
 ```json
 {
@@ -226,9 +293,9 @@ Body JSON (il campo `id` viene sempre generato dal server e **sovrascrive** qual
 }
 ```
 Risposte:
-* `201 Created` – voucher generato, restituisce l'oggetto completo.
-* `400 Bad Request` – importo non valido o saldo insufficiente.
-* `500 Internal Server Error` – errore lato server.
+* `201 Created` – voucher generato, restituisce l'oggetto completo
+* `400 Bad Request` – errore: "Saldo insufficiente"
+* `500 Internal Server Error` – errore: "Errore interno del server"
 
 ---
 
@@ -257,12 +324,52 @@ Content-Type: application/json
 }
 ```
 
+**Esempio risposta 400:**
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+  "error": "Voucher già consumato"
+}
+```
+
+**Esempio risposta 403:**
+```
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+
+{
+  "error": "Operazione non permessa"
+}
+```
+
+**Esempio risposta 404:**
+```
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+
+{
+  "error": "Voucher non trovato"
+}
+```
+
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Errore interno del server"
+}
+```
+
 Risposte:
-* `200 OK` – voucher aggiornato (`status": "consumed"`, `consumedAt` impostata).
-* `400 Bad Request` – voucher già consumato.
-* `403 Forbidden` – operazione non permessa.
-* `404 Not Found` – voucher non trovato.
-* `500 Internal Server Error` – errore lato server.
+* `200 OK` – voucher aggiornato (`status": "consumed"`, `consumedAt` impostata)
+* `400 Bad Request` – errore: "Voucher già consumato"
+* `403 Forbidden` – errore: "Operazione non permessa"
+* `404 Not Found` – errore: "Voucher non trovato"
+* `500 Internal Server Error` – errore: "Errore interno del server"
 
 ---
 
@@ -293,13 +400,43 @@ Content-Type: application/json
 }
 ```
 
+**Esempio risposta 400:**
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+  "error": "Voucher già consumato"
+}
+```
+
+**Esempio risposta 404:**
+```
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+
+{
+  "error": "Voucher non trovato"
+}
+```
+
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Errore interno del server"
+}
+```
+
 Content-Type: `text/plain` (solo la nuova categoria nel body).
 
 Risposte:
-* `200 OK` – voucher aggiornato.
-* `400 Bad Request` – voucher consumato.
-* `404 Not Found` – voucher non trovato.
-* `500 Internal Server Error` – errore lato server.
+* `200 OK` – voucher aggiornato
+* `400 Bad Request` – errore: "Voucher già consumato"
+* `404 Not Found` – errore: "Voucher non trovato"
+* `500 Internal Server Error` – errore: "Errore interno del server"
 
 ---
 
@@ -317,12 +454,52 @@ Host: localhost:8080
 HTTP/1.1 204 No Content
 ```
 
+**Esempio risposta 400:**
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+  "error": "Voucher già consumato"
+}
+```
+
+**Esempio risposta 403:**
+```
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+
+{
+  "error": "Operazione non permessa"
+}
+```
+
+**Esempio risposta 404:**
+```
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+
+{
+  "error": "Voucher non trovato"
+}
+```
+
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Errore interno del server"
+}
+```
+
 Risposte:
-* `204 No Content` – eliminato.
-* `400 Bad Request` – voucher consumato.
-* `403 Forbidden` – operazione non permessa.
-* `404 Not Found` – voucher non trovato.
-* `500 Internal Server Error` – errore lato server.
+* `204 No Content` – eliminato
+* `400 Bad Request` – errore: "Voucher già consumato"
+* `403 Forbidden` – errore: "Operazione non permessa"
+* `404 Not Found` – errore: "Voucher non trovato"
+* `500 Internal Server Error` – errore: "Errore interno del server"
 
 ---
 
@@ -350,6 +527,16 @@ Content-Type: application/json
   "totalSpent": 105.00,
   "totalVouchers": 95,
   "vouchersConsumed": 40
+}
+```
+
+**Esempio risposta 500:**
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Errore interno del server"
 }
 ```
 
