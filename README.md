@@ -176,17 +176,17 @@ Il client web è un'applicazione statica HTML, JavaScript e CSS.
 3.  **Prerequisiti:**
     Assicurati che il Server Web (`server-web` module) sia in esecuzione e accessibile (default: `http://localhost:8080`), poiché il client web effettua chiamate API a questo server.
 
-## Pre-popolamento Dati Iniziali (`initial_data.txt`)
+## Pre-popolamento Dati Iniziali (`db_data.json`)
 
-Il database può essere pre-popolato con dati da un file denominato `initial_data.txt`.
+Il database può essere pre-popolato con dati da un file denominato `db_data.json`.
 
 *   **Ordine di Caricamento:**
-    1.  Il server cerca prima `initial_data.txt` nel **classpath**. Se stai eseguendo il JAR, puoi includere questo file in `src/main/resources` prima della compilazione, e verrà pacchettizzato nel JAR.
+    1.  Il server cerca prima `db_data.json` nel **classpath**. Se stai eseguendo il JAR, puoi includere questo file in `src/main/resources` prima della compilazione, e verrà pacchettizzato nel JAR.
     2.  Se non trovato nel classpath, il server cerca `initial_data.txt` nella **directory di lavoro corrente** da cui viene eseguito il JAR.
     3.  Se il file non viene trovato in nessuna delle due posizioni, il database si avvierà con le statistiche globali inizializzate a zero e nessun altro dato.
 
 *   **Formato del File:**
-    Il file `initial_data.txt` deve contenere coppie chiave-valore, una per riga, nel formato:
+    Il file `db_data.json` deve contenere coppie chiave-valore, una per riga, nel formato:
     ```
     chiave=valore
     ```
