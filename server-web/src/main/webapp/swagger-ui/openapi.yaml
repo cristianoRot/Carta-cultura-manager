@@ -460,7 +460,7 @@ paths:
                 totalSpent: 105.00
                 totalVouchers: 95
                 vouchersConsumed: 40
-          '500':
+        '500':
           description: Errore interno del server
           content:
             application/json:
