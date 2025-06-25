@@ -62,7 +62,7 @@ Le chiavi seguono la seguente convenzione:
 
 ## 4. Gestione della Concorrenza
 
-Il database implementa un meccanismo di lock basato sulla chiave per gestire la concorrenza. Quando più client tentano di modificare contemporaneamente la stessa chiave, le operazioni vengono serializzate per evitare race condition.
+Il database gestisce la concorrenza quando più client accedono contemporaneamente agli stessi documenti o collezioni. In caso di modifiche simultanee, le operazioni vengono serializzate per garantire che le modifiche non generino conflitti o inconsistenze, evitando così le race condition.
 
 ## 5. Scambio di Esempio
 
