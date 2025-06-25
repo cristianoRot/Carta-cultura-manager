@@ -147,7 +147,7 @@ paths:
             application/json:
               example:
                 error: "Utente non trovato"
-       '500':
+        '500':
           description: Errore interno del server
           content:
             application/json:
