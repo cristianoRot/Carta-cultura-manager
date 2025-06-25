@@ -4,7 +4,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("api/system")
+@Path("system")
 public class SystemResource 
 {
     @GET
